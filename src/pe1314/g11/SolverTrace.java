@@ -46,6 +46,11 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
         return this;
     }
 
+    /* package */SolverTrace<V,C> step (SolverStep<V,C> step) {
+
+        return this;
+    }
+
     /**
      * Gets the best chromosome seen by this trace.
      *
