@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Random;
 
 import pe1314.g11.Problem;
-import pe1314.g11.ProblemSolver;
+import pe1314.g11.SolverStep;
 
 /**
  * A problem solver step that combines binary chromosomes with a given probability on a random combination point.
- * 
+ *
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
  */
-public final class BinaryCombinationStep<V> implements ProblemSolver.Step<V,BinaryChromosome> {
+public final class BinaryCombinationStep<V> implements SolverStep<V,BinaryChromosome> {
 
     private final double probability;
 
