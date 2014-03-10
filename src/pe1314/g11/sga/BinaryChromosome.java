@@ -2,12 +2,14 @@ package pe1314.g11.sga;
 
 import java.math.BigInteger;
 import java.util.BitSet;
+import java.util.Random;
 
 import pe1314.g11.Chromosome;
+import pe1314.g11.util.XorShiftRandom;
 
 /**
  * A chromosome that uses a bit string.
- * 
+ *
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  */
@@ -31,6 +33,32 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
         BitSet mask = new BitSet();
         mask.set(0, length, true);
         this.bits.intersects(mask);
+    }
+
+    /**
+     * Creates a new random chromosome with the specified length and random generator.
+     *
+     * @param length Length of the new chromosome
+     * @param random The RNG to be used
+     * @return A new random chromosome
+     */
+    public static BinaryChromosome newRandom (int length, Random random) {
+        BitSet bits = new BitSet();
+        for (int i = 0; i < length; i++) {
+            bits.set(i, random.nextBoolean());
+        }
+
+        return new BinaryChromosome(length, bits);
+    }
+
+    /**
+     * Creates a new random chromosome with the specified length.
+     *
+     * @param length Length of the new chromosome
+     * @return A new random chromosome
+     */
+    public static BinaryChromosome newRandom (int length) {
+        return newRandom(length, new XorShiftRandom());
     }
 
     public int getLength () {
@@ -79,7 +107,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
 
     /**
      * Returns an unsigned integer representation of this chromosome.
-     * 
+     *
      * @return Integer representation of this chromosome
      */
     public BigInteger toBigInteger () {
@@ -104,10 +132,12 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
 
     @Override
     public boolean equals (Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        if (!(obj instanceof BinaryChromosome))
+        }
+        if (!(obj instanceof BinaryChromosome)) {
             return false;
+        }
 
         BinaryChromosome bc = (BinaryChromosome) obj;
 
@@ -122,4 +152,5 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
         }
         return sb.append(")").toString();
     }
+
 }

@@ -1,7 +1,5 @@
 package pe1314.g11.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -32,20 +30,12 @@ public final class RandomGenerationStep<V, C extends Chromosome<C>> implements S
     }
 
     @Override
-    public List<C> apply (Problem<V,C> problem, List<C> input, Random random, int generation) {
-        // Fast pass: if the population is already large enough, return the input
-        if (input.size() >= populationSize) {
-            return input;
-        }
-
-        // Create an output list with the original input
-        List<C> output = new ArrayList<C>(input);
+    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
+        output.addAll(input);
 
         // Keep generating until population is large enough
         while (output.size() < populationSize) {
             output.add(problem.random(random));
         }
-
-        return Collections.unmodifiableList(output);
     }
 }

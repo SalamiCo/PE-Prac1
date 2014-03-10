@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import pe1314.g11.util.XorShiftRandom;
+
 /**
  * A class representing the general algorithm for solving genetic problems, with a configurable "pipeline"for different
  * algorithm variations.
@@ -52,7 +54,7 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @return The best value seen
      */
     public V solve (Problem<V,C> problem) {
-        return solve(problem, new Random());
+        return solve(problem, new XorShiftRandom());
     }
 
     /**
@@ -86,18 +88,31 @@ public final class Solver<V, C extends Chromosome<C>> {
         Problem<V,C> problem, Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks)
     {
         SolverTrace<V,C> trace = new SolverTrace<V,C>(problem);
-        List<C> population = Collections.emptyList();
+
+        List<C> population = new ArrayList<C>();
+        List<C> buffer = new ArrayList<C>();
 
         int gen = 0;
         while (gen < 1024) {
+
             // Apply every step
+            long time = System.nanoTime();
             for (SolverStep<V,C> step : steps) {
-                population = step.apply(problem, population, random, gen);
+                List<C> input = population;
+                List<C> output = buffer;
+                output.clear();
+
+                step.apply(problem, Collections.unmodifiableList(input), random, gen, output);
+
+                // Swap both
+                population = output;
+                buffer = input;
             }
+            time = System.nanoTime() - time;
 
             // Update generation
             gen++;
-            trace.generation(population);
+            trace.generation(population, time);
         }
 
         return trace;
@@ -118,7 +133,8 @@ public final class Solver<V, C extends Chromosome<C>> {
     /**
      * Fluent interface for creating {@link Solver ProblemSolvers}.
      *
-     * @author Daniel Escoz
+     * @author Daniel Escoz Solana
+     * @author Pedro Morgado Alarcón
      * @param <V> Type of the values of the solved problem
      * @param <C> Type of the chromosomes to be processed
      */
@@ -178,8 +194,6 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @param <C> Type of the chromosomes to be processed
      */
     public interface Callbacks<V, C extends Chromosome<C>> {
-
-
 
     }
 }

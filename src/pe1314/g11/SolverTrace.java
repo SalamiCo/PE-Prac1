@@ -1,6 +1,7 @@
 package pe1314.g11;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
      *
      * @return <tt>this</tt>
      */
-    /* package */SolverTrace<V,C> generation (List<C> population) {
+    /* package */SolverTrace<V,C> generation (List<C> population, long nanoseconds) {
         final int len = population.size();
 
         double sum = 0;
@@ -59,7 +60,7 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
             sqsum += fitness * fitness;
         }
 
-        summaries.add(new Summary(max, min, sum / len, Math.sqrt(sqsum / len - sum / len)));
+        summaries.add(new Summary(summaries.size(), max, min, sum / len, Math.sqrt(Math.abs(sqsum / len - sum / len))));
         return this;
     }
 
@@ -72,6 +73,10 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
         return best;
     }
 
+    public List<Summary> getSummaries () {
+        return Collections.unmodifiableList(summaries);
+    }
+
     /**
      * A class that summarized what was found on a given generation.
      *
@@ -80,16 +85,22 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
      */
     public final static class Summary {
 
+        private final int generation;
         private final double max;
         private final double min;
         private final double average;
         private final double standardDeviation;
 
-        /* protected */Summary (double max, double min, double avg, double stdev) {
+        /* protected */Summary (int gen, double max, double min, double avg, double stdev) {
+            this.generation = gen;
             this.max = max;
             this.min = min;
             this.average = avg;
             this.standardDeviation = stdev;
+        }
+
+        public int getGeneration () {
+            return generation;
         }
 
         public double getMax () {

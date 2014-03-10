@@ -19,7 +19,7 @@ public interface SolverStep<V, C extends Chromosome<C>> {
      * @param input Original population to be processed
      * @param random A random object for random processing
      * @param generation The generation of the
-     * @return Population after processing
+     * @param output Population after processing
      */
-    public abstract List<C> apply (Problem<V,C> problem, List<C> input, Random random, int generation);
+    public abstract void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output);
 }

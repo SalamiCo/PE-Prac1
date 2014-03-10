@@ -1,7 +1,5 @@
 package pe1314.g11.sga;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -29,10 +27,10 @@ public final class BinaryCombinationStep<V> implements SolverStep<V,BinaryChromo
     }
 
     @Override
-    public List<BinaryChromosome> apply (
-        Problem<V,BinaryChromosome> problem, List<BinaryChromosome> input, Random random, int generation)
+    public void apply (
+        Problem<V,BinaryChromosome> problem, List<BinaryChromosome> input, Random random, int generation,
+        List<BinaryChromosome> output)
     {
-        List<BinaryChromosome> output = new ArrayList<BinaryChromosome>(input.size());
 
         Iterator<BinaryChromosome> it = input.iterator();
         while (it.hasNext()) {
@@ -56,8 +54,6 @@ public final class BinaryCombinationStep<V> implements SolverStep<V,BinaryChromo
                 output.add(a);
             }
         }
-
-        return Collections.unmodifiableList(output);
     }
 
 }

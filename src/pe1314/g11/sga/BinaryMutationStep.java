@@ -1,7 +1,5 @@
 package pe1314.g11.sga;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -28,11 +26,10 @@ public final class BinaryMutationStep<V> implements SolverStep<V,BinaryChromosom
     }
 
     @Override
-    public List<BinaryChromosome> apply (
-        Problem<V,BinaryChromosome> problem, List<BinaryChromosome> input, Random random, int generation)
+    public void apply (
+        Problem<V,BinaryChromosome> problem, List<BinaryChromosome> input, Random random, int generation,
+        List<BinaryChromosome> output)
     {
-        List<BinaryChromosome> output = new ArrayList<BinaryChromosome>(input.size());
-
         // For every input chromosome...
         for (BinaryChromosome chromo : input) {
             // For every mutable place...
@@ -45,8 +42,6 @@ public final class BinaryMutationStep<V> implements SolverStep<V,BinaryChromosom
 
             output.add(chromo);
         }
-
-        return Collections.unmodifiableList(output);
     }
 
 }
