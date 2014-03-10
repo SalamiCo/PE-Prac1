@@ -14,6 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
@@ -34,6 +35,9 @@ public final class MainFrame extends JFrame {
     private static final String PRB_P1_F3 = "P1 Función 3";
     private static final String PRB_P1_F4 = "P1 Función 4";
     private static final String PRB_P1_F5 = "P1 Función 5";
+
+    private static final String SEL_ROULETTE = "Ruleta";
+    private static final String SEL_TOURNAMENT = "Torneo";
 
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
@@ -125,33 +129,33 @@ public final class MainFrame extends JFrame {
             CellConstraints cc = new CellConstraints();
 
             /* @formatter:off */
-            builder.addSeparator("Problem", cc.xyw(1, 1, 5));
-            builder.addLabel("Problem:",    cc.xyw(1, 3, 3));
+            builder.addSeparator("Problema", cc.xyw(1, 1, 5));
+            builder.addLabel("Problema:",    cc.xyw(1, 3, 3));
             builder.add(comboProblem,       cc.xy (5, 3));
 
-            builder.addSeparator("Algorithm",      cc.xyw(1,  5, 5));
-            builder.addLabel("Population Size:",   cc.xyw(1,  7, 3));
+            builder.addSeparator("Algoritmo",      cc.xyw(1,  5, 5));
+            builder.addLabel("Tamaño Población:",  cc.xyw(1,  7, 3));
             builder.add(spinnerMinPopSize,         cc.xy (5,  7));
-            builder.addLabel("Elite Size:",        cc.xyw(1,  9, 3));
+            builder.addLabel("Tamaño Élite:",      cc.xyw(1,  9, 3));
             builder.add(spinnerEliteSize,          cc.xy (5,  9));
-            builder.addLabel("Selection:",         cc.xyw(1, 11, 3));
+            builder.addLabel("Selección:",         cc.xyw(1, 11, 3));
             builder.add(comboSelectionType,        cc.xy (5, 11));
-            builder.addLabel("Combination Prob.:", cc.xyw(1, 13, 3));
+            builder.addLabel("Prob. Combinación:", cc.xyw(1, 13, 3));
             builder.add(spinnerCombineProb,        cc.xy (5, 13));
-            builder.addLabel("Mutation Prob.:",    cc.xyw(1, 15, 3));
+            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 15, 3));
             builder.add(spinnerMutateProb,         cc.xy (5, 15));
 
-            builder.addSeparator("Stopping",    cc.xyw(1, 17, 5));
+            builder.addSeparator("Parada",    cc.xyw(1, 17, 5));
             builder.add(checkboxStopGeneration, cc.xy (1, 19));
-            builder.addLabel("Generations: ",   cc.xy (3, 19));
+            builder.addLabel("Generaciones:",   cc.xy (3, 19));
             builder.add(spinnerStopGenerations, cc.xy (5, 19));
             builder.add(checkboxStopStall,      cc.xy (1, 21));
-            builder.addLabel("Fitness Stall: ", cc.xy (3, 21));
+            builder.addLabel("Estancamiento:",  cc.xy (3, 21));
             builder.add(spinnerStopStalled,     cc.xy (5, 21));
 
-            builder.addSeparator("Other",     cc.xyw(1, 23, 5));
+            builder.addSeparator("Otros",     cc.xyw(1, 23, 5));
             builder.add(checkboxRandomSeed,   cc.xy (1, 25));
-            builder.addLabel("Random Seed: ", cc.xy (3, 25));
+            builder.addLabel("Semilla RNG:",  cc.xy (3, 25));
             builder.add(textfieldRandomSeed,  cc.xy (5, 25));
             /* @formatter:on */
 
@@ -173,17 +177,36 @@ public final class MainFrame extends JFrame {
             PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
 
         spinnerMinPopSize = new JSpinner();
+        spinnerMinPopSize.setModel(new SpinnerNumberModel(1024, 32, 65536, 32));
+
         spinnerEliteSize = new JSpinner();
+        spinnerEliteSize.setModel(new SpinnerNumberModel(8, 0, 65536, 1));
+
         comboSelectionType = new JComboBox<String>();
+        comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] {
+            SEL_ROULETTE, SEL_TOURNAMENT }));
+
+
         spinnerCombineProb = new JSpinner();
+        spinnerCombineProb.setModel(new SpinnerNumberModel(0.7, 0.0, 1.0, 0.05));
+
         spinnerMutateProb = new JSpinner();
+        spinnerMutateProb.setModel(new SpinnerNumberModel(0.1, 0.0, 1.0, 0.05));
 
         checkboxStopGeneration = new JCheckBox();
+
         spinnerStopGenerations = new JSpinner();
+        spinnerStopGenerations.setModel(new SpinnerNumberModel(1024, 128, 65536, 8));
+
         checkboxStopStall = new JCheckBox();
+
         spinnerStopStalled = new JSpinner();
+        spinnerStopStalled.setModel(new SpinnerNumberModel(32, 4, 128, 1));
+
         checkboxRandomSeed = new JCheckBox();
+
         textfieldRandomSeed = new JTextField();
+
     }
 
     /** The user pressed an exit button */
