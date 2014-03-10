@@ -1,5 +1,8 @@
 package pe1314.g11;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class that represents the process of finding a solution executed within a solver.
  * <p>
@@ -19,8 +22,8 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
     /** The best chromosome seen */
     private C best = null;
 
-    /** The current generation */
-    private int generation = -1;
+    /** List of generation summaries */
+    private final List<Summary> summaries = new ArrayList<Summary>();
 
     public SolverTrace (Problem<V,C> problem) {
         if (problem == null) {
@@ -31,23 +34,32 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
     }
 
     /**
-     * Logs the beginning of a generation.
      *
-     * @param num Generation number
      * @return <tt>this</tt>
      */
-    /* package */SolverTrace<V,C> generation (int num) {
-        if (num != generation + 1) {
-            throw new IllegalStateException("Generations must progress linearly (was "
-                + generation + ", given " + num + ")");
+    /* package */SolverTrace<V,C> generation (List<C> population) {
+        final int len = population.size();
+
+        double sum = 0;
+        double sqsum = 0;
+        double max = Double.NEGATIVE_INFINITY;
+        double min = Double.POSITIVE_INFINITY;
+
+        for (C chromo : population) {
+            double fitness = problem.fitness(chromo);
+
+            // Set this as the best if better than the old best
+            if (best == null || fitness > problem.fitness(best)) {
+                best = chromo;
+            }
+
+            max = Math.max(max, fitness);
+            min = Math.min(min, fitness);
+            sum += fitness;
+            sqsum += fitness * fitness;
         }
 
-        this.generation = num;
-        return this;
-    }
-
-    /* package */SolverTrace<V,C> step (SolverStep<V,C> step) {
-
+        summaries.add(new Summary(max, min, sum / len, Math.sqrt(sqsum / len - sum / len)));
         return this;
     }
 
@@ -59,4 +71,43 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
     public C getBestSeen () {
         return best;
     }
+
+    /**
+     * A class that summarized what was found on a given generation.
+     *
+     * @author Daniel Escoz Solana
+     * @author Pedro Morgado Alarcón
+     */
+    public final static class Summary {
+
+        private final double max;
+        private final double min;
+        private final double average;
+        private final double standardDeviation;
+
+        /* protected */Summary (double max, double min, double avg, double stdev) {
+            this.max = max;
+            this.min = min;
+            this.average = avg;
+            this.standardDeviation = stdev;
+        }
+
+        public double getMax () {
+            return max;
+        }
+
+        public double getMin () {
+            return min;
+        }
+
+        public double getAverage () {
+            return average;
+        }
+
+        public double getStandardDeviation () {
+            return standardDeviation;
+        }
+
+    }
+
 }

@@ -28,6 +28,9 @@ public final class Solver<V, C extends Chromosome<C>> {
         this.steps = steps;
     }
 
+    // ==============================
+    // === PUBLIC SOLVING METHODS ===
+
     /**
      * Solves a specific problem using this solver.
      *
@@ -36,7 +39,7 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @return The best value seen
      */
     public V solve (Problem<V,C> problem, Random random) {
-        return problem.value(doTrace(problem, random, false).getBestSeen());
+        return problem.value(doTrace(problem, random, false, null).getBestSeen());
     }
 
     /**
@@ -52,29 +55,56 @@ public final class Solver<V, C extends Chromosome<C>> {
         return solve(problem, new Random());
     }
 
-    private SolverTrace<V,C> doTrace (Problem<V,C> problem, Random random, boolean traceOptions) {
-        SolverTrace<V,C> trace = new SolverTrace<V,C>();
+    /**
+     * Solves a specific problem using this solver and returns a trace of the progress.
+     *
+     * @param problem Problem to solve
+     * @param random The random generator to use
+     * @return The problem solution trace
+     */
+    public SolverTrace<V,C> trace (Problem<V,C> problem, Random random) {
+        return doTrace(problem, random, true, null);
+    }
+
+    /**
+     * Solves a specific problem using this solver and returns a trace of the progress.
+     * <p>
+     * This method creates a new {@link Random} object using its default constructor. Use
+     * {@link #trace(Problem, Random)} to pick a specific random generator.
+     *
+     * @param problem Problem to solve
+     * @return The problem solution trace
+     */
+    public SolverTrace<V,C> trace (Problem<V,C> problem) {
+        return trace(problem, new Random());
+    }
+
+    // ===============================
+    // === INTERNAL IMPLEMENTATION ===
+
+    private SolverTrace<V,C> doTrace (
+        Problem<V,C> problem, Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks)
+    {
+        SolverTrace<V,C> trace = new SolverTrace<V,C>(problem);
         List<C> population = Collections.emptyList();
 
         int gen = 0;
         while (gen < 1024) {
-            trace.generation(gen);
-
             // Apply every step
             for (SolverStep<V,C> step : steps) {
-                trace.step(step);
-
                 population = step.apply(problem, population, random, gen);
-
-                trace.population(population);
             }
 
             // Update generation
             gen++;
+            trace.generation(population);
         }
 
         return trace;
     }
+
+    // ===============
+    // === BUILDER ===
 
     /**
      * Creates and returns a new {@link Solver.Builder}
@@ -89,10 +119,12 @@ public final class Solver<V, C extends Chromosome<C>> {
      * Fluent interface for creating {@link Solver ProblemSolvers}.
      *
      * @author Daniel Escoz
+     * @param <V> Type of the values of the solved problem
      * @param <C> Type of the chromosomes to be processed
      */
     public static final class Builder<V, C extends Chromosome<C>> {
 
+        /** List of steps */
         private List<SolverStep<V,C>> steps = new ArrayList<SolverStep<V,C>>(4);
 
         /** Creates a new problem solver builder */
@@ -134,4 +166,20 @@ public final class Solver<V, C extends Chromosome<C>> {
         }
     }
 
+    // =======================
+    // === TRACE CALLBACKS ===
+
+    /**
+     * Callbacks interface with methods called by the tracer when certains events occur.
+     *
+     * @author Daniel Escoz Solana
+     * @author Pedro Morgado Alarcón
+     * @param <V> Type of the values of the solved problem
+     * @param <C> Type of the chromosomes to be processed
+     */
+    public interface Callbacks<V, C extends Chromosome<C>> {
+
+
+
+    }
 }
