@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -50,12 +53,21 @@ public final class MainFrame extends JFrame {
     private JSpinner spinnerCombineProb;
     private JSpinner spinnerMutateProb;
 
+    private JLabel labelStopGeneration;
     private JCheckBox checkboxStopGeneration;
     private JSpinner spinnerStopGenerations;
+
+    private JLabel labelStopStall;
     private JCheckBox checkboxStopStall;
     private JSpinner spinnerStopStalled;
+
+    private JLabel labelRandomSeed;
     private JCheckBox checkboxRandomSeed;
     private JTextField textfieldRandomSeed;
+
+    private JButton buttonPlay;
+    private JButton buttonPause;
+    private JButton buttonStop;
 
     /**
      * Creates an empty frame and fills it with the necessary components to work.
@@ -120,8 +132,8 @@ public final class MainFrame extends JFrame {
 
             FormLayout layout =
                 new FormLayout(
-                    "pref, 3dlu, right:pref, 3dlu, pref",
-                    "pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref");
+                    "right:pref, 3dlu, right:pref, 3dlu, pref",
+                    "pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
 
             PanelBuilder builder = new PanelBuilder(layout);
             builder.setDefaultDialogBorder();
@@ -132,6 +144,7 @@ public final class MainFrame extends JFrame {
             builder.addSeparator("Problema", cc.xyw(1, 1, 5));
             builder.addLabel("Problema:",    cc.xyw(1, 3, 3));
             builder.add(comboProblem,       cc.xy (5, 3));
+
 
             builder.addSeparator("Algoritmo",      cc.xyw(1,  5, 5));
             builder.addLabel("Tamaño Población:",  cc.xyw(1,  7, 3));
@@ -145,22 +158,32 @@ public final class MainFrame extends JFrame {
             builder.addLabel("Prob. Mutación:",    cc.xyw(1, 15, 3));
             builder.add(spinnerMutateProb,         cc.xy (5, 15));
 
-            builder.addSeparator("Parada",    cc.xyw(1, 17, 5));
-            builder.add(checkboxStopGeneration, cc.xy (1, 19));
-            builder.addLabel("Generaciones:",   cc.xy (3, 19));
-            builder.add(spinnerStopGenerations, cc.xy (5, 19));
-            builder.add(checkboxStopStall,      cc.xy (1, 21));
-            builder.addLabel("Estancamiento:",  cc.xy (3, 21));
-            builder.add(spinnerStopStalled,     cc.xy (5, 21));
 
-            builder.addSeparator("Otros",     cc.xyw(1, 23, 5));
-            builder.add(checkboxRandomSeed,   cc.xy (1, 25));
-            builder.addLabel("Semilla RNG:",  cc.xy (3, 25));
-            builder.add(textfieldRandomSeed,  cc.xy (5, 25));
+            builder.addSeparator("Parada",          cc.xyw(1, 17, 5));
+            builder.add(checkboxStopGeneration,     cc.xy (1, 19));
+            labelStopGeneration =
+                builder.addLabel("Generaciones:",   cc.xy (3, 19));
+            builder.add(spinnerStopGenerations,     cc.xy (5, 19));
+            builder.add(checkboxStopStall,          cc.xy (1, 21));
+            labelStopStall =
+                builder.addLabel("Estancamiento:",  cc.xy (3, 21));
+            builder.add(spinnerStopStalled,         cc.xy (5, 21));
+
+
+            builder.addSeparator("Otros",         cc.xyw(1, 23, 5));
+            builder.add(checkboxRandomSeed,       cc.xy (1, 25));
+            labelRandomSeed =
+                builder.addLabel("Semilla RNG:",  cc.xy (3, 25));
+            builder.add(textfieldRandomSeed,      cc.xy (5, 25));
+
+
+            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 27, 5));
             /* @formatter:on */
 
             JPanel leftPanel = builder.getPanel();
             panel.add(leftPanel, BorderLayout.LINE_START);
+
+            updateLeftForm();
         }
 
         { /* Left Form */
@@ -183,9 +206,7 @@ public final class MainFrame extends JFrame {
         spinnerEliteSize.setModel(new SpinnerNumberModel(8, 0, 65536, 1));
 
         comboSelectionType = new JComboBox<String>();
-        comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] {
-            SEL_ROULETTE, SEL_TOURNAMENT }));
-
+        comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] { SEL_ROULETTE, SEL_TOURNAMENT }));
 
         spinnerCombineProb = new JSpinner();
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.7, 0.0, 1.0, 0.05));
@@ -194,19 +215,64 @@ public final class MainFrame extends JFrame {
         spinnerMutateProb.setModel(new SpinnerNumberModel(0.1, 0.0, 1.0, 0.05));
 
         checkboxStopGeneration = new JCheckBox();
+        checkboxStopGeneration.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed (ActionEvent arg0) {
+                updateLeftForm();
+            }
+        });
 
         spinnerStopGenerations = new JSpinner();
         spinnerStopGenerations.setModel(new SpinnerNumberModel(1024, 128, 65536, 8));
 
         checkboxStopStall = new JCheckBox();
+        checkboxStopStall.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed (ActionEvent arg0) {
+                updateLeftForm();
+            }
+        });
 
         spinnerStopStalled = new JSpinner();
         spinnerStopStalled.setModel(new SpinnerNumberModel(32, 4, 128, 1));
 
         checkboxRandomSeed = new JCheckBox();
+        checkboxRandomSeed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed (ActionEvent arg0) {
+                updateLeftForm();
+            }
+        });
 
         textfieldRandomSeed = new JTextField();
 
+        buttonPlay = new JButton("\u25B6");
+
+        buttonPause = new JButton("\u275A\u275A");
+
+        buttonStop = new JButton("\u25FE");
+    }
+
+    private JPanel createLeftFormButtonPanel () {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+
+        panel.add(buttonPlay);
+        panel.add(buttonPause);
+        panel.add(buttonStop);
+
+        return panel;
+    }
+
+    /* package */void updateLeftForm () {
+        labelStopGeneration.setEnabled(checkboxStopGeneration.isSelected());
+        spinnerStopGenerations.setEnabled(checkboxStopGeneration.isSelected());
+
+        labelStopStall.setEnabled(checkboxStopStall.isSelected());
+        spinnerStopStalled.setEnabled(checkboxStopStall.isSelected());
+
+        labelRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
+        textfieldRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
     }
 
     /** The user pressed an exit button */
