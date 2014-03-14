@@ -7,6 +7,14 @@ import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
 import pe1314.g11.SolverStep;
 
+/**
+ * A step that implements the selection of chromosomes using the roulette mechanism.
+ *
+ * @author Daniel Escoz Solana
+ * @author Pedro Morgado Alarcón
+ * @param <V> Type of the values
+ * @param <C> Type of the chromosomes
+ */
 public final class RouletteSelectionStep<V, C extends Chromosome<C>> implements SolverStep<V,C> {
 
     @Override

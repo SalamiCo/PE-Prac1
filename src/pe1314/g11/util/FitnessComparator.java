@@ -1,12 +1,15 @@
-package pe1314.g11;
+package pe1314.g11.util;
 
 import java.util.Comparator;
+
+import pe1314.g11.Chromosome;
+import pe1314.g11.Problem;
 
 /**
  * A comparator that sorts chromosomes based on their fitness.
  * <p>
  * Objects of this class need a {@link Problem} instance to know with fitness function to use.
- * 
+ *
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @param <C> Type of the chromosomes
@@ -21,7 +24,7 @@ public final class FitnessComparator<C extends Chromosome<C>> implements Compara
 
     @Override
     public int compare (C c1, C c2) {
-        return (int) Math.signum(problem.fitness(c1) - problem.fitness(c2));
+        return  problem.type().getCompareMultiplier() * (int) Math.signum(problem.fitness(c1) - problem.fitness(c2));
     }
 
 }

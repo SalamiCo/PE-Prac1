@@ -34,6 +34,11 @@ public abstract class Problem<V, C extends Chromosome<C>> {
      */
     public abstract double fitness (C chromosome);
 
+    /**
+     * Obtains the kind of problem we are trying to solve.
+     *
+     * @return Kind of problem being solved.
+     */
     public abstract Type type ();
 
     /**
@@ -44,9 +49,20 @@ public abstract class Problem<V, C extends Chromosome<C>> {
      */
     public static enum Type {
         /** This problem tries to maximize fitness */
-        MAXIMIZATION,
+        MAXIMIZATION(1),
 
-        /** This problem tries to inimize fitness */
-        MINIMIZATION;
+        /** This problem tries to minimize fitness */
+        MINIMIZATION(-1);
+
+        private final int mult;
+
+        private Type (int mult) {
+            this.mult = mult;
+        }
+
+        /** @return A number to multiply a <tt>compare</tt> method result for correct comparison */
+        public int getCompareMultiplier () {
+            return mult;
+        }
     }
 }
