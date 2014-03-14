@@ -18,6 +18,9 @@ import pe1314.g11.util.XorShiftRandom;
  */
 public final class Solver<V, C extends Chromosome<C>> {
 
+    /** The problem being solved */
+    private final Problem<V,C> problem;
+
     /** List of steps to take for a population */
     private final List<SolverStep<V,C>> steps;
 
@@ -26,7 +29,8 @@ public final class Solver<V, C extends Chromosome<C>> {
      *
      * @param steps Steps to be applied to each generation
      */
-    Solver (List<SolverStep<V,C>> steps) {
+    Solver (Problem<V,C> problem, List<SolverStep<V,C>> steps) {
+        this.problem = problem;
         this.steps = steps;
     }
 
@@ -40,8 +44,8 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @param random The random generator to use
      * @return The best value seen
      */
-    public V solve (Problem<V,C> problem, Random random) {
-        return problem.value(doTrace(problem, random, false, null).getBestSeen());
+    public V solve (Random random) {
+        return problem.value(doTrace(random, false, null).getBestSeen());
     }
 
     /**
@@ -53,8 +57,8 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @param problem Problem to solve
      * @return The best value seen
      */
-    public V solve (Problem<V,C> problem) {
-        return solve(problem, new XorShiftRandom());
+    public V solve () {
+        return solve(new XorShiftRandom());
     }
 
     /**
@@ -64,8 +68,8 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @param random The random generator to use
      * @return The problem solution trace
      */
-    public SolverTrace<V,C> trace (Problem<V,C> problem, Random random) {
-        return doTrace(problem, random, true, null);
+    public SolverTrace<V,C> trace (Random random) {
+        return doTrace(random, true, null);
     }
 
     /**
@@ -77,15 +81,14 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @param problem Problem to solve
      * @return The problem solution trace
      */
-    public SolverTrace<V,C> trace (Problem<V,C> problem) {
-        return trace(problem, new Random());
+    public SolverTrace<V,C> trace () {
+        return trace(new Random());
     }
 
     // ===============================
     // === INTERNAL IMPLEMENTATION ===
 
-    private SolverTrace<V,C> doTrace (
-        Problem<V,C> problem, Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks)
+    private SolverTrace<V,C> doTrace (Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks)
     {
         SolverTrace<V,C> trace = new SolverTrace<V,C>(problem);
 
@@ -126,8 +129,8 @@ public final class Solver<V, C extends Chromosome<C>> {
      *
      * @return A new <tt>Builder</tt>
      */
-    public static <V, C extends Chromosome<C>> Builder<V,C> builder () {
-        return new Builder<V,C>();
+    public static <V, C extends Chromosome<C>> Builder<V,C> builder (Problem<V,C> problem) {
+        return new Builder<V,C>(problem);
     }
 
     /**
@@ -140,12 +143,15 @@ public final class Solver<V, C extends Chromosome<C>> {
      */
     public static final class Builder<V, C extends Chromosome<C>> {
 
+        /** Problem to solve */
+        private final Problem<V,C> problem;
+
         /** List of steps */
         private List<SolverStep<V,C>> steps = new ArrayList<SolverStep<V,C>>(4);
 
         /** Creates a new problem solver builder */
-        /* package */Builder () {
-
+        /* package */Builder (Problem<V,C> problem) {
+            this.problem = problem;
         }
 
         /**
@@ -177,8 +183,7 @@ public final class Solver<V, C extends Chromosome<C>> {
 
             List<SolverStep<V,C>> steps = this.steps;
             this.steps = null;
-            return new Solver<V,C>(Collections.unmodifiableList(steps));
-
+            return new Solver<V,C>(problem, Collections.unmodifiableList(steps));
         }
     }
 
