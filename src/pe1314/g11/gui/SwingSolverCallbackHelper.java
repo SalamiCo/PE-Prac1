@@ -10,6 +10,17 @@ import pe1314.g11.Solver.Callbacks;
 import pe1314.g11.SolverStep;
 import pe1314.g11.SolverTrace;
 
+/**
+ * A Swing-friendly version of the {@link Callbacks Solver.Callbacks} interface.
+ * <p>
+ * Objects of this class are created by wrapping another <tt>Callbacks</tt> object with the static
+ * {@link #wrap(Callbacks)} method.
+ *
+ * @author Daniel Escoz Solana
+ * @author Pedro Morgado Alarcón
+ * @param <V> Type of the values
+ * @param <C> Type of the chromosomes
+ */
 public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> implements Callbacks<V,C> {
 
     /** The wrapped callbacks */
@@ -38,8 +49,10 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
     // === IMPLEMENTATION ===
 
     @Override
-    public synchronized boolean shouldStop () {
-        return callbacks.shouldStop();
+    public boolean shouldStop () {
+        synchronized (this) {
+            return callbacks.shouldStop();
+        }
     }
 
     @Override
@@ -47,7 +60,9 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
-                callbacks.startProcess(solver);
+                synchronized (SwingSolverCallbackHelper.this) {
+                    callbacks.startProcess(solver);
+                }
             }
         });
     }
@@ -57,7 +72,9 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
-                callbacks.startGeneration(gen, population);
+                synchronized (SwingSolverCallbackHelper.this) {
+                    callbacks.startGeneration(gen, population);
+                }
             }
         });
     }
@@ -67,7 +84,9 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
-                callbacks.startStep(step, population);
+                synchronized (SwingSolverCallbackHelper.this) {
+                    callbacks.startStep(step, population);
+                }
             }
         });
     }
@@ -77,7 +96,9 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
-                callbacks.endStep(population);
+                synchronized (SwingSolverCallbackHelper.this) {
+                    callbacks.endStep(population);
+                }
             }
         });
     }
@@ -87,7 +108,9 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
-                callbacks.endGeneration(population);
+                synchronized (SwingSolverCallbackHelper.this) {
+                    callbacks.endGeneration(population);
+                }
             }
         });
     }
@@ -97,7 +120,9 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
-                callbacks.endProcess(trace);
+                synchronized (SwingSolverCallbackHelper.this) {
+                    callbacks.endProcess(trace);
+                }
             }
         });
     }
