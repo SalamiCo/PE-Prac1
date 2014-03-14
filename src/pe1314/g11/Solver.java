@@ -88,19 +88,27 @@ public final class Solver<V, C extends Chromosome<C>> {
     // ===============================
     // === INTERNAL IMPLEMENTATION ===
 
-    private SolverTrace<V,C> doTrace (Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks)
-    {
+    private SolverTrace<V,C> doTrace (Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks) {
         SolverTrace<V,C> trace = new SolverTrace<V,C>(problem);
 
         List<C> population = new ArrayList<C>();
         List<C> buffer = new ArrayList<C>();
 
+        // Notify of the start of the process
+        callbacks.startProcess(this);
+
         int gen = 0;
-        while (gen < 1024) {
+        while (!callbacks.shouldStop()) {
+
+            // Notify the start of the generation
+            callbacks.startGeneration(gen, Collections.unmodifiableList(population));
 
             // Apply every step
             long time = System.nanoTime();
             for (SolverStep<V,C> step : steps) {
+                // Notify the start of the step
+                callbacks.startStep(step, Collections.unmodifiableList(population));
+
                 List<C> input = population;
                 List<C> output = buffer;
                 output.clear();
@@ -110,13 +118,22 @@ public final class Solver<V, C extends Chromosome<C>> {
                 // Swap both
                 population = output;
                 buffer = input;
+
+                // Notify the end of the step
+                callbacks.endStep(Collections.unmodifiableList(population));
             }
             time = System.nanoTime() - time;
 
             // Update generation
             gen++;
             trace.generation(population, time);
+
+            // Notify the end of the generation
+            callbacks.endGeneration(Collections.unmodifiableList(population));
         }
+
+        // Notify of the end of the process
+        callbacks.endProcess(trace);
 
         return trace;
     }
@@ -199,6 +216,57 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @param <C> Type of the chromosomes to be processed
      */
     public interface Callbacks<V, C extends Chromosome<C>> {
+
+        /**
+         * Tells the solver whether the solving process should stop.
+         *
+         * @return <tt>true</tt> if the process should stop, <tt>false</tt> otherwise
+         */
+        public abstract boolean shouldStop ();
+
+        /**
+         * Notifies this callbacks that the solving process has started.
+         *
+         * @param solver The solver used
+         */
+        public abstract void startProcess (Solver<V,C> solver);
+
+        /**
+         * Notifies this callbacks that a new generation is to be processed.
+         *
+         * @param gen Number of the new generation
+         * @param population The population before the processing
+         */
+        public abstract void startGeneration (int gen, List<C> population);
+
+        /**
+         * Notifies this callbacks that a {@link SolverStep processing step} is starting.
+         *
+         * @param step The step in use
+         * @param population The population before the processing
+         */
+        public abstract void startStep (SolverStep<V,C> step, List<C> population);
+
+        /**
+         * Notifies this callbacks that the last {@link SolverStep processing step} has ended.
+         *
+         * @param population The population after the processing
+         */
+        public abstract void endStep (List<C> population);
+
+        /**
+         * Notifies this callbacks that the last generation processing has ended.
+         *
+         * @param population The population after the processing
+         */
+        public abstract void endGeneration (List<C> population);
+
+        /**
+         * Notifies this callbacks that the processing has fully ended.
+         *
+         * @param trace
+         */
+        public abstract void endProcess (SolverTrace<V,C> trace);
 
     }
 }
