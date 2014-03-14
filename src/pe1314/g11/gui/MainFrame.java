@@ -21,6 +21,18 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import pe1314.g11.Problem;
+import pe1314.g11.Solver;
+import pe1314.g11.SolverStep;
+import pe1314.g11.pr1.P1F1Problem;
+import pe1314.g11.sga.BinaryChromosome;
+import pe1314.g11.sga.BinaryCombinationStep;
+import pe1314.g11.sga.BinaryMutationStep;
+import pe1314.g11.sga.RouletteSelectionStep;
+import pe1314.g11.sga.TournamentSelectionStep;
+import pe1314.g11.util.ElitismStepPair;
+import pe1314.g11.util.RandomGenerationStep;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
@@ -203,7 +215,7 @@ public final class MainFrame extends JFrame {
         spinnerMinPopSize.setModel(new SpinnerNumberModel(1024, 32, 65536, 32));
 
         spinnerEliteSize = new JSpinner();
-        spinnerEliteSize.setModel(new SpinnerNumberModel(8, 0, 65536, 1));
+        spinnerEliteSize.setModel(new SpinnerNumberModel(0.01, 0, 0.5, 0.005));
 
         comboSelectionType = new JComboBox<String>();
         comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] { SEL_ROULETTE, SEL_TOURNAMENT }));
@@ -247,6 +259,12 @@ public final class MainFrame extends JFrame {
         textfieldRandomSeed = new JTextField();
 
         buttonPlay = new JButton("\u25B6");
+        buttonPlay.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed (ActionEvent arg0) {
+                clickedPlay();
+            }
+        });
 
         buttonPause = new JButton("\u275A\u275A");
 
@@ -278,5 +296,51 @@ public final class MainFrame extends JFrame {
     /** The user pressed an exit button */
     /* package */void actionExit () {
         dispose();
+    }
+
+    /* package */void clickedPlay () {
+        String problemName = (String) comboProblem.getSelectedItem();
+        int populationSize = ((Number) spinnerMinPopSize.getValue()).intValue();
+        double eliteSize = ((Number) spinnerEliteSize.getValue()).doubleValue();
+        String selection = (String) comboSelectionType.getSelectedItem();
+        double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
+        double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
+        boolean generationsIsChecked = checkboxStopGeneration.isSelected();
+        int generations = ((Number) spinnerStopGenerations.getValue()).intValue();
+        boolean stallIsChecked = checkboxStopStall.isSelected();
+        int stall = ((Number) spinnerStopStalled.getValue()).intValue();
+
+        Problem<Double,BinaryChromosome> problem;
+
+        switch (problemName) {
+            case PRB_P1_F1:
+                problem = new P1F1Problem();
+                break;
+            default:
+                return;
+        }
+
+        ElitismStepPair<Double,BinaryChromosome> esp = new ElitismStepPair<>(eliteSize);
+
+        SolverStep<Double,BinaryChromosome> selectionStep;
+        int tournamentSize = 8;
+
+        switch (selection) {
+            case SEL_ROULETTE:
+                selectionStep = new RouletteSelectionStep<>();
+                break;
+
+            case SEL_TOURNAMENT:
+                selectionStep = new TournamentSelectionStep<>(tournamentSize);
+                break;
+
+            default:
+                return;
+        }
+
+        Solver
+            .builder(problem).step(new RandomGenerationStep<Double,BinaryChromosome>(populationSize, 0))
+            .step(esp.getSaveStep()).step(selectionStep).step(new BinaryCombinationStep<Double>(combineProb))
+            .step(new BinaryMutationStep<Double>(mutateProb)).step(esp.getRestoreStep());
     }
 }
