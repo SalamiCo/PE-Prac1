@@ -3,6 +3,7 @@ package pe1314.g11.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -21,9 +22,12 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
 import pe1314.g11.Solver;
+import pe1314.g11.Solver.Callbacks;
 import pe1314.g11.SolverStep;
+import pe1314.g11.SolverTrace;
 import pe1314.g11.pr1.P1F1Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.BinaryCombinationStep;
@@ -32,6 +36,7 @@ import pe1314.g11.sga.RouletteSelectionStep;
 import pe1314.g11.sga.TournamentSelectionStep;
 import pe1314.g11.util.ElitismStepPair;
 import pe1314.g11.util.RandomGenerationStep;
+import pe1314.g11.util.XorShiftRandom;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -155,7 +160,7 @@ public final class MainFrame extends JFrame {
             /* @formatter:off */
             builder.addSeparator("Problema", cc.xyw(1, 1, 5));
             builder.addLabel("Problema:",    cc.xyw(1, 3, 3));
-            builder.add(comboProblem,       cc.xy (5, 3));
+            builder.add(comboProblem,        cc.xy (5, 3));
 
 
             builder.addSeparator("Algoritmo",      cc.xyw(1,  5, 5));
@@ -338,9 +343,68 @@ public final class MainFrame extends JFrame {
                 return;
         }
 
-        Solver
-            .builder(problem).step(new RandomGenerationStep<Double,BinaryChromosome>(populationSize, 0))
-            .step(esp.getSaveStep()).step(selectionStep).step(new BinaryCombinationStep<Double>(combineProb))
-            .step(new BinaryMutationStep<Double>(mutateProb)).step(esp.getRestoreStep());
+        /* @formatter:off */
+        Solver<Double, BinaryChromosome> solver = Solver.builder(problem)
+            .step(new RandomGenerationStep<Double,BinaryChromosome>(populationSize, 0))
+            .step(esp.getSaveStep())
+            .step(selectionStep)
+            .step(new BinaryCombinationStep<Double>(combineProb))
+            .step(new BinaryMutationStep<Double>(mutateProb))
+            .step(esp.getRestoreStep())
+            .build();
+        /* @formatter:on */
+
+        SolverWorker<Double,BinaryChromosome> worker =
+            new SolverWorker<Double,BinaryChromosome>(
+                solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<Double,BinaryChromosome>()), new XorShiftRandom());
+        worker.execute();
+    }
+
+    private final class SolverCallbacks<V, C extends Chromosome<C>> implements Callbacks<V,C> {
+
+        /* package */SolverCallbacks () {
+        }
+
+        @Override
+        public boolean shouldStop () {
+            return false;
+        }
+
+        @Override
+        public void startProcess (Solver<V,C> solver) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void startGeneration (int gen, List<C> population) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void startStep (SolverStep<V,C> step, List<C> population) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void endStep (List<C> population) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void endGeneration (List<C> population) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void endProcess (SolverTrace<V,C> trace) {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 }
