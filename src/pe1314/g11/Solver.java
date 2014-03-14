@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import pe1314.g11.util.XorShiftRandom;
-
 /**
  * A class representing the general algorithm for solving genetic problems, with a configurable "pipeline"for different
  * algorithm variations.
@@ -40,49 +38,12 @@ public final class Solver<V, C extends Chromosome<C>> {
     /**
      * Solves a specific problem using this solver.
      *
-     * @param problem Problem to solve
      * @param random The random generator to use
+     * @param callbacks The callbacks to use
      * @return The best value seen
      */
-    public V solve (Random random) {
-        return problem.value(doTrace(random, false, null).getBestSeen());
-    }
-
-    /**
-     * Solves a specific problem using this solver.
-     * <p>
-     * This method creates a new {@link Random} object using its default constructor. Use
-     * {@link #solve(Problem, Random)} to pick a specific random generator.
-     *
-     * @param problem Problem to solve
-     * @return The best value seen
-     */
-    public V solve () {
-        return solve(new XorShiftRandom());
-    }
-
-    /**
-     * Solves a specific problem using this solver and returns a trace of the progress.
-     *
-     * @param problem Problem to solve
-     * @param random The random generator to use
-     * @return The problem solution trace
-     */
-    public SolverTrace<V,C> trace (Random random) {
+    public SolverTrace<V,C> solve (Random random, Callbacks<V,C> callbacks) {
         return doTrace(random, true, null);
-    }
-
-    /**
-     * Solves a specific problem using this solver and returns a trace of the progress.
-     * <p>
-     * This method creates a new {@link Random} object using its default constructor. Use
-     * {@link #trace(Problem, Random)} to pick a specific random generator.
-     *
-     * @param problem Problem to solve
-     * @return The problem solution trace
-     */
-    public SolverTrace<V,C> trace () {
-        return trace(new Random());
     }
 
     // ===============================
@@ -198,9 +159,9 @@ public final class Solver<V, C extends Chromosome<C>> {
                 throw new IllegalStateException("already used");
             }
 
-            List<SolverStep<V,C>> steps = this.steps;
-            this.steps = null;
-            return new Solver<V,C>(problem, Collections.unmodifiableList(steps));
+            List<SolverStep<V,C>> unmsteps = this.steps;
+            steps = null;
+            return new Solver<V,C>(problem, Collections.unmodifiableList(unmsteps));
         }
     }
 
