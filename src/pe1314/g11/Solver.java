@@ -43,7 +43,7 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @return The best value seen
      */
     public SolverTrace<V,C> solve (Random random, Callbacks<V,C> callbacks) {
-        return doTrace(random, true, null);
+        return doTrace(random, true, callbacks);
     }
 
     // ===============================
@@ -97,6 +97,10 @@ public final class Solver<V, C extends Chromosome<C>> {
         callbacks.endProcess(trace);
 
         return trace;
+    }
+
+    public Problem<V,C> getProblem () {
+        return problem;
     }
 
     // ===============
@@ -230,4 +234,5 @@ public final class Solver<V, C extends Chromosome<C>> {
         public abstract void endProcess (SolverTrace<V,C> trace);
 
     }
+
 }

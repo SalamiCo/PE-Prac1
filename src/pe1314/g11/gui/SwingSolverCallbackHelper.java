@@ -1,5 +1,7 @@
 package pe1314.g11.gui;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -69,11 +71,12 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
 
     @Override
     public void startGeneration (final int gen, final List<C> population) {
+        final List<C> clonedPopulation = Collections.unmodifiableList(new ArrayList<C>(population));
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
                 synchronized (SwingSolverCallbackHelper.this) {
-                    callbacks.startGeneration(gen, population);
+                    callbacks.startGeneration(gen, clonedPopulation);
                 }
             }
         });
@@ -81,11 +84,12 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
 
     @Override
     public void startStep (final SolverStep<V,C> step, final List<C> population) {
+        final List<C> clonedPopulation = Collections.unmodifiableList(new ArrayList<C>(population));
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
                 synchronized (SwingSolverCallbackHelper.this) {
-                    callbacks.startStep(step, population);
+                    callbacks.startStep(step, clonedPopulation);
                 }
             }
         });
@@ -93,11 +97,12 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
 
     @Override
     public void endStep (final List<C> population) {
+        final List<C> clonedPopulation = Collections.unmodifiableList(new ArrayList<C>(population));
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
                 synchronized (SwingSolverCallbackHelper.this) {
-                    callbacks.endStep(population);
+                    callbacks.endStep(clonedPopulation);
                 }
             }
         });
@@ -105,11 +110,12 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
 
     @Override
     public void endGeneration (final List<C> population) {
+        final List<C> clonedPopulation = Collections.unmodifiableList(new ArrayList<C>(population));
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run () {
                 synchronized (SwingSolverCallbackHelper.this) {
-                    callbacks.endGeneration(population);
+                    callbacks.endGeneration(clonedPopulation);
                 }
             }
         });

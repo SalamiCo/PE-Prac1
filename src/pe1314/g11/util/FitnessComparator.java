@@ -24,7 +24,8 @@ public final class FitnessComparator<C extends Chromosome<C>> implements Compara
 
     @Override
     public int compare (C c1, C c2) {
-        return  problem.type().getCompareMultiplier() * (int) Math.signum(problem.fitness(c1) - problem.fitness(c2));
+        double f1 = problem.fitness(c1);
+        double f2 = problem.fitness(c2);
+        return problem.type().getCompareMultiplier() * (int) Math.signum(f1 - f2);
     }
-
 }

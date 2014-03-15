@@ -1,5 +1,6 @@
 package pe1314.g11.pr1;
 
+import java.math.BigInteger;
 import java.util.Random;
 
 import pe1314.g11.Problem;
@@ -25,7 +26,7 @@ public final class P1F1Problem extends Problem<Double,BinaryChromosome> {
 
     private static final double DOMAIN_MIN = 0.0;
     private static final double DOMAIN_MAX = 25.0;
-    private static final int BITS = 16;
+    private static final int BITS = 18;
 
     @Override
     public BinaryChromosome random (Random random) {
@@ -34,7 +35,9 @@ public final class P1F1Problem extends Problem<Double,BinaryChromosome> {
 
     @Override
     public Double value (BinaryChromosome chromosome) {
-        return Double.valueOf(DOMAIN_MIN + chromosome.toBigInteger().doubleValue() / (DOMAIN_MAX - DOMAIN_MIN));
+        double binVal = chromosome.toBigInteger().doubleValue();
+        double binMax = BigInteger.ONE.shiftLeft(BITS).doubleValue();
+        return Double.valueOf(DOMAIN_MIN + (binVal / binMax * (DOMAIN_MAX - DOMAIN_MIN)));
     }
 
     @Override

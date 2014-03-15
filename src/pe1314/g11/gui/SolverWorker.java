@@ -15,7 +15,7 @@ import pe1314.g11.Solver;
  * @param <V> Type of the values of the solved problem
  * @param <C> Type of the chromosomes to be processed
  */
-public final class SolverWorker<V,C extends Chromosome<C>> extends SwingWorker<Void,Void> {
+public final class SolverWorker<V, C extends Chromosome<C>> extends SwingWorker<Void,Void> {
 
     /** The solver to run */
     private final Solver<V,C> solver;
@@ -34,7 +34,16 @@ public final class SolverWorker<V,C extends Chromosome<C>> extends SwingWorker<V
 
     @Override
     protected Void doInBackground () throws Exception {
-        solver.solve(random,callbacks);
+        try {
+            solver.solve(random, callbacks);
+        } catch (Throwable exc) {
+            exc.printStackTrace();
+
+            // Retrhow if not an exception
+            if (!(exc instanceof Exception)) {
+                throw exc;
+            }
+        }
 
         return null;
     }

@@ -115,12 +115,13 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
             return BigInteger.ZERO;
         }
 
-        BigInteger bi = new BigInteger(bits.toByteArray());
-
-        // If the number turns out to be negative, make it positive again
-        if (bi.compareTo(BigInteger.ZERO) < 0) {
-            bi = bi.add(BigInteger.ONE.shiftLeft(length));
+        byte[] bitsBytes = bits.toByteArray();
+        byte[] bigintBytes = new byte[bitsBytes.length + 1];
+        for (int i = 0; i < bitsBytes.length; i++) {
+            bigintBytes[bigintBytes.length - 1 - i] = bitsBytes[i];
         }
+
+        BigInteger bi = new BigInteger(bigintBytes);
 
         return bi;
     }
@@ -146,7 +147,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
 
     @Override
     public String toString () {
-        StringBuilder sb = new StringBuilder("(");
+        StringBuilder sb = new StringBuilder(length + 2).append("(");
         for (int i = length - 1; i >= 0; i--) {
             sb.append(bits.get(i) ? '1' : '0');
         }

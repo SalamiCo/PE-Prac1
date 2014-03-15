@@ -3,6 +3,7 @@ package pe1314.g11.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -35,6 +36,7 @@ import pe1314.g11.sga.BinaryMutationStep;
 import pe1314.g11.sga.RouletteSelectionStep;
 import pe1314.g11.sga.TournamentSelectionStep;
 import pe1314.g11.util.ElitismStepPair;
+import pe1314.g11.util.FitnessComparator;
 import pe1314.g11.util.RandomGenerationStep;
 import pe1314.g11.util.XorShiftRandom;
 
@@ -44,7 +46,7 @@ import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * The main frame for the application graphical interface.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  */
@@ -85,6 +87,8 @@ public final class MainFrame extends JFrame {
     private JButton buttonPlay;
     private JButton buttonPause;
     private JButton buttonStop;
+
+    private ResultsPanel resultsPanel;
 
     /**
      * Creates an empty frame and fills it with the necessary components to work.
@@ -203,9 +207,9 @@ public final class MainFrame extends JFrame {
             updateLeftForm();
         }
 
-        { /* Left Form */
-            JPanel centerPanel = new JPanel();
-            panel.add(centerPanel, BorderLayout.CENTER);
+        { /* Center Content Panel */
+            resultsPanel = new ResultsPanel();
+            panel.add(resultsPanel, BorderLayout.CENTER);
         }
 
         panel.invalidate();
@@ -311,9 +315,9 @@ public final class MainFrame extends JFrame {
         double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
         double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
         boolean generationsIsChecked = checkboxStopGeneration.isSelected();
-        int generations = ((Number) spinnerStopGenerations.getValue()).intValue();
+        int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
         boolean stallIsChecked = checkboxStopStall.isSelected();
-        int stall = ((Number) spinnerStopStalled.getValue()).intValue();
+        int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
 
         Problem<Double,BinaryChromosome> problem;
 
@@ -356,30 +360,63 @@ public final class MainFrame extends JFrame {
 
         SolverWorker<Double,BinaryChromosome> worker =
             new SolverWorker<Double,BinaryChromosome>(
-                solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<Double,BinaryChromosome>()), new XorShiftRandom());
+                solver,
+                SwingSolverCallbackHelper.wrap(new SolverCallbacks<Double,BinaryChromosome>(generations, stall)),
+                new XorShiftRandom());
         worker.execute();
     }
 
     private final class SolverCallbacks<V, C extends Chromosome<C>> implements Callbacks<V,C> {
 
-        /* package */SolverCallbacks () {
+        /** Maximum generations to run */
+        private final int generations;
+
+        /** Maximum generations for the best fitness to be stalled */
+        private final int stalled;
+
+        /** Solver used on the process */
+        private volatile Solver<V,C> solver;
+
+        /** Best chromosome seen */
+        private volatile C best;
+
+        /** Currently running generation */
+        private volatile int currentGeneration;
+
+        /** Currently running generation */
+        private volatile int currentStall;
+
+        /* package */SolverCallbacks (int generations, int stalled) {
+            this.generations = generations;
+            this.stalled = stalled;
         }
 
         @Override
         public boolean shouldStop () {
+            if (generations > 0 && currentGeneration >= generations) {
+                return true;
+            }
+
+            if (stalled > 0 && currentStall >= stalled) {
+                return true;
+            }
+
             return false;
         }
 
         @Override
         public void startProcess (Solver<V,C> solver) {
-            // TODO Auto-generated method stub
+            this.solver = solver;
+            best = null;
+            currentStall = 0;
+            currentGeneration = 0;
 
+            resultsPanel.clearChart();
         }
 
         @Override
         public void startGeneration (int gen, List<C> population) {
-            // TODO Auto-generated method stub
-
+            currentGeneration = gen;
         }
 
         @Override
@@ -396,14 +433,30 @@ public final class MainFrame extends JFrame {
 
         @Override
         public void endGeneration (List<C> population) {
-            // TODO Auto-generated method stub
+            Comparator<C> comp = new FitnessComparator<>(solver.getProblem());
 
+            C nextBest = null;
+            for (C chromo : population) {
+                if (nextBest == null || comp.compare(chromo, nextBest) > 0) {
+                    nextBest = chromo;
+                }
+            }
+
+            if (best == null || (nextBest != null && comp.compare(nextBest, best) > 0)) {
+                currentStall = 0;
+                best = nextBest;
+
+            } else {
+                currentStall++;
+            }
+
+            resultsPanel.addGeneration(solver.getProblem(), currentGeneration, population, best);
         }
 
         @Override
         public void endProcess (SolverTrace<V,C> trace) {
-            // TODO Auto-generated method stub
-
+            solver = null;
+            best = null;
         }
 
     }
