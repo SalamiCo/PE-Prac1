@@ -10,7 +10,7 @@ import pe1314.g11.sga.BinaryChromosome;
  * A problem representing the first function given on our first assignment.
  * <p>
  * This problem attempts to find the minimum value of the following function of the [0, 25) domain:
- *
+ * 
  * <pre>
  *           sin x
  * f = ——————————————————
@@ -18,7 +18,7 @@ import pe1314.g11.sga.BinaryChromosome;
  *      1 + √x + ———————
  *                1 + x
  * </pre>
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  */
@@ -26,17 +26,22 @@ public final class P1F1Problem extends Problem<Double,BinaryChromosome> {
 
     private static final double DOMAIN_MIN = 0.0;
     private static final double DOMAIN_MAX = 25.0;
-    private static final int BITS = 18;
+
+    private final int length;
+
+    public P1F1Problem (double precission) {
+        length = (int) Math.ceil(Math.log((DOMAIN_MAX - DOMAIN_MIN) / precission) / Math.log(2));
+    }
 
     @Override
     public BinaryChromosome random (Random random) {
-        return BinaryChromosome.newRandom(BITS, random);
+        return BinaryChromosome.newRandom(length, random);
     }
 
     @Override
     public Double value (BinaryChromosome chromosome) {
         double binVal = chromosome.toBigInteger().doubleValue();
-        double binMax = BigInteger.ONE.shiftLeft(BITS).doubleValue();
+        double binMax = BigInteger.ONE.shiftLeft(length).doubleValue();
         return Double.valueOf(DOMAIN_MIN + (binVal / binMax * (DOMAIN_MAX - DOMAIN_MIN)));
     }
 

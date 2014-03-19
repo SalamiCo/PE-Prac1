@@ -9,7 +9,7 @@ import pe1314.g11.util.XorShiftRandom;
 
 /**
  * A chromosome that uses a bit string.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  */
@@ -37,7 +37,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
 
     /**
      * Creates a new random chromosome with the specified length and random generator.
-     *
+     * 
      * @param length Length of the new chromosome
      * @param random The RNG to be used
      * @return A new random chromosome
@@ -53,7 +53,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
 
     /**
      * Creates a new random chromosome with the specified length.
-     *
+     * 
      * @param length Length of the new chromosome
      * @return A new random chromosome
      */
@@ -107,15 +107,34 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
 
     /**
      * Returns an unsigned integer representation of this chromosome.
-     *
+     * 
      * @return Integer representation of this chromosome
      */
     public BigInteger toBigInteger () {
-        if (bits.cardinality() == 0) {
+        return toPartialBigInteger(0, length);
+    }
+
+    /**
+     * Returns an unsigned integer representation of part of this chromosome.
+     * 
+     * @param first First bit to use
+     * @param num Number of bits to use
+     * @return Integer representation of part of this chromosome
+     */
+    public BigInteger toPartialBigInteger (int first, int num) {
+        BitSet fbits = bits;
+        if (num < length || first != 0) {
+            fbits = new BitSet();
+            for (int i = 0; i < length; i++) {
+                fbits.set(i, bits.get(i + first));
+            }
+        }
+
+        if (fbits.cardinality() == 0) {
             return BigInteger.ZERO;
         }
 
-        byte[] bitsBytes = bits.toByteArray();
+        byte[] bitsBytes = fbits.toByteArray();
         byte[] bigintBytes = new byte[bitsBytes.length + 1];
         for (int i = 0; i < bitsBytes.length; i++) {
             bigintBytes[bigintBytes.length - 1 - i] = bitsBytes[i];

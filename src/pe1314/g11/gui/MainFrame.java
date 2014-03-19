@@ -30,6 +30,7 @@ import pe1314.g11.Solver.Callbacks;
 import pe1314.g11.SolverStep;
 import pe1314.g11.SolverTrace;
 import pe1314.g11.pr1.P1F1Problem;
+import pe1314.g11.pr1.P1F2Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.BinaryCombinationStep;
 import pe1314.g11.sga.BinaryMutationStep;
@@ -65,6 +66,7 @@ public final class MainFrame extends JFrame {
     private static final long serialVersionUID = -8605437477715617439L;
 
     private JComboBox<String> comboProblem;
+    private JSpinner spinnerPrecission;
 
     private JSpinner spinnerMinPopSize;
     private JSpinner spinnerEliteSize;
@@ -88,7 +90,7 @@ public final class MainFrame extends JFrame {
     private JButton buttonPause;
     private JButton buttonStop;
 
-    private ResultsPanel resultsPanel;
+    /* package */ResultsPanel resultsPanel;
 
     /**
      * Creates an empty frame and fills it with the necessary components to work.
@@ -154,7 +156,7 @@ public final class MainFrame extends JFrame {
             FormLayout layout =
                 new FormLayout(
                     "right:pref, 3dlu, right:pref, 3dlu, pref",
-                    "pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
+                    "pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
 
             PanelBuilder builder = new PanelBuilder(layout);
             builder.setDefaultDialogBorder();
@@ -165,40 +167,42 @@ public final class MainFrame extends JFrame {
             builder.addSeparator("Problema", cc.xyw(1, 1, 5));
             builder.addLabel("Problema:",    cc.xyw(1, 3, 3));
             builder.add(comboProblem,        cc.xy (5, 3));
+            builder.addLabel("Precisión:",   cc.xyw(1, 5, 3));
+            builder.add(spinnerPrecission,   cc.xy (5, 5));
 
 
-            builder.addSeparator("Algoritmo",      cc.xyw(1,  5, 5));
-            builder.addLabel("Tamaño Población:",  cc.xyw(1,  7, 3));
-            builder.add(spinnerMinPopSize,         cc.xy (5,  7));
-            builder.addLabel("Tamaño Élite:",      cc.xyw(1,  9, 3));
-            builder.add(spinnerEliteSize,          cc.xy (5,  9));
-            builder.addLabel("Selección:",         cc.xyw(1, 11, 3));
-            builder.add(comboSelectionType,        cc.xy (5, 11));
-            builder.addLabel("Prob. Combinación:", cc.xyw(1, 13, 3));
-            builder.add(spinnerCombineProb,        cc.xy (5, 13));
-            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 15, 3));
-            builder.add(spinnerMutateProb,         cc.xy (5, 15));
+            builder.addSeparator("Algoritmo",      cc.xyw(1,  7, 5));
+            builder.addLabel("Tamaño Población:",  cc.xyw(1,  9, 3));
+            builder.add(spinnerMinPopSize,         cc.xy (5,  9));
+            builder.addLabel("Tamaño Élite:",      cc.xyw(1, 11, 3));
+            builder.add(spinnerEliteSize,          cc.xy (5, 11));
+            builder.addLabel("Selección:",         cc.xyw(1, 13, 3));
+            builder.add(comboSelectionType,        cc.xy (5, 13));
+            builder.addLabel("Prob. Combinación:", cc.xyw(1, 15, 3));
+            builder.add(spinnerCombineProb,        cc.xy (5, 15));
+            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 17, 3));
+            builder.add(spinnerMutateProb,         cc.xy (5, 17));
 
 
-            builder.addSeparator("Parada",          cc.xyw(1, 17, 5));
-            builder.add(checkboxStopGeneration,     cc.xy (1, 19));
+            builder.addSeparator("Parada",          cc.xyw(1, 19, 5));
+            builder.add(checkboxStopGeneration,     cc.xy (1, 21));
             labelStopGeneration =
-                builder.addLabel("Generaciones:",   cc.xy (3, 19));
-            builder.add(spinnerStopGenerations,     cc.xy (5, 19));
-            builder.add(checkboxStopStall,          cc.xy (1, 21));
+                builder.addLabel("Generaciones:",   cc.xy (3, 21));
+            builder.add(spinnerStopGenerations,     cc.xy (5, 21));
+            builder.add(checkboxStopStall,          cc.xy (1, 23));
             labelStopStall =
-                builder.addLabel("Estancamiento:",  cc.xy (3, 21));
-            builder.add(spinnerStopStalled,         cc.xy (5, 21));
+                builder.addLabel("Estancamiento:",  cc.xy (3, 23));
+            builder.add(spinnerStopStalled,         cc.xy (5, 23));
 
 
-            builder.addSeparator("Otros",         cc.xyw(1, 23, 5));
-            builder.add(checkboxRandomSeed,       cc.xy (1, 25));
+            builder.addSeparator("Otros",         cc.xyw(1, 25, 5));
+            builder.add(checkboxRandomSeed,       cc.xy (1, 27));
             labelRandomSeed =
-                builder.addLabel("Semilla RNG:",  cc.xy (3, 25));
-            builder.add(textfieldRandomSeed,      cc.xy (5, 25));
+                builder.addLabel("Semilla RNG:",  cc.xy (3, 27));
+            builder.add(textfieldRandomSeed,      cc.xy (5, 27));
 
 
-            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 27, 5));
+            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 29, 5));
             /* @formatter:on */
 
             JPanel leftPanel = builder.getPanel();
@@ -220,8 +224,11 @@ public final class MainFrame extends JFrame {
         comboProblem.setModel(new DefaultComboBoxModel<String>(new String[] {
             PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
 
+        spinnerPrecission = new JSpinner();
+        spinnerPrecission.setModel(new SpinnerNumberModel(0.001, 0.00001, 1, 0.00001));
+
         spinnerMinPopSize = new JSpinner();
-        spinnerMinPopSize.setModel(new SpinnerNumberModel(1024, 32, 65536, 32));
+        spinnerMinPopSize.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
 
         spinnerEliteSize = new JSpinner();
         spinnerEliteSize.setModel(new SpinnerNumberModel(0.01, 0, 0.5, 0.005));
@@ -230,10 +237,10 @@ public final class MainFrame extends JFrame {
         comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] { SEL_ROULETTE, SEL_TOURNAMENT }));
 
         spinnerCombineProb = new JSpinner();
-        spinnerCombineProb.setModel(new SpinnerNumberModel(0.7, 0.0, 1.0, 0.05));
+        spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
 
         spinnerMutateProb = new JSpinner();
-        spinnerMutateProb.setModel(new SpinnerNumberModel(0.1, 0.0, 1.0, 0.05));
+        spinnerMutateProb.setModel(new SpinnerNumberModel(0.05, 0.0, 1.0, 0.001));
 
         checkboxStopGeneration = new JCheckBox();
         checkboxStopGeneration.addActionListener(new ActionListener() {
@@ -244,7 +251,7 @@ public final class MainFrame extends JFrame {
         });
 
         spinnerStopGenerations = new JSpinner();
-        spinnerStopGenerations.setModel(new SpinnerNumberModel(1024, 128, 65536, 8));
+        spinnerStopGenerations.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
 
         checkboxStopStall = new JCheckBox();
         checkboxStopStall.addActionListener(new ActionListener() {
@@ -309,6 +316,17 @@ public final class MainFrame extends JFrame {
 
     /* package */void clickedPlay () {
         String problemName = (String) comboProblem.getSelectedItem();
+        double precission = ((Number) spinnerPrecission.getValue()).doubleValue();
+        switch (problemName) {
+            case PRB_P1_F1:
+                solveBinaryProblem(new P1F1Problem(precission));
+                break;
+            case PRB_P1_F2:
+                solveBinaryProblem(new P1F2Problem(precission));
+        }
+    }
+
+    private <V> void solveBinaryProblem (Problem<V,BinaryChromosome> problem) {
         int populationSize = ((Number) spinnerMinPopSize.getValue()).intValue();
         double eliteSize = ((Number) spinnerEliteSize.getValue()).doubleValue();
         String selection = (String) comboSelectionType.getSelectedItem();
@@ -319,19 +337,9 @@ public final class MainFrame extends JFrame {
         boolean stallIsChecked = checkboxStopStall.isSelected();
         int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
 
-        Problem<Double,BinaryChromosome> problem;
+        ElitismStepPair<V,BinaryChromosome> esp = new ElitismStepPair<>(eliteSize);
 
-        switch (problemName) {
-            case PRB_P1_F1:
-                problem = new P1F1Problem();
-                break;
-            default:
-                return;
-        }
-
-        ElitismStepPair<Double,BinaryChromosome> esp = new ElitismStepPair<>(eliteSize);
-
-        SolverStep<Double,BinaryChromosome> selectionStep;
+        SolverStep<V,BinaryChromosome> selectionStep;
         int tournamentSize = 8;
 
         switch (selection) {
@@ -348,20 +356,19 @@ public final class MainFrame extends JFrame {
         }
 
         /* @formatter:off */
-        Solver<Double, BinaryChromosome> solver = Solver.builder(problem)
-            .step(new RandomGenerationStep<Double,BinaryChromosome>(populationSize, 0))
+        Solver<V, BinaryChromosome> solver = Solver.builder(problem)
+            .step(new RandomGenerationStep<V,BinaryChromosome>(populationSize, 0))
             .step(esp.getSaveStep())
             .step(selectionStep)
-            .step(new BinaryCombinationStep<Double>(combineProb))
-            .step(new BinaryMutationStep<Double>(mutateProb))
+            .step(new BinaryCombinationStep<V>(combineProb))
+            .step(new BinaryMutationStep<V>(mutateProb))
             .step(esp.getRestoreStep())
             .build();
         /* @formatter:on */
 
-        SolverWorker<Double,BinaryChromosome> worker =
-            new SolverWorker<Double,BinaryChromosome>(
-                solver,
-                SwingSolverCallbackHelper.wrap(new SolverCallbacks<Double,BinaryChromosome>(generations, stall)),
+        SolverWorker<V,BinaryChromosome> worker =
+            new SolverWorker<V,BinaryChromosome>(
+                solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<V,BinaryChromosome>(generations, stall)),
                 new XorShiftRandom());
         worker.execute();
     }
@@ -405,8 +412,8 @@ public final class MainFrame extends JFrame {
         }
 
         @Override
-        public void startProcess (Solver<V,C> solver) {
-            this.solver = solver;
+        public void startProcess (Solver<V,C> psolver) {
+            solver = psolver;
             best = null;
             currentStall = 0;
             currentGeneration = 0;
