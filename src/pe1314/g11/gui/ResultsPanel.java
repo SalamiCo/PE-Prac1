@@ -1,6 +1,7 @@
 package pe1314.g11.gui;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -42,6 +43,8 @@ public final class ResultsPanel extends JSplitPane {
     private XYSeries seriesMin;
     private XYSeries seriesBest;
 
+    private final List<List<String[]>> tables = new ArrayList<>();
+
     public ResultsPanel () {
         super(JSplitPane.VERTICAL_SPLIT);
         setupGui();
@@ -58,12 +61,14 @@ public final class ResultsPanel extends JSplitPane {
         tablePanel.add(table, BorderLayout.CENTER);
 
         setLeftComponent(chartPanel);
-        setRightComponent(tablePanel);
+        setRightComponent(new JScrollPane(tablePanel));
 
         clearResults();
     }
 
     public void clearResults () {
+        tables.clear();
+
         clearChart();
         clearTable();
     }
@@ -86,9 +91,17 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void clearTable () {
-        tableModel = new DefaultTableModel(new String[] { "Chromosome", "Value", "Fitness" }, 1);
+        tableModel = new DefaultTableModel(new String[][] { { "Chromosome", "Value", "Fitness" } }, //
+            new String[] { "Chromosome", "Value", "Fitness" });
 
         table.setModel(tableModel);
+    }
+
+    private void updateTable (List<String[]> rows) {
+        clearTable();
+        for (String[] row : rows) {
+            tableModel.addRow(row);
+        }
     }
 
     public <V, C extends Chromosome<C>> void addGeneration (Problem<V,C> problem, int gen, List<C> population, C best) {
@@ -113,9 +126,14 @@ public final class ResultsPanel extends JSplitPane {
         seriesAverage.add(gen, sum / len);
         seriesBest.add(gen, problem.fitness(best));
 
+        List<String[]> rows = new ArrayList<>();
+        clearTable();
         for (C chromo : population) {
-            tableModel.addRow(new String[] {
+            rows.add(new String[] { //
                 chromo.toString(), problem.value(chromo).toString(), String.valueOf(problem.fitness(chromo)) });
         }
+
+        tables.add(rows);
+        updateTable(rows);
     }
 }
