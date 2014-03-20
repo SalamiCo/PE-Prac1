@@ -418,7 +418,7 @@ public final class MainFrame extends JFrame {
             currentStall = 0;
             currentGeneration = 0;
 
-            resultsPanel.clearChart();
+            resultsPanel.clearResults();
         }
 
         @Override

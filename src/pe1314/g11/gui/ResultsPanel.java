@@ -4,6 +4,11 @@ import java.awt.BorderLayout;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -20,10 +25,16 @@ import pe1314.g11.Problem;
  * @author Daniel Escoz solana
  * @author Pedro Morgado Alarcón
  */
-public final class ResultsPanel extends JPanel {
+public final class ResultsPanel extends JSplitPane {
 
     private ChartPanel chartPanel;
+    private JPanel tablePanel;
+
     private JFreeChart chart;
+
+    private JSlider slider;
+    private JTable table;
+    private DefaultTableModel tableModel;
 
     private XYSeriesCollection dataset;
     private XYSeries seriesAverage;
@@ -32,19 +43,32 @@ public final class ResultsPanel extends JPanel {
     private XYSeries seriesBest;
 
     public ResultsPanel () {
+        super(JSplitPane.VERTICAL_SPLIT);
         setupGui();
     }
 
     private void setupGui () {
-        setLayout(new BorderLayout());
-
         chartPanel = new ChartPanel(null);
-        add(chartPanel, BorderLayout.CENTER);
 
-        clearChart();
+        table = new JTable();
+        slider = new JSlider();
+
+        tablePanel = new JPanel();
+        tablePanel.setLayout(new BorderLayout());
+        tablePanel.add(table, BorderLayout.CENTER);
+
+        setLeftComponent(chartPanel);
+        setRightComponent(tablePanel);
+
+        clearResults();
     }
 
-    public void clearChart () {
+    public void clearResults () {
+        clearChart();
+        clearTable();
+    }
+
+    private void clearChart () {
         seriesAverage = new XYSeries("Media");
         seriesMax = new XYSeries("Máximo");
         seriesMin = new XYSeries("Minimo");
@@ -59,6 +83,12 @@ public final class ResultsPanel extends JPanel {
         chart = ChartFactory.createXYLineChart("Results", "Generación", "Fitness", dataset);
 
         chartPanel.setChart(chart);
+    }
+
+    private void clearTable () {
+        tableModel = new DefaultTableModel(new String[] { "Chromosome", "Value", "Fitness" }, 1);
+
+        table.setModel(tableModel);
     }
 
     public <V, C extends Chromosome<C>> void addGeneration (Problem<V,C> problem, int gen, List<C> population, C best) {
@@ -82,5 +112,10 @@ public final class ResultsPanel extends JPanel {
         seriesMin.add(gen, max);
         seriesAverage.add(gen, sum / len);
         seriesBest.add(gen, problem.fitness(best));
+
+        for (C chromo : population) {
+            tableModel.addRow(new String[] {
+                chromo.toString(), problem.value(chromo).toString(), String.valueOf(problem.fitness(chromo)) });
+        }
     }
 }
