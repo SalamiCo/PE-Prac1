@@ -49,10 +49,10 @@ public abstract class Problem<V, C extends Chromosome<C>> {
      */
     public static enum Type {
         /** This problem tries to maximize fitness */
-        MAXIMIZATION(1),
+        MAXIMIZATION(-1),
 
         /** This problem tries to minimize fitness */
-        MINIMIZATION(-1);
+        MINIMIZATION(1);
 
         private final int mult;
 
