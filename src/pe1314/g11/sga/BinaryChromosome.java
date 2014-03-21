@@ -125,7 +125,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
         BitSet fbits = bits;
         if (num < length || first != 0) {
             fbits = new BitSet();
-            for (int i = 0; i < length; i++) {
+            for (int i = 0; i < num; i++) {
                 fbits.set(i, bits.get(i + first));
             }
         }
