@@ -209,11 +209,11 @@ public final class MainFrame extends JFrame {
             builder.addSeparator("Otros",         cc.xyw(1, 27, 5));
             builder.add(checkboxRandomSeed,       cc.xy (1, 29));
             labelRandomSeed =
-                builder.addLabel("Semilla RNG:",  cc.xy (3, 27));
-            builder.add(textfieldRandomSeed,      cc.xy (5, 27));
+                builder.addLabel("Semilla RNG:",  cc.xy (3, 29));
+            builder.add(textfieldRandomSeed,      cc.xy (5, 29));
 
 
-            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 29, 5));
+            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 31, 5));
             /* @formatter:on */
 
             JPanel leftPanel = builder.getPanel();
