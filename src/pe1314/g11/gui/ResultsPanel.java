@@ -123,8 +123,8 @@ public final class ResultsPanel extends JSplitPane {
         slider.setMinimum(0);
         slider.setMaximum(num);
         int tickspace = (int) Math.log(num);
-        slider.setMajorTickSpacing(Math.min(10, tickspace * 10));
-        slider.setMinorTickSpacing(Math.min(1, tickspace));
+        slider.setMajorTickSpacing(Math.max(10, tickspace * 10));
+        slider.setMinorTickSpacing(Math.max(1, tickspace));
         slider.setValue(num);
         slider.setEnabled(true);
     }
