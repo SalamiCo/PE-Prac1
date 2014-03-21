@@ -143,8 +143,7 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void clearTable () {
-        tableModel = new DefaultTableModel(new String[][] { { "Chromosome", "Value", "Fitness" } }, //
-            new String[] { "Chromosome", "Value", "Fitness" });
+        tableModel = new DefaultTableModel(new String[][] { { "Chromosome", "Value", "Fitness" } });
 
         table.setModel(tableModel);
     }
