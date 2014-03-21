@@ -1,6 +1,5 @@
 package pe1314.g11.gui;
 
-import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfree.chart.ChartFactory;
@@ -55,12 +56,18 @@ public final class ResultsPanel extends JSplitPane {
         chartPanel = new ChartPanel(null);
 
         table = new JTable();
-        
+
         slider = new JSlider();
         slider.setMajorTickSpacing(10);
         slider.setMinorTickSpacing(1);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
+        slider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged (ChangeEvent evt) {
+                sliderChange();
+            }
+        });
 
         tablePanel = Box.createVerticalBox();
         tablePanel.add(slider);
@@ -76,7 +83,7 @@ public final class ResultsPanel extends JSplitPane {
         slider.setMinimum(0);
         slider.setMaximum(0);
         slider.setEnabled(false);
-        
+
         tables.clear();
 
         clearChart();
@@ -113,12 +120,16 @@ public final class ResultsPanel extends JSplitPane {
             tableModel.addRow(row);
         }
     }
-    
+
     private void updateSlider (int num) {
         slider.setMinimum(0);
         slider.setMaximum(num);
         slider.setValue(num);
         slider.setEnabled(true);
+    }
+
+    /* package */void sliderChange () {
+        updateTable(tables.get(slider.getValue()));
     }
 
     public <V, C extends Chromosome<C>> void addGeneration (Problem<V,C> problem, int gen, List<C> population, C best) {
