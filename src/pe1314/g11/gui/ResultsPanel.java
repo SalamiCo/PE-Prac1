@@ -4,7 +4,8 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
+import javax.swing.Box;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -29,7 +30,7 @@ import pe1314.g11.Problem;
 public final class ResultsPanel extends JSplitPane {
 
     private ChartPanel chartPanel;
-    private JPanel tablePanel;
+    private JComponent tablePanel;
 
     private JFreeChart chart;
 
@@ -54,11 +55,16 @@ public final class ResultsPanel extends JSplitPane {
         chartPanel = new ChartPanel(null);
 
         table = new JTable();
+        
         slider = new JSlider();
+        slider.setMajorTickSpacing(10);
+        slider.setMinorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
 
-        tablePanel = new JPanel();
-        tablePanel.setLayout(new BorderLayout());
-        tablePanel.add(table, BorderLayout.CENTER);
+        tablePanel = Box.createVerticalBox();
+        tablePanel.add(slider);
+        tablePanel.add(table);
 
         setLeftComponent(chartPanel);
         setRightComponent(new JScrollPane(tablePanel));
@@ -67,6 +73,10 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     public void clearResults () {
+        slider.setMinimum(0);
+        slider.setMaximum(0);
+        slider.setEnabled(false);
+        
         tables.clear();
 
         clearChart();
@@ -103,6 +113,12 @@ public final class ResultsPanel extends JSplitPane {
             tableModel.addRow(row);
         }
     }
+    
+    private void updateSlider (int num) {
+        slider.setMinimum(0);
+        slider.setMaximum(num);
+        slider.setEnabled(true);
+    }
 
     public <V, C extends Chromosome<C>> void addGeneration (Problem<V,C> problem, int gen, List<C> population, C best) {
         final int len = population.size();
@@ -133,5 +149,6 @@ public final class ResultsPanel extends JSplitPane {
 
         tables.add(rows);
         updateTable(rows);
+        updateSlider(gen);
     }
 }
