@@ -5,10 +5,12 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
@@ -39,6 +41,10 @@ public final class ResultsPanel extends JSplitPane {
     private JTable table;
     private DefaultTableModel tableModel;
 
+    private JTextField bestChromo;
+    private JTextField bestValue;
+    private JTextField bestFitness;
+
     private XYSeriesCollection dataset;
     private XYSeries seriesAverage;
     private XYSeries seriesMax;
@@ -67,14 +73,29 @@ public final class ResultsPanel extends JSplitPane {
             }
         });
 
+        bestChromo = new JTextField();
+        bestChromo.setEditable(false);
+        bestValue = new JTextField();
+        bestValue.setEditable(false);
+        bestFitness = new JTextField();
+        bestFitness.setEditable(false);
+
+        Box infoBox = Box.createHorizontalBox();
+        infoBox.add(new JLabel("Mejor Solución:"));
+        infoBox.add(bestChromo);
+        infoBox.add(bestValue);
+        infoBox.add(bestFitness);
+
         tablePanel = Box.createVerticalBox();
+        tablePanel.add(infoBox);
         tablePanel.add(slider);
-        tablePanel.add(table);
+        tablePanel.add(new JScrollPane(table));
 
         setLeftComponent(chartPanel);
-        setRightComponent(new JScrollPane(tablePanel));
+        setRightComponent(tablePanel);
 
         clearResults();
+        setDividerLocation(256);
     }
 
     public void clearResults () {
@@ -83,6 +104,10 @@ public final class ResultsPanel extends JSplitPane {
         slider.setEnabled(false);
 
         tables.clear();
+
+        bestChromo.setText("");
+        bestValue.setText("");
+        bestFitness.setText("");
 
         clearChart();
         clearTable();
@@ -165,5 +190,9 @@ public final class ResultsPanel extends JSplitPane {
         tables.add(rows);
         updateTable(rows);
         updateSlider(gen);
+
+        bestChromo.setText(best.toString());
+        bestValue.setText(problem.value(best).toString());
+        bestFitness.setText(String.valueOf(problem.fitness(best)));
     }
 }
