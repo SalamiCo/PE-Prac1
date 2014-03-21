@@ -81,9 +81,9 @@ public final class ResultsPanel extends JSplitPane {
 
         dataset = new XYSeriesCollection();
         dataset.addSeries(seriesAverage);
+        dataset.addSeries(seriesBest);
         dataset.addSeries(seriesMax);
         dataset.addSeries(seriesMin);
-        dataset.addSeries(seriesBest);
 
         chart = ChartFactory.createXYLineChart("Results", "Generación", "Fitness", dataset);
 
@@ -121,7 +121,7 @@ public final class ResultsPanel extends JSplitPane {
         }
 
         seriesMax.add(gen, max);
-        seriesMin.add(gen, max);
+        seriesMin.add(gen, min);
         seriesAverage.add(gen, sum / len);
         seriesBest.add(gen, problem.fitness(best));
 
