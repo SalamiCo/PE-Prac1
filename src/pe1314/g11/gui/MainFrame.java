@@ -11,14 +11,17 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -225,8 +228,14 @@ public final class MainFrame extends JFrame {
         comboProblem.setModel(new DefaultComboBoxModel<String>(new String[] {
             PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
 
-        spinnerPrecission = new JSpinner();
-        spinnerPrecission.setModel(new SpinnerNumberModel(0.001, 0.00001, 1, 0.00001));
+        spinnerPrecission = new JSpinner(new SpinnerNumberModel(0.001, 0.000000001, 1, 0.0001)) {
+            private static final long serialVersionUID = 5850380556056631052L;
+
+            @Override
+            protected JComponent createEditor (SpinnerModel model) {
+                return new NumberEditor(this, "0.#########");// needed decimal format
+            }
+        };
 
         spinnerMinPopSize = new JSpinner();
         spinnerMinPopSize.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
@@ -244,6 +253,7 @@ public final class MainFrame extends JFrame {
         spinnerMutateProb.setModel(new SpinnerNumberModel(0.05, 0.0, 1.0, 0.001));
 
         checkboxStopGeneration = new JCheckBox();
+        checkboxStopGeneration.setSelected(true);
         checkboxStopGeneration.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (ActionEvent arg0) {
@@ -341,6 +351,12 @@ public final class MainFrame extends JFrame {
         int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
         boolean stallIsChecked = checkboxStopStall.isSelected();
         int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
+
+        if (!generationsIsChecked && !stallIsChecked) {
+            JOptionPane.showMessageDialog(
+                this, "Elige al menos una condición de parada", "Formulario incompleto", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
         ElitismStepPair<V,BinaryChromosome> esp = new ElitismStepPair<>(eliteSize);
 
