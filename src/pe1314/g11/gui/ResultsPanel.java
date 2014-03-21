@@ -21,6 +21,10 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import com.jgoodies.forms.builder.PanelBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+
 import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
 
@@ -80,14 +84,22 @@ public final class ResultsPanel extends JSplitPane {
         bestFitness = new JTextField();
         bestFitness.setEditable(false);
 
-        Box infoBox = Box.createHorizontalBox();
-        infoBox.add(new JLabel("Mejor Solución:"));
-        infoBox.add(bestChromo);
-        infoBox.add(bestValue);
-        infoBox.add(bestFitness);
+        FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow", "pref, 2dlu, pref, 2dlu, pref");
+
+        PanelBuilder builder = new PanelBuilder(layout);
+        builder.setDefaultDialogBorder();
+
+        CellConstraints cc = new CellConstraints();
+
+        builder.addLabel("Mejor Cromosoma:", cc.xy(1, 1));
+        builder.add(bestChromo, cc.xy(3, 1));
+        builder.addLabel("Mejor Valor:", cc.xy(1, 3));
+        builder.add(bestValue, cc.xy(3, 3));
+        builder.addLabel("Mejor Fitness:", cc.xy(1, 5));
+        builder.add(bestFitness, cc.xy(3, 5));
 
         tablePanel = Box.createVerticalBox();
-        tablePanel.add(infoBox);
+        tablePanel.add(builder.getPanel());
         tablePanel.add(slider);
         tablePanel.add(new JScrollPane(table));
 
