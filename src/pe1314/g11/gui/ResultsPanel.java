@@ -108,7 +108,6 @@ public final class ResultsPanel extends JSplitPane {
         final int len = population.size();
 
         double sum = 0;
-        double sqsum = 0;
         double max = Double.NEGATIVE_INFINITY;
         double min = Double.POSITIVE_INFINITY;
 
