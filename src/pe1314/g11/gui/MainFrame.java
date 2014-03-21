@@ -32,6 +32,7 @@ import pe1314.g11.SolverTrace;
 import pe1314.g11.pr1.P1F1Problem;
 import pe1314.g11.pr1.P1F2Problem;
 import pe1314.g11.pr1.P1F3Problem;
+import pe1314.g11.pr1.P1F5Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.BinaryCombinationStep;
 import pe1314.g11.sga.BinaryMutationStep;
@@ -327,6 +328,9 @@ public final class MainFrame extends JFrame {
                 break;
             case PRB_P1_F3:
                 solveBinaryProblem(new P1F3Problem(precission));
+                break;
+            case PRB_P1_F5:
+                solveBinaryProblem(new P1F5Problem(precission));
                 break;
         }
     }
