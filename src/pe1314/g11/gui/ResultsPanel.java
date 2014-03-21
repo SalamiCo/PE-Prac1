@@ -117,7 +117,6 @@ public final class ResultsPanel extends JSplitPane {
             max = Math.max(max, fitness);
             min = Math.min(min, fitness);
             sum += fitness;
-            sqsum += fitness * fitness;
         }
 
         seriesMax.add(gen, max);
