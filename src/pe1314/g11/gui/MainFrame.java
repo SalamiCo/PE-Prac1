@@ -444,12 +444,12 @@ public final class MainFrame extends JFrame {
 
             C nextBest = null;
             for (C chromo : population) {
-                if (nextBest == null || comp.compare(chromo, nextBest) > 0) {
+                if (nextBest == null || comp.compare(chromo, nextBest) < 0) {
                     nextBest = chromo;
                 }
             }
 
-            if (best == null || (nextBest != null && comp.compare(nextBest, best) > 0)) {
+            if (best == null || (nextBest != null && comp.compare(nextBest, best) < 0)) {
                 currentStall = 0;
                 best = nextBest;
 
