@@ -11,7 +11,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -21,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -35,8 +33,6 @@ import pe1314.g11.SolverTrace;
 import pe1314.g11.pr1.P1F1Problem;
 import pe1314.g11.pr1.P1F2Problem;
 import pe1314.g11.pr1.P1F3Problem;
-import pe1314.g11.pr1.P1F4Problem;
-import pe1314.g11.pr1.P1F5Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.BinaryCombinationStep;
 import pe1314.g11.sga.BinaryMutationStep;
@@ -73,6 +69,9 @@ public final class MainFrame extends JFrame {
 
     private JComboBox<String> comboProblem;
     private JSpinner spinnerPrecission;
+
+    private JLabel labelExtra1;
+    private JSpinner spinnerExtra1;
 
     private JSpinner spinnerMinPopSize;
     private JSpinner spinnerEliteSize;
@@ -160,9 +159,10 @@ public final class MainFrame extends JFrame {
             createLeftFormElements();
 
             FormLayout layout =
-                new FormLayout(
-                    "right:pref, 3dlu, right:pref, 3dlu, pref",
-                    "pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
+                new FormLayout("right:pref, 3dlu, right:pref, 3dlu, pref", //
+                    "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
+                        + "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
+                        + "pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
 
             PanelBuilder builder = new PanelBuilder(layout);
             builder.setDefaultDialogBorder();
@@ -175,34 +175,38 @@ public final class MainFrame extends JFrame {
             builder.add(comboProblem,        cc.xy (5, 3));
             builder.addLabel("Precisión:",   cc.xyw(1, 5, 3));
             builder.add(spinnerPrecission,   cc.xy (5, 5));
+            
+            labelExtra1 =
+                builder.addLabel("Valor de N:", cc.xyw(1, 7, 3));
+            builder.add(spinnerExtra1,          cc.xy (5, 7));
 
 
-            builder.addSeparator("Algoritmo",      cc.xyw(1,  7, 5));
-            builder.addLabel("Tamaño Población:",  cc.xyw(1,  9, 3));
-            builder.add(spinnerMinPopSize,         cc.xy (5,  9));
-            builder.addLabel("Tamaño Élite:",      cc.xyw(1, 11, 3));
-            builder.add(spinnerEliteSize,          cc.xy (5, 11));
-            builder.addLabel("Selección:",         cc.xyw(1, 13, 3));
-            builder.add(comboSelectionType,        cc.xy (5, 13));
-            builder.addLabel("Prob. Combinación:", cc.xyw(1, 15, 3));
-            builder.add(spinnerCombineProb,        cc.xy (5, 15));
-            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 17, 3));
-            builder.add(spinnerMutateProb,         cc.xy (5, 17));
+            builder.addSeparator("Algoritmo",      cc.xyw(1,  9, 5));
+            builder.addLabel("Tamaño Población:",  cc.xyw(1, 11, 3));
+            builder.add(spinnerMinPopSize,         cc.xy (5, 11));
+            builder.addLabel("Tamaño Élite:",      cc.xyw(1, 13, 3));
+            builder.add(spinnerEliteSize,          cc.xy (5, 13));
+            builder.addLabel("Selección:",         cc.xyw(1, 15, 3));
+            builder.add(comboSelectionType,        cc.xy (5, 15));
+            builder.addLabel("Prob. Combinación:", cc.xyw(1, 17, 3));
+            builder.add(spinnerCombineProb,        cc.xy (5, 17));
+            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 19, 3));
+            builder.add(spinnerMutateProb,         cc.xy (5, 19));
 
 
-            builder.addSeparator("Parada",          cc.xyw(1, 19, 5));
-            builder.add(checkboxStopGeneration,     cc.xy (1, 21));
+            builder.addSeparator("Parada",          cc.xyw(1, 21, 5));
+            builder.add(checkboxStopGeneration,     cc.xy (1, 23));
             labelStopGeneration =
-                builder.addLabel("Generaciones:",   cc.xy (3, 21));
-            builder.add(spinnerStopGenerations,     cc.xy (5, 21));
-            builder.add(checkboxStopStall,          cc.xy (1, 23));
+                builder.addLabel("Generaciones:",   cc.xy (3, 23));
+            builder.add(spinnerStopGenerations,     cc.xy (5, 23));
+            builder.add(checkboxStopStall,          cc.xy (1, 25));
             labelStopStall =
-                builder.addLabel("Estancamiento:",  cc.xy (3, 23));
-            builder.add(spinnerStopStalled,         cc.xy (5, 23));
+                builder.addLabel("Estancamiento:",  cc.xy (3, 25));
+            builder.add(spinnerStopStalled,         cc.xy (5, 25));
 
 
-            builder.addSeparator("Otros",         cc.xyw(1, 25, 5));
-            builder.add(checkboxRandomSeed,       cc.xy (1, 27));
+            builder.addSeparator("Otros",         cc.xyw(1, 27, 5));
+            builder.add(checkboxRandomSeed,       cc.xy (1, 29));
             labelRandomSeed =
                 builder.addLabel("Semilla RNG:",  cc.xy (3, 27));
             builder.add(textfieldRandomSeed,      cc.xy (5, 27));
@@ -229,15 +233,19 @@ public final class MainFrame extends JFrame {
         comboProblem = new JComboBox<String>();
         comboProblem.setModel(new DefaultComboBoxModel<String>(new String[] {
             PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
-
-        spinnerPrecission = new JSpinner(new SpinnerNumberModel(0.001, 0.000000001, 1, 0.0001)) {
-            private static final long serialVersionUID = 5850380556056631052L;
-
+        comboProblem.addActionListener(new ActionListener() {
             @Override
-            protected JComponent createEditor (SpinnerModel model) {
-                return new NumberEditor(this, "0.#########");// needed decimal format
+            public void actionPerformed (ActionEvent arg0) {
+                updateLeftForm();
             }
-        };
+        });
+
+        spinnerExtra1 = new JSpinner();
+        spinnerExtra1.setModel(new SpinnerNumberModel(3, 1, 6, 1));
+
+        spinnerPrecission = new JSpinner();
+        spinnerPrecission.setModel(new SpinnerNumberModel(0.001, 0.000000001, 1, 0.0001));
+        spinnerPrecission.setEditor(new JSpinner.NumberEditor(spinnerPrecission, "0.#########"));
 
         spinnerMinPopSize = new JSpinner();
         spinnerMinPopSize.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
@@ -312,6 +320,10 @@ public final class MainFrame extends JFrame {
     }
 
     /* package */void updateLeftForm () {
+        boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
+        labelExtra1.setEnabled(extra1);
+        spinnerExtra1.setEnabled(extra1);
+
         labelStopGeneration.setEnabled(checkboxStopGeneration.isSelected());
         spinnerStopGenerations.setEnabled(checkboxStopGeneration.isSelected());
 
@@ -341,11 +353,11 @@ public final class MainFrame extends JFrame {
                 solveBinaryProblem(new P1F3Problem(precission));
                 break;
             case PRB_P1_F4:
-                solveBinaryProblem(new P1F4Problem(precission));
+                int n = ((Number) spinnerExtra1.getValue()).intValue();
+                solveBinaryProblem(new P1F4Problem(precission, n));
                 break;
             case PRB_P1_F5:
-                solveBinaryProblem(new P1F5Problem(precission));
-                break;
+                solveBinaryProblem(new P1F3Problem(precission));
         }
     }
 
