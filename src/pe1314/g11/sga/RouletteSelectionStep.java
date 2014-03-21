@@ -9,7 +9,7 @@ import pe1314.g11.SolverStep;
 
 /**
  * A step that implements the selection of chromosomes using the roulette mechanism.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
@@ -22,11 +22,20 @@ public final class RouletteSelectionStep<V, C extends Chromosome<C>> implements 
         // An array of accumulated fitness
         double[] accs = new double[input.size()];
 
-        // Obtain the sum of the finesses and the accumulated
+        // Get the minimum of the fitnesses
+        double minFitness = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < input.size(); i++) {
+            minFitness = Math.min(minFitness, problem.fitness(input.get(i)));
+        }
+
+        // Obtain the sum of the fitnesses and the accumulated
         double fitnessSum = 0;
         for (int i = 0; i < input.size(); i++) {
             fitnessSum += problem.fitness(input.get(i));
-            accs[i] = fitnessSum;
+            accs[i] = fitnessSum - minFitness + 0.01;
+            if (problem.type() == Problem.Type.MINIMIZATION) {
+                accs[i] = 1.0 / accs[i];
+            }
         }
 
         // Make the selection
