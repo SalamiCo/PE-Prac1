@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -21,12 +20,12 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import pe1314.g11.Chromosome;
+import pe1314.g11.Problem;
+
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-
-import pe1314.g11.Chromosome;
-import pe1314.g11.Problem;
 
 /**
  * A Swing Panel that shows the results of a genetic algorithm run.
@@ -143,7 +142,7 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void clearTable () {
-        tableModel = new DefaultTableModel(new String[][] { { "Chromosome", "Value", "Fitness" } }, 0);
+        tableModel = new DefaultTableModel(new String[] { "Chromosome", "Value", "Fitness" }, 0);
 
         table.setModel(tableModel);
     }
