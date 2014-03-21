@@ -117,6 +117,7 @@ public final class ResultsPanel extends JSplitPane {
     private void updateSlider (int num) {
         slider.setMinimum(0);
         slider.setMaximum(num);
+        slider.setValue(num);
         slider.setEnabled(true);
     }
 
