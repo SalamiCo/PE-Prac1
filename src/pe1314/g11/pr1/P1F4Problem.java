@@ -13,9 +13,11 @@ public class P1F4Problem extends Problem<DoubleDouble,BinaryChromosome>{
     private static final double DOMAIN_MAX = Math.PI;
 
     private final int length;
+    private final int n;
     
-    public P1F4Problem (double precission) {
+    public P1F4Problem (double precission, int n) {
         length = (int) Math.ceil(Math.log((DOMAIN_MAX - DOMAIN_MIN) / precission) / Math.log(2));
+        this.n = n; 
     }
     
     @Override
@@ -35,7 +37,9 @@ public class P1F4Problem extends Problem<DoubleDouble,BinaryChromosome>{
 
     @Override
     public double fitness (BinaryChromosome chromosome) {
-        // TODO Auto-generated method stub
+        for (int i = 1; i <= n; i++){
+            //TODO
+        }
         return 0;
     }
 

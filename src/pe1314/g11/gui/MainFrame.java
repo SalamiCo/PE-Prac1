@@ -33,6 +33,7 @@ import pe1314.g11.SolverTrace;
 import pe1314.g11.pr1.P1F1Problem;
 import pe1314.g11.pr1.P1F2Problem;
 import pe1314.g11.pr1.P1F3Problem;
+import pe1314.g11.pr1.P1F4Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.BinaryCombinationStep;
 import pe1314.g11.sga.BinaryMutationStep;
