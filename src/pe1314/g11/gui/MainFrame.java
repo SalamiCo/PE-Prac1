@@ -242,7 +242,7 @@ public final class MainFrame extends JFrame {
         });
 
         spinnerExtra1 = new JSpinner();
-        spinnerExtra1.setModel(new SpinnerNumberModel(3, 1, 6, 1));
+        spinnerExtra1.setModel(new SpinnerNumberModel(3, 1, 7, 1));
 
         spinnerPrecission = new JSpinner();
         spinnerPrecission.setModel(new SpinnerNumberModel(0.001, 0.000000001, 1, 0.0001));
@@ -271,7 +271,7 @@ public final class MainFrame extends JFrame {
                 updateLeftForm();
             }
         });
-
+        
         spinnerStopGenerations = new JSpinner();
         spinnerStopGenerations.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
 

@@ -44,9 +44,9 @@ public class P1F4Problem extends Problem<List<Double>,BinaryChromosome>{
         double result = 0;
         for (int i = 1; i <= n; i++){
             double x = list.get(i-1).doubleValue();
-            result += -(Math.sin(x) * Math.pow((Math.sin(((i+2) * (x * x)/Math.PI))), 20));
+            result += Math.sin(x) * Math.pow((Math.sin(((i+2) * (x * x)/Math.PI))), 20);
         }
-        return result;
+        return -result;
     }
 
     @Override
