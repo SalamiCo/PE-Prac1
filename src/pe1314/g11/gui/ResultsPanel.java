@@ -129,7 +129,9 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     /* package */void sliderChange () {
-        updateTable(tables.get(slider.getValue()));
+        if (!tables.isEmpty()) {
+            updateTable(tables.get(slider.getValue()));
+        }
     }
 
     public <V, C extends Chromosome<C>> void addGeneration (Problem<V,C> problem, int gen, List<C> population, C best) {
