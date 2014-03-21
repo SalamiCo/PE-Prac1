@@ -58,8 +58,6 @@ public final class ResultsPanel extends JSplitPane {
         table = new JTable();
 
         slider = new JSlider();
-        slider.setMajorTickSpacing(10);
-        slider.setMinorTickSpacing(1);
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);
         slider.addChangeListener(new ChangeListener() {
@@ -124,6 +122,9 @@ public final class ResultsPanel extends JSplitPane {
     private void updateSlider (int num) {
         slider.setMinimum(0);
         slider.setMaximum(num);
+        int tickspace = (int) Math.log(num);
+        slider.setMajorTickSpacing(Math.min(10, tickspace));
+        slider.setMinorTickSpacing(Math.min(1, tickspace / 10));
         slider.setValue(num);
         slider.setEnabled(true);
     }
