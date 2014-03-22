@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -372,6 +373,12 @@ public final class MainFrame extends JFrame {
         int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
         boolean stallIsChecked = checkboxStopStall.isSelected();
         int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
+        boolean rngIsSelected = checkboxRandomSeed.isSelected();
+        String seed = rngIsSelected ? textfieldRandomSeed.getText() : String.valueOf(System.nanoTime());
+        
+        textfieldRandomSeed.setText(seed);
+        
+        Random random = new XorShiftRandom(seed.hashCode());
 
         if (!generationsIsChecked && !stallIsChecked) {
             JOptionPane.showMessageDialog(
@@ -411,7 +418,7 @@ public final class MainFrame extends JFrame {
         SolverWorker<V,BinaryChromosome> worker =
             new SolverWorker<V,BinaryChromosome>(
                 solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<V,BinaryChromosome>(generations, stall)),
-                new XorShiftRandom());
+                random);
         worker.execute();
     }
 
