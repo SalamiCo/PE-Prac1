@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -341,7 +342,7 @@ public final class MainFrame extends JFrame {
             checkboxStopGeneration.setEnabled(true);
             checkboxStopStall.setEnabled(true);
             checkboxRandomSeed.setEnabled(true);
-            
+
             boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
             labelExtra1.setEnabled(extra1);
             spinnerExtra1.setEnabled(extra1);
@@ -354,27 +355,27 @@ public final class MainFrame extends JFrame {
 
             labelRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
             textfieldRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
-            
+
         } else {
             buttonPlay.setEnabled(false);
             buttonPause.setEnabled(true);
             buttonStop.setEnabled(true);
-            
+
             comboProblem.setEnabled(false);
             spinnerPrecission.setEnabled(false);
             spinnerExtra1.setEnabled(false);
-            
+
             spinnerMinPopSize.setEnabled(false);
             spinnerEliteSize.setEnabled(false);
             comboSelectionType.setEnabled(false);
             spinnerMutateProb.setEnabled(false);
             spinnerCombineProb.setEnabled(false);
-            
+
             checkboxStopGeneration.setEnabled(false);
             spinnerStopGenerations.setEnabled(false);
             checkboxStopStall.setEnabled(false);
             spinnerStopStalled.setEnabled(false);
-            
+
             checkboxRandomSeed.setEnabled(false);
             textfieldRandomSeed.setEnabled(false);
         }
@@ -417,6 +418,12 @@ public final class MainFrame extends JFrame {
         int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
         boolean stallIsChecked = checkboxStopStall.isSelected();
         int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
+        boolean rngIsSelected = checkboxRandomSeed.isSelected();
+        String seed = rngIsSelected ? textfieldRandomSeed.getText() : String.valueOf(System.nanoTime());
+
+        textfieldRandomSeed.setText(seed);
+
+        Random random = new XorShiftRandom(seed.hashCode());
 
         if (!generationsIsChecked && !stallIsChecked) {
             JOptionPane.showMessageDialog(
@@ -456,7 +463,7 @@ public final class MainFrame extends JFrame {
         SolverWorker<V,BinaryChromosome> worker =
             new SolverWorker<V,BinaryChromosome>(
                 solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<V,BinaryChromosome>(generations, stall)),
-                new XorShiftRandom());
+                random);
 
         this.geneticWorker = worker;
 
