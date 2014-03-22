@@ -134,7 +134,7 @@ public final class ResultsPanel extends JSplitPane {
         dataset.addSeries(seriesAverage);
         dataset.addSeries(seriesBestLocal);
         dataset.addSeries(seriesBestGlobal);
-        
+
         chart = ChartFactory.createXYLineChart("Results", "Generación", "Fitness", dataset);
 
         chartPanel.setChart(chart);
@@ -180,10 +180,12 @@ public final class ResultsPanel extends JSplitPane {
             if (fcmp.compare(chromo, lcbest) < 0) {
                 lcbest = chromo;
             }
+
+            sum += problem.fitness(chromo);
         }
 
-        seriesBestLocal.add(gen, problem.fitness(lcbest));
         seriesAverage.add(gen, sum / len);
+        seriesBestLocal.add(gen, problem.fitness(lcbest));
         seriesBestGlobal.add(gen, problem.fitness(best));
 
         List<String[]> rows = new ArrayList<>();
