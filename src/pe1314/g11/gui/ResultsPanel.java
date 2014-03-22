@@ -1,6 +1,7 @@
 package pe1314.g11.gui;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.Box;
@@ -22,6 +23,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
+import pe1314.g11.util.FitnessComparator;
 
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
@@ -50,9 +52,8 @@ public final class ResultsPanel extends JSplitPane {
 
     private XYSeriesCollection dataset;
     private XYSeries seriesAverage;
-    private XYSeries seriesMax;
-    private XYSeries seriesMin;
-    private XYSeries seriesBest;
+    private XYSeries seriesBestLocal;
+    private XYSeries seriesBestGlobal;
 
     private final List<List<String[]>> tables = new ArrayList<>();
 
@@ -126,16 +127,14 @@ public final class ResultsPanel extends JSplitPane {
 
     private void clearChart () {
         seriesAverage = new XYSeries("Media");
-        seriesMax = new XYSeries("Máximo");
-        seriesMin = new XYSeries("Minimo");
-        seriesBest = new XYSeries("Mejor");
+        seriesBestLocal = new XYSeries("Mejor Gen.");
+        seriesBestGlobal = new XYSeries("Mejor Global");
 
         dataset = new XYSeriesCollection();
         dataset.addSeries(seriesAverage);
-        dataset.addSeries(seriesBest);
-        dataset.addSeries(seriesMax);
-        dataset.addSeries(seriesMin);
-
+        dataset.addSeries(seriesBestLocal);
+        dataset.addSeries(seriesBestGlobal);
+        
         chart = ChartFactory.createXYLineChart("Results", "Generación", "Fitness", dataset);
 
         chartPanel.setChart(chart);
@@ -172,23 +171,20 @@ public final class ResultsPanel extends JSplitPane {
 
     public <V, C extends Chromosome<C>> void addGeneration (Problem<V,C> problem, int gen, List<C> population, C best) {
         final int len = population.size();
+        Comparator<C> fcmp = new FitnessComparator<>(problem);
 
         double sum = 0;
-        double max = Double.NEGATIVE_INFINITY;
-        double min = Double.POSITIVE_INFINITY;
+        C lcbest = population.get(0);
 
         for (C chromo : population) {
-            double fitness = problem.fitness(chromo);
-
-            max = Math.max(max, fitness);
-            min = Math.min(min, fitness);
-            sum += fitness;
+            if (fcmp.compare(chromo, lcbest) < 0) {
+                lcbest = chromo;
+            }
         }
 
-        seriesMax.add(gen, max);
-        seriesMin.add(gen, min);
+        seriesBestLocal.add(gen, problem.fitness(lcbest));
         seriesAverage.add(gen, sum / len);
-        seriesBest.add(gen, problem.fitness(best));
+        seriesBestGlobal.add(gen, problem.fitness(best));
 
         List<String[]> rows = new ArrayList<>();
         clearTable();
