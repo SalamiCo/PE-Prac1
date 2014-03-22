@@ -43,7 +43,7 @@ public final class P1F3Problem extends Problem<DoubleDouble,BinaryChromosome> {
         DoubleDouble xy = value(chromosome);
         double x = xy.getX().doubleValue();
         double y = xy.getY().doubleValue();
-        return 21.5 + x * Math.sin(2 * Math.PI * x) + y * Math.sin(20 * Math.PI * y);
+        return 21.5 + x * Math.sin(4 * Math.PI * x) + y * Math.sin(20 * Math.PI * y);
     }
 
     @Override
