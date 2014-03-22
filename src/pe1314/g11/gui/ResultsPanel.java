@@ -159,9 +159,9 @@ public final class ResultsPanel extends JSplitPane {
     private void updateSlider (int num) {
         slider.setMinimum(0);
         slider.setMaximum(num);
-        slider.setMajorTickSpacing(num / 15);
-        slider.setMinorTickSpacing(num / 150);
-        slider.createStandardLabels(num / 15, num - 15 * (num / 15));
+        slider.setMajorTickSpacing(Math.max(1, num / 15));
+        slider.setMinorTickSpacing(Math.max(1, num / 150));
+        slider.createStandardLabels(Math.max(1, num / 15), Math.max(0, num - 15 * (num / 15)));
         slider.setValue(num);
         slider.setEnabled(true);
     }
