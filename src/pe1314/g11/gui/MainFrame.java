@@ -22,6 +22,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 
 import pe1314.g11.Chromosome;
@@ -95,6 +96,8 @@ public final class MainFrame extends JFrame {
     private JButton buttonPlay;
     private JButton buttonPause;
     private JButton buttonStop;
+
+    /* package */SwingWorker<?,?> geneticWorker;
 
     /* package */ResultsPanel resultsPanel;
 
@@ -271,7 +274,7 @@ public final class MainFrame extends JFrame {
                 updateLeftForm();
             }
         });
-        
+
         spinnerStopGenerations = new JSpinner();
         spinnerStopGenerations.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
 
@@ -314,25 +317,67 @@ public final class MainFrame extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 
         panel.add(buttonPlay);
-        panel.add(buttonPause);
-        panel.add(buttonStop);
+        // panel.add(buttonPause);
+        // panel.add(buttonStop);
 
         return panel;
     }
 
     /* package */void updateLeftForm () {
-        boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
-        labelExtra1.setEnabled(extra1);
-        spinnerExtra1.setEnabled(extra1);
+        if (geneticWorker == null) {
+            buttonPlay.setEnabled(true);
+            buttonPause.setEnabled(false);
+            buttonStop.setEnabled(false);
 
-        labelStopGeneration.setEnabled(checkboxStopGeneration.isSelected());
-        spinnerStopGenerations.setEnabled(checkboxStopGeneration.isSelected());
+            comboProblem.setEnabled(true);
+            spinnerPrecission.setEnabled(true);
 
-        labelStopStall.setEnabled(checkboxStopStall.isSelected());
-        spinnerStopStalled.setEnabled(checkboxStopStall.isSelected());
+            spinnerMinPopSize.setEnabled(true);
+            spinnerEliteSize.setEnabled(true);
+            comboSelectionType.setEnabled(true);
+            spinnerMutateProb.setEnabled(true);
+            spinnerCombineProb.setEnabled(true);
 
-        labelRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
-        textfieldRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
+            checkboxStopGeneration.setEnabled(true);
+            checkboxStopStall.setEnabled(true);
+            checkboxRandomSeed.setEnabled(true);
+            
+            boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
+            labelExtra1.setEnabled(extra1);
+            spinnerExtra1.setEnabled(extra1);
+
+            labelStopGeneration.setEnabled(checkboxStopGeneration.isSelected());
+            spinnerStopGenerations.setEnabled(checkboxStopGeneration.isSelected());
+
+            labelStopStall.setEnabled(checkboxStopStall.isSelected());
+            spinnerStopStalled.setEnabled(checkboxStopStall.isSelected());
+
+            labelRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
+            textfieldRandomSeed.setEnabled(checkboxRandomSeed.isSelected());
+            
+        } else {
+            buttonPlay.setEnabled(false);
+            buttonPause.setEnabled(true);
+            buttonStop.setEnabled(true);
+            
+            comboProblem.setEnabled(false);
+            spinnerPrecission.setEnabled(false);
+            spinnerExtra1.setEnabled(false);
+            
+            spinnerMinPopSize.setEnabled(false);
+            spinnerEliteSize.setEnabled(false);
+            comboSelectionType.setEnabled(false);
+            spinnerMutateProb.setEnabled(false);
+            spinnerCombineProb.setEnabled(false);
+            
+            checkboxStopGeneration.setEnabled(false);
+            spinnerStopGenerations.setEnabled(false);
+            checkboxStopStall.setEnabled(false);
+            spinnerStopStalled.setEnabled(false);
+            
+            checkboxRandomSeed.setEnabled(false);
+            textfieldRandomSeed.setEnabled(false);
+        }
     }
 
     /** The user pressed an exit button */
@@ -412,6 +457,9 @@ public final class MainFrame extends JFrame {
             new SolverWorker<V,BinaryChromosome>(
                 solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<V,BinaryChromosome>(generations, stall)),
                 new XorShiftRandom());
+
+        this.geneticWorker = worker;
+
         worker.execute();
     }
 
@@ -461,6 +509,7 @@ public final class MainFrame extends JFrame {
             currentGeneration = 0;
 
             resultsPanel.clearResults();
+            updateLeftForm();
         }
 
         @Override
@@ -506,6 +555,9 @@ public final class MainFrame extends JFrame {
         public void endProcess (SolverTrace<V,C> trace) {
             solver = null;
             best = null;
+
+            geneticWorker = null;
+            updateLeftForm();
         }
 
     }
