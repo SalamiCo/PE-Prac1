@@ -112,8 +112,8 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     public void clearResults () {
+        System.out.println("[results] Clearing Results...");
         slider.setMinimum(0);
-        slider.setMaximum(0);
         slider.setEnabled(false);
 
         tables.clear();
@@ -127,6 +127,8 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void clearChart () {
+        System.out.println("[results] Clearing Chart...");
+        
         seriesAverage = new XYSeries("Media");
         seriesBestLocal = new XYSeries("Mejor Gen.");
         seriesBestGlobal = new XYSeries("Mejor Global");
@@ -144,6 +146,7 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void clearTable () {
+        System.out.println("[results] Clearing Table...");
         tableModel = new DefaultTableModel(new String[] { "Chromosome", "Value", "Fitness" }, 0);
 
         table.setModel(tableModel);
@@ -151,12 +154,14 @@ public final class ResultsPanel extends JSplitPane {
 
     private void updateTable (List<String[]> rows) {
         clearTable();
+        System.out.println("[results] Updating Table...");
         for (String[] row : rows) {
             tableModel.addRow(row);
         }
     }
 
     private void updateSlider (int num) {
+        System.out.println("[results] Updating Slider (" + num + ")...");
         slider.setMinimum(0);
         slider.setMaximum(num);
         slider.setMajorTickSpacing(Math.max(1, num / 15));
