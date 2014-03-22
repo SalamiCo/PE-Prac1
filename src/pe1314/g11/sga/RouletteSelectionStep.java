@@ -24,6 +24,7 @@ public final class RouletteSelectionStep<V, C extends Chromosome<C>> implements 
 
         // Get the minimum of the fitnesses
         double minFitness = Double.POSITIVE_INFINITY;
+        double maxFitness = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < input.size(); i++) {
             minFitness = Math.min(minFitness, problem.fitness(input.get(i)));
         }
@@ -34,7 +35,7 @@ public final class RouletteSelectionStep<V, C extends Chromosome<C>> implements 
             fitnessSum += problem.fitness(input.get(i));
             accs[i] = fitnessSum - minFitness + 1;
             if (problem.type() == Problem.Type.MINIMIZATION) {
-                accs[i] = 1.0 / accs[i];
+                accs[i] = (maxFitness - minFitness + 1) - accs[i];
             }
         }
 
