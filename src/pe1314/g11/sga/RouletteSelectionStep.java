@@ -32,7 +32,7 @@ public final class RouletteSelectionStep<V, C extends Chromosome<C>> implements 
         double fitnessSum = 0;
         for (int i = 0; i < input.size(); i++) {
             fitnessSum += problem.fitness(input.get(i));
-            accs[i] = fitnessSum - minFitness + 0.01;
+            accs[i] = fitnessSum - minFitness + 1;
             if (problem.type() == Problem.Type.MINIMIZATION) {
                 accs[i] = 1.0 / accs[i];
             }
