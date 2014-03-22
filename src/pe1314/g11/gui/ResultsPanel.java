@@ -18,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -136,6 +137,8 @@ public final class ResultsPanel extends JSplitPane {
         dataset.addSeries(seriesBestGlobal);
 
         chart = ChartFactory.createXYLineChart("Results", "Generación", "Fitness", dataset);
+        ((NumberAxis) chart.getXYPlot().getRangeAxis()).setAutoRangeIncludesZero(false);
+        ((NumberAxis) chart.getXYPlot().getDomainAxis()).setAutoRangeIncludesZero(false);
 
         chartPanel.setChart(chart);
     }
