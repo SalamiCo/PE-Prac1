@@ -17,7 +17,7 @@ import pe1314.g11.SolverTrace;
  * <p>
  * Objects of this class are created by wrapping another <tt>Callbacks</tt> object with the static
  * {@link #wrap(Callbacks)} method.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
@@ -39,7 +39,7 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
     /**
      * Wraps a specific {@link Callbacks callbacks} implementation so that its methods, with the exception of
      * {@link #shouldStop()}, are always executed in the Swing Event Dispatch Thread.
-     *
+     * 
      * @param callbacks The callbacks object to wrap
      * @return A new callbacks object that is Swing-friendly
      */
@@ -52,6 +52,17 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
 
     @Override
     public boolean shouldStop () {
+        try {
+            SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
+                public void run () {
+                    /* Nothing, just wait */
+                }
+            });
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+
         synchronized (this) {
             return callbacks.shouldStop();
         }
