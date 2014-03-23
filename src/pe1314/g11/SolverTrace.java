@@ -9,7 +9,7 @@ import java.util.List;
  * <p>
  * This class is internally mutable, but clients do not have access to mutating methods, and it will not be mutated
  * after being returned. This class can be considered immutable from the eyes of clients.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
@@ -35,7 +35,7 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
     }
 
     /**
-     *
+     * 
      * @return <tt>this</tt>
      */
     /* package */SolverTrace<V,C> generation (List<C> population, long nanoseconds) {
@@ -66,7 +66,7 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
 
     /**
      * Gets the best chromosome seen by this trace.
-     *
+     * 
      * @return The best chromosome seen by this trace
      */
     public C getBestSeen () {
@@ -79,7 +79,7 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
 
     /**
      * A class that summarized what was found on a given generation.
-     *
+     * 
      * @author Daniel Escoz Solana
      * @author Pedro Morgado Alarcón
      */

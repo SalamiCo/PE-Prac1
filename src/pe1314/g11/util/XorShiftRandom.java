@@ -4,7 +4,7 @@ import java.util.Random;
 
 /**
  * Implementation of an XOR-Shift random number generator, faster and better than the regular Java {@link Random}.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @see http://www.javamex.com/tutorials/random_numbers/xorshift.shtml

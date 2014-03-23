@@ -8,12 +8,12 @@ import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.util.DoubleDouble;
 
 public class P1F5Problem extends Problem<DoubleDouble,BinaryChromosome> {
-    
+
     private static final double DOMAIN_MIN = -10.0;
     private static final double DOMAIN_MAX = 10.0;
-    
+
     private final int length;
-    
+
     public P1F5Problem (double precission) {
         length = (int) Math.ceil(Math.log((DOMAIN_MAX - DOMAIN_MIN) / precission) / Math.log(2));
     }
@@ -40,9 +40,9 @@ public class P1F5Problem extends Problem<DoubleDouble,BinaryChromosome> {
         double y = xy.getY().doubleValue();
         double left = 0.0;
         double right = 0.0;
-        for (int i = 1; i <= 5; i++){
-            left += i * Math.cos((i+1) * x + i);
-            right += i * Math.cos((i+1) * y + i);
+        for (int i = 1; i <= 5; i++) {
+            left += i * Math.cos((i + 1) * x + i);
+            right += i * Math.cos((i + 1) * y + i);
         }
         return left * right;
     }

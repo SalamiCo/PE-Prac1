@@ -5,7 +5,7 @@ import java.util.Random;
 
 /**
  * Represents a step of a genetic algorithm.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @param <C> Type of the chromosomes
@@ -14,7 +14,7 @@ public interface SolverStep<V, C extends Chromosome<C>> {
 
     /**
      * Processes the <tt>input</tt> chromosome population and returns a new chromosome population.
-     *
+     * 
      * @param problem Problem being solved
      * @param input Original population to be processed
      * @param random A random object for random processing

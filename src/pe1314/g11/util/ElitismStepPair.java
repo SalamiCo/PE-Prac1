@@ -24,7 +24,7 @@ public final class ElitismStepPair<V, C extends Chromosome<C>> {
     /**
      * Returns a {@link ProblemStep} that saves the best chromosomes of the input population. The output is returned
      * sorted as a side effect.
-     *
+     * 
      * @return The saving step of the elitism implementation
      */
     public SolverStep<V,C> getSaveStep () {
@@ -34,7 +34,7 @@ public final class ElitismStepPair<V, C extends Chromosome<C>> {
     /**
      * Returns a {@ProbemStep} that resets the previously saved chromosomes to the output population,
      * removing the worst of them. The output is returned partially sorted as a side effect.
-     *
+     * 
      * @return The restoring step of the elitism implementation
      */
     public SolverStep<V,C> getRestoreStep () {

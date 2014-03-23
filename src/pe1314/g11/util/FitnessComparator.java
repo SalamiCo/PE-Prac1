@@ -9,7 +9,7 @@ import pe1314.g11.Problem;
  * A comparator that sorts chromosomes based on their fitness.
  * <p>
  * Objects of this class need a {@link Problem} instance to know with fitness function to use.
- *
+ * 
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  * @param <C> Type of the chromosomes
