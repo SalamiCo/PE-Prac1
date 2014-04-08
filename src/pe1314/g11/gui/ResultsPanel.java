@@ -38,7 +38,7 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public final class ResultsPanel extends JSplitPane {
     private static final long serialVersionUID = -3430866206930351967L;
-    
+
     private ChartPanel chartPanel;
     private JComponent tablePanel;
 
@@ -157,13 +157,15 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void updateSlider (int num) {
-        slider.setMinimum(0);
-        slider.setMaximum(num);
-        slider.setMajorTickSpacing(Math.max(1, num / 15));
-        slider.setMinorTickSpacing(Math.max(1, num / 150));
-        slider.createStandardLabels(Math.max(1, num / 15), Math.max(0, num - 15 * (num / 15)));
-        slider.setValue(num);
-        slider.setEnabled(true);
+        if (slider != null) {
+            slider.setMinimum(0);
+            slider.setMaximum(num);
+            slider.setMajorTickSpacing(Math.max(1, num / 15));
+            slider.setMinorTickSpacing(Math.max(1, num / 150));
+            slider.createStandardLabels(Math.max(1, num / 15), Math.max(0, num - 15 * (num / 15)));
+            slider.setValue(num);
+            slider.setEnabled(true);
+        }
     }
 
     /* package */void sliderChange () {
