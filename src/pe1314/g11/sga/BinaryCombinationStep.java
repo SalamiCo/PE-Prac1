@@ -42,8 +42,8 @@ public final class BinaryCombinationStep<V> implements SolverStep<V,BinaryChromo
                 if (random.nextDouble() < probability) {
                     int place = random.nextInt(a.getCombinationPlaces());
 
-                    output.add(a.getCombined(b, place));
-                    output.add(b.getCombined(a, place));
+                    output.add(a.getCombined(b, 0, place));
+                    output.add(b.getCombined(a, 0, place));
 
                 } else {
                     output.add(a);

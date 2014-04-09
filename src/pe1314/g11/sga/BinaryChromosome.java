@@ -71,7 +71,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
     }
 
     @Override
-    public BinaryChromosome getMutated (int place) {
+    public BinaryChromosome getMutated (int type, int place) {
         if (place < 0 || place >= getMutationPlaces()) {
             throw new IllegalArgumentException("invalid mutation place (" + place + ")");
         }
@@ -88,7 +88,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
     }
 
     @Override
-    public BinaryChromosome getCombined (BinaryChromosome other, int place) {
+    public BinaryChromosome getCombined (BinaryChromosome other, int type, int place) {
         if (this.length != other.length) {
             throw new IllegalArgumentException("unmatching lengths (" + length + " != " + other.length + ")");
         }
@@ -171,6 +171,16 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
             sb.append(bits.get(i) ? '1' : '0');
         }
         return sb.append(")").toString();
+    }
+
+    @Override
+    public int getMutationTypes () {
+        return 1;
+    }
+
+    @Override
+    public int getCombinationTypes () {
+        return 1;
     }
 
 }

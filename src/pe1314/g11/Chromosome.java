@@ -30,15 +30,26 @@ public abstract class Chromosome<C extends Chromosome<C>> {
     public abstract int getMutationPlaces ();
 
     /**
-     * Return a new chromosome with the same information as this but with the specified <tt>place</tt> mutated.
+     * Obtain the number of mutation types available for this chromosome.
+     * <p>
+     * The number returned by this method must be non-negative.
+     * 
+     * @return Number of different mutation types of this chromosome
+     */
+    public abstract int getMutationTypes ();
+
+    /**
+     * Return a new chromosome with the same information as this but with the specified <tt>place</tt> mutated using the
+     * specific <tt>type</tt> of mutation.
      * <p>
      * The <tt>place</tt> argument must be non-negative and strictly less than the result of
      * {@link #getMutationPlaces()}.
      * 
+     * @param type Mutation type to use
      * @param place The place to mutate
      * @return A mutated chromosome
      */
-    public abstract C getMutated (int place);
+    public abstract C getMutated (int type, int place);
 
     /**
      * Obtain the number of positions that can be used to combine this chromosome with another.
@@ -50,15 +61,26 @@ public abstract class Chromosome<C extends Chromosome<C>> {
     public abstract int getCombinationPlaces ();
 
     /**
-     * Return a new chromosome combined with another one using the specified combination <tt>place</tt>.
+     * Obtain the number of combination types available for this chromosome.
+     * <p>
+     * The number returned by this method must be non-negative.
+     * 
+     * @return Number of different combination types of this chromosome
+     */
+    public abstract int getCombinationTypes ();
+
+    /**
+     * Return a new chromosome combined with another one using the specified combination <tt>place</tt> and
+     * <tt>type</tt>.
      * <p>
      * The <tt>place</tt> argument must be non-negative and strictly less than the result of
      * {@link #getCombinationPlaces()}.
      * 
      * @param other Another chromosome for combination
+     * @param type Combination type to use
      * @param place The position to use for combination
      * @return A combined chromosome
      */
-    public abstract C getCombined (C other, int place);
+    public abstract C getCombined (C other, int type, int place);
 
 }

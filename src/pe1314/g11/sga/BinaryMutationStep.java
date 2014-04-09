@@ -36,7 +36,7 @@ public final class BinaryMutationStep<V> implements SolverStep<V,BinaryChromosom
             for (int i = 0; i < chromo.getLength(); i++) {
                 // Should we mutate this place?
                 if (random.nextDouble() < probability) {
-                    chromo = chromo.getMutated(i);
+                    chromo = chromo.getMutated(0, i);
                 }
             }
 
