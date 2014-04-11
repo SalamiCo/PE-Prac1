@@ -3,6 +3,7 @@ package pe1314.g11.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -37,9 +38,11 @@ import pe1314.g11.pr1.P1F2Problem;
 import pe1314.g11.pr1.P1F3Problem;
 import pe1314.g11.pr1.P1F4Problem;
 import pe1314.g11.pr1.P1F5Problem;
+import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.sga.BinaryChromosome;
-import pe1314.g11.sga.BinaryCombinationStep;
-import pe1314.g11.sga.BinaryMutationStep;
+import pe1314.g11.sga.CombinationStep;
+import pe1314.g11.sga.MutationStep;
+import pe1314.g11.sga.PermutationChromosome;
 import pe1314.g11.sga.RouletteSelectionStep;
 import pe1314.g11.sga.TournamentSelectionStep;
 import pe1314.g11.util.ElitismStepPair;
@@ -59,11 +62,12 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public final class MainFrame extends JFrame {
 
-    private static final String PRB_P1_F1 = "P1 Función 1";
-    private static final String PRB_P1_F2 = "P1 Función 2";
-    private static final String PRB_P1_F3 = "P1 Función 3";
-    private static final String PRB_P1_F4 = "P1 Función 4";
-    private static final String PRB_P1_F5 = "P1 Función 5";
+    private static final String PRB_P2 = "(P2) Hospital";
+    private static final String PRB_P1_F1 = "(P1) Función 1";
+    private static final String PRB_P1_F2 = "(P1) Función 2";
+    private static final String PRB_P1_F3 = "(P1) Función 3";
+    private static final String PRB_P1_F4 = "(P1) Función 4";
+    private static final String PRB_P1_F5 = "(P1) Función 5";
 
     private static final String SEL_ROULETTE = "Ruleta";
     private static final String SEL_TOURNAMENT = "Torneo";
@@ -238,7 +242,7 @@ public final class MainFrame extends JFrame {
     private void createLeftFormElements () {
         comboProblem = new JComboBox<String>();
         comboProblem.setModel(new DefaultComboBoxModel<String>(new String[] {
-            PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
+            PRB_P2, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
         comboProblem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (ActionEvent arg0) {
@@ -391,6 +395,9 @@ public final class MainFrame extends JFrame {
         String problemName = (String) comboProblem.getSelectedItem();
         double precission = ((Number) spinnerPrecission.getValue()).doubleValue();
         switch (problemName) {
+            case PRB_P2:
+                solveHospitalProblem();
+                break;
             case PRB_P1_F1:
                 solveBinaryProblem(new P1F1Problem(precission));
                 break;
@@ -409,66 +416,124 @@ public final class MainFrame extends JFrame {
         }
     }
 
-    private <V> void solveBinaryProblem (Problem<V,BinaryChromosome> problem) {
-        int populationSize = ((Number) spinnerMinPopSize.getValue()).intValue();
-        double eliteSize = ((Number) spinnerEliteSize.getValue()).doubleValue();
-        String selection = (String) comboSelectionType.getSelectedItem();
-        double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
-        double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
-        boolean generationsIsChecked = checkboxStopGeneration.isSelected();
-        int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
-        boolean stallIsChecked = checkboxStopStall.isSelected();
-        int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
+    // =========================
+    // === GENERIC OBTAINERS ===
+
+    private Random obtainRandomGenerator () {
         boolean rngIsSelected = checkboxRandomSeed.isSelected();
         String seed = rngIsSelected ? textfieldRandomSeed.getText() : String.valueOf(System.nanoTime());
-
         textfieldRandomSeed.setText(seed);
+        return new XorShiftRandom(seed.hashCode());
+    }
 
-        Random random = new XorShiftRandom(seed.hashCode());
+    private <V, C extends Chromosome<C>> SolverStep<V,C> obtainGenerationStep () {
+        int populationSize = ((Number) spinnerMinPopSize.getValue()).intValue();
+        return new RandomGenerationStep<>(populationSize, 0);
+    }
 
-        if (!generationsIsChecked && !stallIsChecked) {
-            JOptionPane.showMessageDialog(
-                this, "Elige al menos una condición de parada", "Formulario incompleto", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        ElitismStepPair<V,BinaryChromosome> esp = new ElitismStepPair<>(eliteSize);
-
-        SolverStep<V,BinaryChromosome> selectionStep;
+    private <V, C extends Chromosome<C>> SolverStep<V,C> obtainSelectionStep () {
+        String selection = (String) comboSelectionType.getSelectedItem();
         int tournamentSize = 8;
 
         switch (selection) {
             case SEL_ROULETTE:
-                selectionStep = new RouletteSelectionStep<>();
-                break;
+                return new RouletteSelectionStep<>();
 
             case SEL_TOURNAMENT:
-                selectionStep = new TournamentSelectionStep<>(tournamentSize);
-                break;
-
-            default:
-                return;
+                return new TournamentSelectionStep<>(tournamentSize);
         }
+
+        return null;
+    }
+
+    private <V, C extends Chromosome<C>> SolverStep<V,C> obtainCombinationStep () {
+        double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
+        return new CombinationStep<>(combineProb, 0);
+    }
+
+    private <V, C extends Chromosome<C>> SolverStep<V,C> obtainMutationStep () {
+        double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
+        return new MutationStep<>(mutateProb, 0);
+    }
+
+    private <V, C extends Chromosome<C>> ElitismStepPair<V,C> obtainEletismPair () {
+        double eliteSize = ((Number) spinnerEliteSize.getValue()).doubleValue();
+        return new ElitismStepPair<>(eliteSize);
+    }
+
+    private <V, C extends Chromosome<C>> SolverWorker<V,C> obtainWorker (Solver<V,C> solver, Random random) {
+        boolean generationsIsChecked = checkboxStopGeneration.isSelected();
+        int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
+        boolean stallIsChecked = checkboxStopStall.isSelected();
+        int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
+
+        if (!generationsIsChecked && !stallIsChecked) {
+            JOptionPane.showMessageDialog(
+                this, "Elige al menos una condición de parada", "Formulario incompleto", JOptionPane.WARNING_MESSAGE);
+            return null;
+        }
+
+        return new SolverWorker<V,C>(
+            solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<V,C>(generations, stall)), random);
+    }
+
+    private <V> void solveBinaryProblem (Problem<V,BinaryChromosome> problem) {
+        Random random = obtainRandomGenerator();
+
+        ElitismStepPair<V,BinaryChromosome> esp = obtainEletismPair();
+        SolverStep<V,BinaryChromosome> generationStep = obtainGenerationStep();
+        SolverStep<V,BinaryChromosome> selectionStep = obtainSelectionStep();
+        SolverStep<V,BinaryChromosome> combinationStep = obtainCombinationStep();
+        SolverStep<V,BinaryChromosome> mutationStep = obtainMutationStep();
 
         /* @formatter:off */
         Solver<V, BinaryChromosome> solver = Solver.builder(problem)
-            .step(new RandomGenerationStep<V,BinaryChromosome>(populationSize, 0))
+            .step(generationStep)
             .step(esp.getSaveStep())
             .step(selectionStep)
-            .step(new BinaryCombinationStep<V>(combineProb))
-            .step(new BinaryMutationStep<V>(mutateProb))
+            .step(combinationStep)
+            .step(mutationStep)
             .step(esp.getRestoreStep())
             .build();
         /* @formatter:on */
 
-        SolverWorker<V,BinaryChromosome> worker =
-            new SolverWorker<V,BinaryChromosome>(
-                solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<V,BinaryChromosome>(generations, stall)),
-                random);
+        this.geneticWorker = obtainWorker(solver, random);
+        if (geneticWorker != null) {
+            geneticWorker.execute();
+        }
+    }
 
-        this.geneticWorker = worker;
+    private void solveHospitalProblem () {
+        try {
+            P2Problem problem = P2Problem.readFromURL(MainFrame.class.getResource("/pe1314/g11/pr2/ajuste.dat"));
 
-        worker.execute();
+            Random random = obtainRandomGenerator();
+
+            ElitismStepPair<List<Integer>,PermutationChromosome> esp = obtainEletismPair();
+            SolverStep<List<Integer>,PermutationChromosome> generationStep = obtainGenerationStep();
+            SolverStep<List<Integer>,PermutationChromosome> selectionStep = obtainSelectionStep();
+            SolverStep<List<Integer>,PermutationChromosome> combinationStep = obtainCombinationStep();
+            SolverStep<List<Integer>,PermutationChromosome> mutationStep = obtainMutationStep();
+
+            /* @formatter:off */
+            Solver<List<Integer>, PermutationChromosome> solver = Solver.builder(problem)
+                .step(generationStep)
+                .step(esp.getSaveStep())
+                .step(selectionStep)
+                .step(combinationStep)
+                .step(mutationStep)
+                .step(esp.getRestoreStep())
+                .build();
+            /* @formatter:on */
+
+            this.geneticWorker = obtainWorker(solver, random);
+            if (geneticWorker != null) {
+                geneticWorker.execute();
+            }
+        } catch (IOException exc) {
+            exc.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error de entrada/salida:\n" + exc, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private final class SolverCallbacks<V, C extends Chromosome<C>> implements Callbacks<V,C> {

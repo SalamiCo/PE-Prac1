@@ -3,6 +3,7 @@ package pe1314.g11.sga;
 import java.util.List;
 import java.util.Random;
 
+import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
 import pe1314.g11.SolverStep;
 
@@ -13,30 +14,33 @@ import pe1314.g11.SolverStep;
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
  */
-public final class BinaryMutationStep<V> implements SolverStep<V,BinaryChromosome> {
+public final class MutationStep<V,C extends Chromosome<C>> implements SolverStep<V,C> {
 
     private final double probability;
 
-    public BinaryMutationStep (double probability) {
+    private final int type;
+
+    public MutationStep (double probability, int type) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
 
         this.probability = probability;
+        this.type = type;
     }
 
     @Override
     public void apply (
-        Problem<V,BinaryChromosome> problem, List<BinaryChromosome> input, Random random, int generation,
-        List<BinaryChromosome> output)
+        Problem<V,C> problem, List<C> input, Random random, int generation,
+        List<C> output)
     {
         // For every input chromosome...
-        for (BinaryChromosome chromo : input) {
+        for (C chromo : input) {
             // For every mutable place...
-            for (int i = 0; i < chromo.getLength(); i++) {
+            for (int i = 0; i < chromo.getMutationPlaces(); i++) {
                 // Should we mutate this place?
                 if (random.nextDouble() < probability) {
-                    chromo = chromo.getMutated(0, i);
+                    chromo = chromo.getMutated(type, i);
                 }
             }
 
