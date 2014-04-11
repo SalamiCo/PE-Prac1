@@ -69,12 +69,12 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
             int size = Integer.parseInt(reader.readLine());
             reader.readLine();
 
-            /* Read the distance matrix */
-            IntSqMatrix distance = readMatrix(reader, size);
-            reader.readLine();
-            
             /* Read the traffic matrix */
             IntSqMatrix traffic = readMatrix(reader, size);
+            reader.readLine();
+            
+            /* Read the distance matrix */
+            IntSqMatrix distance = readMatrix(reader, size);
             
             /* Return the result */
             return new P2Problem(distance, traffic);

@@ -41,6 +41,7 @@ import pe1314.g11.pr1.P1F5Problem;
 import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
+import pe1314.g11.sga.DuplicateRemovalStep;
 import pe1314.g11.sga.MutationStep;
 import pe1314.g11.sga.PermutationChromosome;
 import pe1314.g11.sga.RouletteSelectionStep;
@@ -514,6 +515,7 @@ public final class MainFrame extends JFrame {
             SolverStep<List<Integer>,PermutationChromosome> selectionStep = obtainSelectionStep();
             SolverStep<List<Integer>,PermutationChromosome> combinationStep = obtainCombinationStep();
             SolverStep<List<Integer>,PermutationChromosome> mutationStep = obtainMutationStep();
+            SolverStep<List<Integer>,PermutationChromosome> dedupStep = new DuplicateRemovalStep<>();
 
             /* @formatter:off */
             Solver<List<Integer>, PermutationChromosome> solver = Solver.builder(problem)
@@ -523,6 +525,7 @@ public final class MainFrame extends JFrame {
                 .step(combinationStep)
                 .step(mutationStep)
                 .step(esp.getRestoreStep())
+                .step(dedupStep)
                 .build();
             /* @formatter:on */
 
