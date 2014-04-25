@@ -54,17 +54,30 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     @Override
     public PermutationChromosome getMutated (int type, int place, int length) {
         switch (type) {
-            case 0: return getInversionMutated(place, length);
-            case 1: return getExchangeMutated(place, length);
+            case 0:
+                return getInversionMutated(place, length);
+            case 1:
+                return getExchangeMutated(place, length);
         }
-        
+
         throw new IllegalArgumentException("Invalid muration type " + type);
     }
-    
 
     private PermutationChromosome getInversionMutated (int place, int length) {
-        // TODO Auto-generated method stub
-        return null;
+        final List<Integer> newPerm = new ArrayList<>(permutation);
+
+        int i = Math.min(place, place + length);
+        int j = Math.max(place, place + length);
+
+        while (i < j) {
+            newPerm.set(i, permutation.get(j));
+            newPerm.set(j, permutation.get(i));
+
+            i++;
+            j--;
+        }
+
+        return new PermutationChromosome(newPerm);
     }
 
     private PermutationChromosome getExchangeMutated (int place, int length) {
@@ -113,16 +126,16 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     @Override
     public int compareTo (PermutationChromosome other) {
         final int length = Math.min(permutation.size(), other.permutation.size());
-        
+
         for (int i = 0; i < length; i++) {
             int i1 = permutation.get(i).intValue();
             int i2 = other.permutation.get(i).intValue();
-            
+
             if (i1 != i2) {
                 return i1 - i2;
             }
         }
-        
+
         return permutation.size() - other.permutation.size();
     }
 
