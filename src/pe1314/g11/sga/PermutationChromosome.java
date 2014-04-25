@@ -167,7 +167,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         List<Integer> newPerm = new ArrayList<>(permutation);
 
         final int li = Math.min(place, place + length);
-        final int ri = Math.max(place, place + length);
+        final int ri = Math.max(place, place + length); 
 
         for (int i = li; i <= ri; i++) {
             newPerm.set(i, other.permutation.get(i));
@@ -175,7 +175,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
         int pos = place + length + 1;
         int i = pos;
-        List<Integer> subPerm = newPerm.subList(place, place + length + 1);
+        List<Integer> subPerm = newPerm.subList(li, ri + 1);
         while (pos != place) {
             if (!(subPerm.contains(permutation.get(i)))) {
                 newPerm.set(pos, permutation.get(i));
