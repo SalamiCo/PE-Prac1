@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
 import pe1314.g11.SolverStep;
 
@@ -14,36 +15,39 @@ import pe1314.g11.SolverStep;
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
  */
-public final class BinaryCombinationStep<V> implements SolverStep<V,BinaryChromosome> {
+public final class CombinationStep<V,C extends Chromosome<C>> implements SolverStep<V,C> {
 
     private final double probability;
+    
+    private final int type;
 
-    public BinaryCombinationStep (double probability) {
+    public CombinationStep (double probability, int type) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
 
         this.probability = probability;
+        this.type = type;
     }
 
     @Override
     public void apply (
-        Problem<V,BinaryChromosome> problem, List<BinaryChromosome> input, Random random, int generation,
-        List<BinaryChromosome> output)
+        Problem<V,C> problem, List<C> input, Random random, int generation,
+        List<C> output)
     {
 
-        Iterator<BinaryChromosome> it = input.iterator();
+        Iterator<C> it = input.iterator();
         while (it.hasNext()) {
-            BinaryChromosome a = it.next();
+            C a = it.next();
 
             if (it.hasNext()) {
-                BinaryChromosome b = it.next();
+                C b = it.next();
 
                 if (random.nextDouble() < probability) {
                     int place = random.nextInt(a.getCombinationPlaces());
 
-                    output.add(a.getCombined(b, 0, place));
-                    output.add(b.getCombined(a, 0, place));
+                    output.add(a.getCombined(b, type, place));
+                    output.add(b.getCombined(a, type, place));
 
                 } else {
                     output.add(a);

@@ -1,6 +1,7 @@
 package pe1314.g11.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -157,15 +158,15 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void updateSlider (int num) {
-        if (slider != null) {
             slider.setMinimum(0);
-            slider.setMaximum(num);
+            slider.setValue(0); // Avoid NPE (range-check)
+            slider.setMaximum(Math.max(1, num));
+            slider.setValue(num);
+            
             slider.setMajorTickSpacing(Math.max(1, num / 15));
             slider.setMinorTickSpacing(Math.max(1, num / 150));
             slider.createStandardLabels(Math.max(1, num / 15), Math.max(0, num - 15 * (num / 15)));
-            slider.setValue(num);
             slider.setEnabled(true);
-        }
     }
 
     /* package */void sliderChange () {
@@ -193,9 +194,11 @@ public final class ResultsPanel extends JSplitPane {
         seriesBestLocal.add(gen, problem.fitness(lcbest));
         seriesBestGlobal.add(gen, problem.fitness(best));
 
+        List<C> sorted = new ArrayList<>(population);
+        Collections.sort(sorted, fcmp);
         List<String[]> rows = new ArrayList<>();
         clearTable();
-        for (C chromo : population) {
+        for (C chromo : sorted) {
             rows.add(new String[] { //
                 chromo.toString(), problem.value(chromo).toString(), String.valueOf(problem.fitness(chromo)) });
         }
