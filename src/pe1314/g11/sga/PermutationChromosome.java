@@ -11,6 +11,8 @@ import pe1314.g11.Chromosome;
 public final class PermutationChromosome extends Chromosome<PermutationChromosome>
     implements Comparable<PermutationChromosome>
 {
+    public static final int MUTATION_INVERSION = 0;
+    public static final int MUTATION_EXCHANGE = 1;
 
     private final List<Integer> permutation;
 
@@ -54,9 +56,9 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     @Override
     public PermutationChromosome getMutated (int type, int place, int length) {
         switch (type) {
-            case 0:
+            case MUTATION_INVERSION:
                 return getInversionMutated(place, length);
-            case 1:
+            case MUTATION_EXCHANGE:
                 return getExchangeMutated(place, length);
         }
 
