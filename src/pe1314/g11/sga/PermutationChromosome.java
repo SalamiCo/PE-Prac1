@@ -13,6 +13,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 {
     public static final int MUTATION_INVERSION = 0;
     public static final int MUTATION_EXCHANGE = 1;
+    public static final int MUTATION_INSERTION = 2;
 
     private final List<Integer> permutation;
 
@@ -50,7 +51,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     @Override
     public int getMutationTypes () {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -60,6 +61,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
                 return getInversionMutated(place, length);
             case MUTATION_EXCHANGE:
                 return getExchangeMutated(place, length);
+            case MUTATION_INSERTION:
+                return getInsertionMutated(place, length);
         }
 
         throw new IllegalArgumentException("Invalid muration type " + type);
@@ -84,10 +87,18 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     private PermutationChromosome getExchangeMutated (int place, int length) {
         List<Integer> newPerm = new ArrayList<>(permutation);
-        
+
         newPerm.set(place, permutation.get(place + length));
         newPerm.set(place + length, permutation.get(place));
-        
+
+        return new PermutationChromosome(newPerm);
+    }
+
+    private PermutationChromosome getInsertionMutated (int place, int length) {
+        final List<Integer> newPerm = new ArrayList<>(permutation);
+
+        newPerm.add(place + length, newPerm.remove(place));
+
         return new PermutationChromosome(newPerm);
     }
 
