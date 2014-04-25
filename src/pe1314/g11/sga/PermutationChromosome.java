@@ -125,6 +125,16 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         throw new IllegalArgumentException("Invalid muration type " + type);
     }
 
+    private void getCombinedPmx (PermutationChromosome other, int place, int length) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private void getCombinedOx (PermutationChromosome other, int place, int length) {
+        // TODO Auto-generated method stub
+        
+    }
+
     @Override
     public int hashCode () {
         return permutation.hashCode();
