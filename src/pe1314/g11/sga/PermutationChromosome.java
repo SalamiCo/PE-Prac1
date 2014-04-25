@@ -118,21 +118,53 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     @Override
     public PermutationChromosome getCombined (PermutationChromosome other, int type, int place, int length) {
         switch (type) {
-            case COMINATION_PMX: getCombinedPmx(other, place, length);
-            case COMINATION_OX: getCombinedOx(other, place, length);
+            case COMINATION_PMX:
+                return getCombinedPmx(other, place, length);
+            case COMINATION_OX:
+                getCombinedOx(other, place, length);
         }
-        
+
         throw new IllegalArgumentException("Invalid muration type " + type);
     }
 
-    private void getCombinedPmx (PermutationChromosome other, int place, int length) {
-        // TODO Auto-generated method stub
+    private PermutationChromosome getCombinedPmx (PermutationChromosome other, int place, int length) {
+        List<Integer> newPerm = new ArrayList<>(permutation);
         
+        final int li = Math.min(place, place+length);
+        final int ri = Math.max(place, place+length);
+        
+        // Get the other range into the new perm
+        for (int i = li; i <= ri; i++) {
+            newPerm.set(i, other.permutation.get(i));
+        }
+        
+        // For every non-range number: if in the range, swap for the old in that pos; else, skip
+        for (int i = 0; i < newPerm.size(); i++) {
+            // Skip the range
+            if (i == li) {
+                i = ri;
+                continue;
+            }
+            
+            // Check if the range
+            int curr = newPerm.get(i).intValue();
+            for (int j = li; j <= ri; j++) {
+                int r = newPerm.get(j).intValue();
+                
+                if (curr == r) {
+                    // Gotcha! Swap for the old
+                    newPerm.set(i, permutation.get(j));
+                    break;
+                }
+            }
+        }
+        
+        return new PermutationChromosome(newPerm);
     }
 
     private void getCombinedOx (PermutationChromosome other, int place, int length) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
