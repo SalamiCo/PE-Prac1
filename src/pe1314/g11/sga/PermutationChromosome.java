@@ -17,6 +17,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     public static final int COMINATION_PMX = 0;
     public static final int COMINATION_OX = 1;
+    public static final int COMINATION_CYCLES = 2;
 
     private final List<Integer> permutation;
 
@@ -26,7 +27,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         BitSet seen = new BitSet();
         for (Integer i : permutation) {
             if (i.intValue() < 0 || i.intValue() >= permutation.size() || seen.get(i.intValue())) {
-                throw new IllegalArgumentException("not a parmutation: " + permutation);
+                throw new IllegalArgumentException("not a permutation: " + permutation);
             }
 
             seen.set(i.intValue());
@@ -122,6 +123,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
                 return getCombinedPmx(other, place, length);
             case COMINATION_OX:
                 getCombinedOx(other, place, length);
+            case COMINATION_CYCLES:
+                return getCombinedCycles(other, place, length);
         }
 
         throw new IllegalArgumentException("Invalid muration type " + type);
@@ -129,15 +132,15 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     private PermutationChromosome getCombinedPmx (PermutationChromosome other, int place, int length) {
         List<Integer> newPerm = new ArrayList<>(permutation);
-        
-        final int li = Math.min(place, place+length);
-        final int ri = Math.max(place, place+length);
-        
+
+        final int li = Math.min(place, place + length);
+        final int ri = Math.max(place, place + length);
+
         // Get the other range into the new perm
         for (int i = li; i <= ri; i++) {
             newPerm.set(i, other.permutation.get(i));
         }
-        
+
         // For every non-range number: if in the range, swap for the old in that pos; else, skip
         for (int i = 0; i < newPerm.size(); i++) {
             // Skip the range
@@ -145,12 +148,12 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
                 i = ri;
                 continue;
             }
-            
+
             // Check if the range
             int curr = newPerm.get(i).intValue();
             for (int j = li; j <= ri; j++) {
                 int r = newPerm.get(j).intValue();
-                
+
                 if (curr == r) {
                     // Gotcha! Swap for the old
                     newPerm.set(i, permutation.get(j));
@@ -158,13 +161,35 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
                 }
             }
         }
-        
+
         return new PermutationChromosome(newPerm);
     }
 
     private void getCombinedOx (PermutationChromosome other, int place, int length) {
         // TODO Auto-generated method stub
 
+    }
+
+    private PermutationChromosome getCombinedCycles (PermutationChromosome other, int place, int length) {
+        List<Integer> newPerm = new ArrayList<Integer>(Collections.<Integer>nCopies(permutation.size(), null));
+
+        // First, make a full cycle
+        int idx = 0;
+        do {
+            Integer n = other.permutation.get(idx);
+            idx = permutation.indexOf(n);
+
+            newPerm.set(idx, n);
+        } while (idx != 0);
+
+        // Then, fill the blanks
+        for (int i = 0; i < permutation.size(); i++) {
+            if (newPerm.get(i) == null) {
+                newPerm.set(i, other.permutation.get(i));
+            }
+        }
+
+        return new PermutationChromosome(newPerm);
     }
 
     @Override
@@ -185,7 +210,16 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     @Override
     public String toString () {
-        return permutation.toString();
+        StringBuilder sb = new StringBuilder("[");
+
+        for (int i = 0; i < permutation.size(); i++) {
+            if (i != 0) {
+                sb.append(", ");
+            }
+            sb.append(permutation.get(i).intValue() + 1);
+        }
+
+        return sb.append("]").toString();
     }
 
     @Override
