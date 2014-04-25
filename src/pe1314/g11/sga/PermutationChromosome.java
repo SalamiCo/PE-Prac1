@@ -119,7 +119,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     public PermutationChromosome getCombined (PermutationChromosome other, int type, int place, int length) {
         switch (type) {
             case COMINATION_PMX: getCombinedPmx(other, place, length);
-            case COMINATION_OX: getCombinedOx(other, place, length);
+            case COMINATION_OX: return getCombinedOx(other, place, length);
         }
         
         throw new IllegalArgumentException("Invalid muration type " + type);
@@ -130,9 +130,37 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         
     }
 
-    private void getCombinedOx (PermutationChromosome other, int place, int length) {
-        // TODO Auto-generated method stub
+    private PermutationChromosome getCombinedOx (PermutationChromosome other, int place, int length) {
+        List<Integer> newPerm = new ArrayList<>(permutation);
         
+        final int li = Math.min(place, place + length);
+        final int ri = Math.max(place, place + length);
+        
+        for (int i = li; i <= ri; i++){
+            newPerm.set(i, other.permutation.get(i));
+        }
+        
+        int pos = place + length;
+        int i = pos;
+        List<Integer> subPerm = permutation.subList(place, place + length + 1);
+        while(pos != place){
+            if(!(subPerm.contains(permutation.get(i)))){
+                newPerm.set(pos, permutation.get(i));
+                pos++;
+            }
+            
+            i++;
+            
+            if(pos >= permutation.size()){
+                pos = 0;
+            }
+            
+            if (i >= permutation.size()){
+                i = 0;
+            }
+        }
+        
+        return new PermutationChromosome(newPerm);
     }
 
     @Override
