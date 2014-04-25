@@ -68,8 +68,12 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     }
 
     private PermutationChromosome getExchangeMutated (int place, int length) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Integer> newPerm = new ArrayList<>(permutation);
+        
+        newPerm.set(place, permutation.get(place + length));
+        newPerm.set(place + length, permutation.get(place));
+        
+        return new PermutationChromosome(newPerm);
     }
 
     @Override
