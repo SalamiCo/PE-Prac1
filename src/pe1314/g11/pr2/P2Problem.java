@@ -66,7 +66,7 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF8));
 
             /* First line tells us the size of the matrices */
-            int size = Integer.parseInt(reader.readLine());
+            int size = Integer.parseInt(reader.readLine().trim());
             reader.readLine();
 
             /* Read the traffic matrix */
@@ -85,7 +85,7 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
         IntSqMatrix matrix = new IntSqMatrix(size);
         
         for (int i = 0; i < size; i++) {
-            String[] line = reader.readLine().split("\\s+");
+            String[] line = reader.readLine().trim().split("\\s+");
             
             for (int j = 0; j < size; j++) {
                 matrix.set(i, j, Integer.parseInt(line[j]));

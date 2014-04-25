@@ -42,7 +42,7 @@ import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
 import pe1314.g11.sga.DuplicateRemovalStep;
-import pe1314.g11.sga.MutationStep;
+import pe1314.g11.sga.MultiMutationStep;
 import pe1314.g11.sga.PermutationChromosome;
 import pe1314.g11.sga.RouletteSelectionStep;
 import pe1314.g11.sga.TournamentSelectionStep;
@@ -63,7 +63,10 @@ import com.jgoodies.forms.layout.FormLayout;
  */
 public final class MainFrame extends JFrame {
 
-    private static final String PRB_P2 = "(P2) Hospital";
+    private static final String PRB_P2_A = "(P2) Hospital (Ajuste)";
+    private static final String PRB_P2_12 = "(P2) Hospital (12x12)";
+    private static final String PRB_P2_15 = "(P2) Hospital (15x15)";
+    private static final String PRB_P2_30 = "(P2) Hospital (30x30)";
     private static final String PRB_P1_F1 = "(P1) Función 1";
     private static final String PRB_P1_F2 = "(P1) Función 2";
     private static final String PRB_P1_F3 = "(P1) Función 3";
@@ -243,7 +246,7 @@ public final class MainFrame extends JFrame {
     private void createLeftFormElements () {
         comboProblem = new JComboBox<String>();
         comboProblem.setModel(new DefaultComboBoxModel<String>(new String[] {
-            PRB_P2, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
+            PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
         comboProblem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (ActionEvent arg0) {
@@ -396,8 +399,17 @@ public final class MainFrame extends JFrame {
         String problemName = (String) comboProblem.getSelectedItem();
         double precission = ((Number) spinnerPrecission.getValue()).doubleValue();
         switch (problemName) {
-            case PRB_P2:
-                solveHospitalProblem();
+            case PRB_P2_A:
+                solveHospitalProblem("ajuste");
+                break;
+            case PRB_P2_12:
+                solveHospitalProblem("tai12");
+                break;
+            case PRB_P2_15:
+                solveHospitalProblem("tai15");
+                break;
+            case PRB_P2_30:
+                solveHospitalProblem("tai30");
                 break;
             case PRB_P1_F1:
                 solveBinaryProblem(new P1F1Problem(precission));
@@ -454,7 +466,7 @@ public final class MainFrame extends JFrame {
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainMutationStep () {
         double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
-        return new MutationStep<>(mutateProb, 0);
+        return new MultiMutationStep<>(mutateProb, 0);
     }
 
     private <V, C extends Chromosome<C>> ElitismStepPair<V,C> obtainEletismPair () {
@@ -504,9 +516,9 @@ public final class MainFrame extends JFrame {
         }
     }
 
-    private void solveHospitalProblem () {
+    private void solveHospitalProblem (String fname) {
         try {
-            P2Problem problem = P2Problem.readFromURL(MainFrame.class.getResource("/pe1314/g11/pr2/ajuste.dat"));
+            P2Problem problem = P2Problem.readFromURL(MainFrame.class.getResource("/pe1314/g11/pr2/" + fname + ".dat"));
 
             Random random = obtainRandomGenerator();
 

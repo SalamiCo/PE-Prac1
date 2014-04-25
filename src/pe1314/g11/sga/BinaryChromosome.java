@@ -71,7 +71,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
     }
 
     @Override
-    public BinaryChromosome getMutated (int type, int place) {
+    public BinaryChromosome getMutated (int type, int place, int len) {
         if (place < 0 || place >= getMutationPlaces()) {
             throw new IllegalArgumentException("invalid mutation place (" + place + ")");
         }

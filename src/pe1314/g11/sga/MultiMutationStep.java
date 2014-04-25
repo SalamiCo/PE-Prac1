@@ -14,13 +14,13 @@ import pe1314.g11.SolverStep;
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
  */
-public final class MutationStep<V,C extends Chromosome<C>> implements SolverStep<V,C> {
+public final class MultiMutationStep<V,C extends Chromosome<C>> implements SolverStep<V,C> {
 
     private final double probability;
 
     private final int type;
 
-    public MutationStep (double probability, int type) {
+    public MultiMutationStep (double probability, int type) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
@@ -40,7 +40,7 @@ public final class MutationStep<V,C extends Chromosome<C>> implements SolverStep
             for (int i = 0; i < chromo.getMutationPlaces(); i++) {
                 // Should we mutate this place?
                 if (random.nextDouble() < probability) {
-                    chromo = chromo.getMutated(type, i);
+                    chromo = chromo.getMutated(type, i, 1);
                 }
             }
 

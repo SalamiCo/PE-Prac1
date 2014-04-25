@@ -8,7 +8,9 @@ import java.util.Random;
 
 import pe1314.g11.Chromosome;
 
-public final class PermutationChromosome extends Chromosome<PermutationChromosome> {
+public final class PermutationChromosome extends Chromosome<PermutationChromosome>
+    implements Comparable<PermutationChromosome>
+{
 
     private final List<Integer> permutation;
 
@@ -46,15 +48,20 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     @Override
     public int getMutationTypes () {
-        // TODO Auto-generated method stub
-        return 0;
+        return 2;
     }
 
     @Override
-    public PermutationChromosome getMutated (int type, int place) {
-        // TODO Auto-generated method stub
-        return this;
+    public PermutationChromosome getMutated (int type, int place, int length) {
+        switch (type) {
+            case 0: return getInversionMutated(place, length);
+            case 1: return getExchangeMutated(place, length);
+        }
+        
+        throw new IllegalArgumentException("Invalid muration type " + type);
     }
+    
+    
 
     @Override
     public int getCombinationPlaces () {
@@ -92,6 +99,22 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     @Override
     public String toString () {
         return permutation.toString();
+    }
+
+    @Override
+    public int compareTo (PermutationChromosome other) {
+        final int length = Math.min(permutation.size(), other.permutation.size());
+        
+        for (int i = 0; i < length; i++) {
+            int i1 = permutation.get(i).intValue();
+            int i2 = other.permutation.get(i).intValue();
+            
+            if (i1 != i2) {
+                return i1 - i2;
+            }
+        }
+        
+        return permutation.size() - other.permutation.size();
     }
 
 }

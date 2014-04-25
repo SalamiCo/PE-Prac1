@@ -47,9 +47,10 @@ public abstract class Chromosome<C extends Chromosome<C>> {
      * 
      * @param type Mutation type to use
      * @param place The place to mutate
+     * @param length Length of the mutation, if applicable
      * @return A mutated chromosome
      */
-    public abstract C getMutated (int type, int place);
+    public abstract C getMutated (int type, int place, int length);
 
     /**
      * Obtain the number of positions that can be used to combine this chromosome with another.
