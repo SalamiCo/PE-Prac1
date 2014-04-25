@@ -61,7 +61,16 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         throw new IllegalArgumentException("Invalid muration type " + type);
     }
     
-    
+
+    private PermutationChromosome getInversionMutated (int place, int length) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private PermutationChromosome getExchangeMutated (int place, int length) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     @Override
     public int getCombinationPlaces () {
