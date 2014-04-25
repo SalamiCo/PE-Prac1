@@ -175,9 +175,9 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
             newPerm.set(i, other.permutation.get(i));
         }
 
-        int pos = place + length;
+        int pos = place + length + 1;
         int i = pos;
-        List<Integer> subPerm = permutation.subList(place, place + length + 1);
+        List<Integer> subPerm = newPerm.subList(place, place + length + 1);
         while (pos != place) {
             if (!(subPerm.contains(permutation.get(i)))) {
                 newPerm.set(pos, permutation.get(i));
