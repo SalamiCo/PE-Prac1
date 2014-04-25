@@ -16,8 +16,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     @Override
     public int getMutationPlaces () {
-        // TODO Auto-generated method stub
-        return 0;
+        return permutation.size();
     }
 
     @Override
@@ -34,8 +33,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     @Override
     public int getCombinationPlaces () {
-        // TODO Auto-generated method stub
-        return 0;
+        return permutation.size() - 1;
     }
 
     @Override
