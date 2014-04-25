@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -42,8 +43,10 @@ import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
 import pe1314.g11.sga.DuplicateRemovalStep;
+import pe1314.g11.sga.LengthedMutationStep;
 import pe1314.g11.sga.MultiMutationStep;
 import pe1314.g11.sga.PermutationChromosome;
+import pe1314.g11.sga.RankingSelectionStep;
 import pe1314.g11.sga.RouletteSelectionStep;
 import pe1314.g11.sga.TournamentSelectionStep;
 import pe1314.g11.util.ElitismStepPair;
@@ -67,7 +70,7 @@ public final class MainFrame extends JFrame {
     private static final String PRB_P2_12 = "(P2) Hospital (12x12)";
     private static final String PRB_P2_15 = "(P2) Hospital (15x15)";
     private static final String PRB_P2_30 = "(P2) Hospital (30x30)";
-    
+
     private static final String PRB_P1_F1 = "(P1) Función 1";
     private static final String PRB_P1_F2 = "(P1) Función 2";
     private static final String PRB_P1_F3 = "(P1) Función 3";
@@ -78,10 +81,19 @@ public final class MainFrame extends JFrame {
     private static final String SEL_TOURNAMENT = "Torneo";
     private static final String SEL_RANKING = "Ranking";
 
+    private static final String COMB_PMX = "Emp. Parcial";
+    private static final String COMB_OX = "Orden";
+    private static final String COMB_CX = "Ciclos";
+
+    private static final String MUT_INVERSION = "Inversión";
+    private static final String MUT_EXCHANGE = "Intercambio";
+    private static final String MUT_INSERTION = "Inserción";
+
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
 
     private JComboBox<String> comboProblem;
+    private JLabel labelPrecission;
     private JSpinner spinnerPrecission;
 
     private JLabel labelExtra1;
@@ -90,6 +102,10 @@ public final class MainFrame extends JFrame {
     private JSpinner spinnerMinPopSize;
     private JSpinner spinnerEliteSize;
     private JComboBox<String> comboSelectionType;
+    private JLabel labelCombinationType;
+    private JComboBox<String> comboCombinationType;
+    private JLabel labelMutationType;
+    private JComboBox<String> comboMutationType;
     private JSpinner spinnerCombineProb;
     private JSpinner spinnerMutateProb;
 
@@ -175,9 +191,10 @@ public final class MainFrame extends JFrame {
             createLeftFormElements();
 
             FormLayout layout =
-                new FormLayout("right:pref, 3dlu, right:pref, 3dlu, pref", //
+                new FormLayout(
+                    "right:pref, 3dlu, right:pref, 3dlu, pref", //
                     "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
-                        + "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
+                        + "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
                         + "pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
 
             PanelBuilder builder = new PanelBuilder(layout);
@@ -189,7 +206,8 @@ public final class MainFrame extends JFrame {
             builder.addSeparator("Problema", cc.xyw(1, 1, 5));
             builder.addLabel("Problema:",    cc.xyw(1, 3, 3));
             builder.add(comboProblem,        cc.xy (5, 3));
-            builder.addLabel("Precisión:",   cc.xyw(1, 5, 3));
+            labelPrecission =
+                builder.addLabel("Precisión:",   cc.xyw(1, 5, 3));
             builder.add(spinnerPrecission,   cc.xy (5, 5));
             
             labelExtra1 =
@@ -204,31 +222,37 @@ public final class MainFrame extends JFrame {
             builder.add(spinnerEliteSize,          cc.xy (5, 13));
             builder.addLabel("Selección:",         cc.xyw(1, 15, 3));
             builder.add(comboSelectionType,        cc.xy (5, 15));
-            builder.addLabel("Prob. Combinación:", cc.xyw(1, 17, 3));
-            builder.add(spinnerCombineProb,        cc.xy (5, 17));
-            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 19, 3));
-            builder.add(spinnerMutateProb,         cc.xy (5, 19));
+            labelCombinationType = 
+                builder.addLabel("Combinación:",       cc.xyw(1, 17, 3));
+            builder.add(comboCombinationType,      cc.xy (5, 17));
+            builder.addLabel("Prob. Combinación:", cc.xyw(1, 19, 3));
+            builder.add(spinnerCombineProb,        cc.xy (5, 19));
+            labelMutationType =
+                builder.addLabel("Mutación:",          cc.xyw(1, 21, 3));
+            builder.add(comboMutationType,         cc.xy (5, 21));
+            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 23, 3));
+            builder.add(spinnerMutateProb,         cc.xy (5, 23));
 
 
-            builder.addSeparator("Parada",          cc.xyw(1, 21, 5));
-            builder.add(checkboxStopGeneration,     cc.xy (1, 23));
+            builder.addSeparator("Parada",          cc.xyw(1, 25, 5));
+            builder.add(checkboxStopGeneration,     cc.xy (1, 27));
             labelStopGeneration =
-                builder.addLabel("Generaciones:",   cc.xy (3, 23));
-            builder.add(spinnerStopGenerations,     cc.xy (5, 23));
-            builder.add(checkboxStopStall,          cc.xy (1, 25));
+                builder.addLabel("Generaciones:",   cc.xy (3, 27));
+            builder.add(spinnerStopGenerations,     cc.xy (5, 27));
+            builder.add(checkboxStopStall,          cc.xy (1, 29));
             labelStopStall =
-                builder.addLabel("Estancamiento:",  cc.xy (3, 25));
-            builder.add(spinnerStopStalled,         cc.xy (5, 25));
+                builder.addLabel("Estancamiento:",  cc.xy (3, 29));
+            builder.add(spinnerStopStalled,         cc.xy (5, 29));
 
 
-            builder.addSeparator("Otros",         cc.xyw(1, 27, 5));
-            builder.add(checkboxRandomSeed,       cc.xy (1, 29));
+            builder.addSeparator("Otros",         cc.xyw(1, 31, 5));
+            builder.add(checkboxRandomSeed,       cc.xy (1, 33));
             labelRandomSeed =
-                builder.addLabel("Semilla RNG:",  cc.xy (3, 29));
-            builder.add(textfieldRandomSeed,      cc.xy (5, 29));
+                builder.addLabel("Semilla RNG:",  cc.xy (3, 33));
+            builder.add(textfieldRandomSeed,      cc.xy (5, 33));
 
 
-            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 31, 5));
+            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 35, 5));
             /* @formatter:on */
 
             JPanel leftPanel = builder.getPanel();
@@ -270,7 +294,15 @@ public final class MainFrame extends JFrame {
         spinnerEliteSize.setModel(new SpinnerNumberModel(0.01, 0, 0.5, 0.005));
 
         comboSelectionType = new JComboBox<String>();
-        comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] { SEL_ROULETTE, SEL_TOURNAMENT, SEL_RANKING }));
+        comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] {
+            SEL_ROULETTE, SEL_TOURNAMENT, SEL_RANKING }));
+
+        comboCombinationType = new JComboBox<String>();
+        comboCombinationType.setModel(new DefaultComboBoxModel<String>(new String[] { COMB_PMX, COMB_OX, COMB_CX }));
+
+        comboMutationType = new JComboBox<String>();
+        comboMutationType.setModel(new DefaultComboBoxModel<String>(new String[] {
+            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION }));
 
         spinnerCombineProb = new JSpinner();
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
@@ -335,18 +367,39 @@ public final class MainFrame extends JFrame {
         return panel;
     }
 
+    private int obtainPNum () {
+        if (Arrays.asList(PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5).contains(
+            comboProblem.getSelectedItem()))
+        {
+            return 1;
+        }
+
+        if (Arrays.asList(PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30).contains(comboProblem.getSelectedItem())) {
+            return 2;
+        }
+        
+        return 0;
+    }
+
     /* package */void updateLeftForm () {
         if (geneticWorker == null) {
+            boolean p1 = obtainPNum() == 1;
+
             buttonPlay.setEnabled(true);
             buttonPause.setEnabled(false);
             buttonStop.setEnabled(false);
 
             comboProblem.setEnabled(true);
-            spinnerPrecission.setEnabled(true);
+            labelPrecission.setEnabled(p1);
+            spinnerPrecission.setEnabled(p1);
 
             spinnerMinPopSize.setEnabled(true);
             spinnerEliteSize.setEnabled(true);
             comboSelectionType.setEnabled(true);
+            comboCombinationType.setEnabled(!p1);
+            labelCombinationType.setEnabled(!p1);
+            comboMutationType.setEnabled(!p1);
+            labelMutationType.setEnabled(!p1);
             spinnerMutateProb.setEnabled(true);
             spinnerCombineProb.setEnabled(true);
 
@@ -379,6 +432,8 @@ public final class MainFrame extends JFrame {
             spinnerMinPopSize.setEnabled(false);
             spinnerEliteSize.setEnabled(false);
             comboSelectionType.setEnabled(false);
+            comboCombinationType.setEnabled(false);
+            comboMutationType.setEnabled(false);
             spinnerMutateProb.setEnabled(false);
             spinnerCombineProb.setEnabled(false);
 
@@ -413,7 +468,7 @@ public final class MainFrame extends JFrame {
             case PRB_P2_30:
                 solveHospitalProblem("tai30");
                 break;
-                
+
             case PRB_P1_F1:
                 solveBinaryProblem(new P1F1Problem(precission));
                 break;
@@ -457,22 +512,54 @@ public final class MainFrame extends JFrame {
 
             case SEL_TOURNAMENT:
                 return new TournamentSelectionStep<>(tournamentSize);
-                
+
             case SEL_RANKING:
                 return new RankingSelectionStep<>();
         }
 
         return null;
     }
+    
+    private int obtainCombinationType () {
+        switch (comboCombinationType.getSelectedItem().toString()) {
+            case COMB_PMX: return PermutationChromosome.COMBINATION_PMX;
+            case COMB_OX: return PermutationChromosome.COMBINATION_OX;
+            case COMB_CX: return PermutationChromosome.COMBINATION_CX;
+        }
+        
+        return 0;
+    }
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainCombinationStep () {
         double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
-        return new CombinationStep<>(combineProb, 0);
+
+        switch (obtainPNum()) {
+            case 1:return new CombinationStep<>(combineProb, 0);
+            case 2:return new CombinationStep<>(combineProb, obtainCombinationType());
+        }
+        
+        return null;
     }
 
+    private int obtainMutationType () {
+        switch (comboCombinationType.getSelectedItem().toString()) {
+            case MUT_EXCHANGE: return PermutationChromosome.MUTATION_EXCHANGE;
+            case MUT_INSERTION: return PermutationChromosome.MUTATION_INSERTION;
+            case MUT_INVERSION: return PermutationChromosome.MUTATION_INVERSION;
+        }
+        
+        return 0;
+    }
+    
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainMutationStep () {
         double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
-        return new MultiMutationStep<>(mutateProb, 0);
+        
+        switch (obtainPNum()) {
+            case 1: return new MultiMutationStep<>(mutateProb, 0);
+            case 2: return new LengthedMutationStep<>(mutateProb, obtainMutationType());
+        }
+        
+        return null;
     }
 
     private <V, C extends Chromosome<C>> ElitismStepPair<V,C> obtainEletismPair () {

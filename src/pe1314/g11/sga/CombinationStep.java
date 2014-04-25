@@ -15,10 +15,10 @@ import pe1314.g11.SolverStep;
  * @author Pedro Morgado Alarcón
  * @param <V> Type of the values
  */
-public final class CombinationStep<V,C extends Chromosome<C>> implements SolverStep<V,C> {
+public final class CombinationStep<V, C extends Chromosome<C>> implements SolverStep<V,C> {
 
     private final double probability;
-    
+
     private final int type;
 
     public CombinationStep (double probability, int type) {
@@ -31,10 +31,7 @@ public final class CombinationStep<V,C extends Chromosome<C>> implements SolverS
     }
 
     @Override
-    public void apply (
-        Problem<V,C> problem, List<C> input, Random random, int generation,
-        List<C> output)
-    {
+    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
 
         Iterator<C> it = input.iterator();
         while (it.hasNext()) {
@@ -45,9 +42,13 @@ public final class CombinationStep<V,C extends Chromosome<C>> implements SolverS
 
                 if (random.nextDouble() < probability) {
                     int place = random.nextInt(a.getCombinationPlaces());
+                    int p2 = place;
+                    while (place == p2) {
+                        p2 = random.nextInt(a.getCombinationPlaces());
+                    }
 
-                    output.add(a.getCombined(b, type, place, 0));
-                    output.add(b.getCombined(a, type, place, 0));
+                    output.add(a.getCombined(b, type, place, p2 - place));
+                    output.add(b.getCombined(a, type, place, p2 - place));
 
                 } else {
                     output.add(a);

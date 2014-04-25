@@ -15,9 +15,9 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     public static final int MUTATION_EXCHANGE = 1;
     public static final int MUTATION_INSERTION = 2;
 
-    public static final int COMINATION_PMX = 0;
-    public static final int COMINATION_OX = 1;
-    public static final int COMINATION_CYCLES = 2;
+    public static final int COMBINATION_PMX = 0;
+    public static final int COMBINATION_OX = 1;
+    public static final int COMBINATION_CX = 2;
 
     private final List<Integer> permutation;
 
@@ -119,11 +119,11 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     @Override
     public PermutationChromosome getCombined (PermutationChromosome other, int type, int place, int length) {
         switch (type) {
-            case COMINATION_PMX:
+            case COMBINATION_PMX:
                 return getCombinedPmx(other, place, length);
-            case COMINATION_OX:
+            case COMBINATION_OX:
                 return getCombinedOx(other, place, length);
-            case COMINATION_CYCLES:
+            case COMBINATION_CX:
                 return getCombinedCycles(other, place, length);
         }
 
