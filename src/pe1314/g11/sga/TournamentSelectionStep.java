@@ -44,11 +44,8 @@ public class TournamentSelectionStep<V, C extends Chromosome<C>> implements Solv
                 tournament.add(input.get(random.nextInt(input.size())));
             }
 
-            // Sort the tournament
-            Collections.sort(tournament, sorter);
-
             // Add the best (first)
-            output.add(tournament.get(0));
+            output.add(Collections.min(tournament, sorter));
         }
     }
 }

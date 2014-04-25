@@ -67,6 +67,7 @@ public final class MainFrame extends JFrame {
     private static final String PRB_P2_12 = "(P2) Hospital (12x12)";
     private static final String PRB_P2_15 = "(P2) Hospital (15x15)";
     private static final String PRB_P2_30 = "(P2) Hospital (30x30)";
+    
     private static final String PRB_P1_F1 = "(P1) Función 1";
     private static final String PRB_P1_F2 = "(P1) Función 2";
     private static final String PRB_P1_F3 = "(P1) Función 3";
@@ -75,6 +76,7 @@ public final class MainFrame extends JFrame {
 
     private static final String SEL_ROULETTE = "Ruleta";
     private static final String SEL_TOURNAMENT = "Torneo";
+    private static final String SEL_RANKING = "Ranking";
 
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
@@ -268,7 +270,7 @@ public final class MainFrame extends JFrame {
         spinnerEliteSize.setModel(new SpinnerNumberModel(0.01, 0, 0.5, 0.005));
 
         comboSelectionType = new JComboBox<String>();
-        comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] { SEL_ROULETTE, SEL_TOURNAMENT }));
+        comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] { SEL_ROULETTE, SEL_TOURNAMENT, SEL_RANKING }));
 
         spinnerCombineProb = new JSpinner();
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
@@ -411,6 +413,7 @@ public final class MainFrame extends JFrame {
             case PRB_P2_30:
                 solveHospitalProblem("tai30");
                 break;
+                
             case PRB_P1_F1:
                 solveBinaryProblem(new P1F1Problem(precission));
                 break;
@@ -454,6 +457,9 @@ public final class MainFrame extends JFrame {
 
             case SEL_TOURNAMENT:
                 return new TournamentSelectionStep<>(tournamentSize);
+                
+            case SEL_RANKING:
+                return new RankingSelectionStep<>();
         }
 
         return null;
