@@ -141,7 +141,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
             newPerm.set(i, other.permutation.get(i));
         }
 
-        // For every non-range number: if in the range, swap for the old in that pos; else, skip
+        // For every non-range number: if in the range, swap for the other
+        List<Integer> subPerm = newPerm.subList(li, ri + 1);
         for (int i = 0; i < newPerm.size(); i++) {
             // Skip the range
             if (i == li) {
@@ -149,20 +150,17 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
                 continue;
             }
 
-            // Check if the range
-            int curr = newPerm.get(i).intValue();
-            for (int j = li; j <= ri; j++) {
-                int r = newPerm.get(j).intValue();
-
-                if (curr == r) {
-                    // Gotcha! Swap for the old
-                    newPerm.set(i, permutation.get(j));
-                    break;
-                }
+            // Check if in the range
+            while (subPerm.contains(newPerm.get(i))) {
+                newPerm.set(i, permutation.get(li + subPerm.indexOf(newPerm.get(i))));
             }
         }
 
-        return new PermutationChromosome(newPerm);
+        try {
+            return new PermutationChromosome(newPerm);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     private PermutationChromosome getCombinedOx (PermutationChromosome other, int place, int length) {
