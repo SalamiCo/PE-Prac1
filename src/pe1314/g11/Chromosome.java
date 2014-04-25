@@ -80,8 +80,9 @@ public abstract class Chromosome<C extends Chromosome<C>> {
      * @param other Another chromosome for combination
      * @param type Combination type to use
      * @param place The position to use for combination
+     * @param length Length of the combination, if applicable
      * @return A combined chromosome
      */
-    public abstract C getCombined (C other, int type, int place);
+    public abstract C getCombined (C other, int type, int place, int length);
 
 }

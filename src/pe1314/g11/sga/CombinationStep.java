@@ -46,8 +46,8 @@ public final class CombinationStep<V,C extends Chromosome<C>> implements SolverS
                 if (random.nextDouble() < probability) {
                     int place = random.nextInt(a.getCombinationPlaces());
 
-                    output.add(a.getCombined(b, type, place));
-                    output.add(b.getCombined(a, type, place));
+                    output.add(a.getCombined(b, type, place, 0));
+                    output.add(b.getCombined(a, type, place, 0));
 
                 } else {
                     output.add(a);

@@ -15,6 +15,9 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     public static final int MUTATION_EXCHANGE = 1;
     public static final int MUTATION_INSERTION = 2;
 
+    public static final int COMINATION_PMX = 0;
+    public static final int COMINATION_OX = 1;
+
     private final List<Integer> permutation;
 
     public PermutationChromosome (List<Integer> permutation) {
@@ -109,14 +112,17 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     @Override
     public int getCombinationTypes () {
-        // TODO Auto-generated method stub
-        return 0;
+        return 1;
     }
 
     @Override
-    public PermutationChromosome getCombined (PermutationChromosome other, int type, int place) {
-        // TODO Auto-generated method stub
-        return this;
+    public PermutationChromosome getCombined (PermutationChromosome other, int type, int place, int length) {
+        switch (type) {
+            case COMINATION_PMX: getCombinedPmx(other, place, length);
+            case COMINATION_OX: getCombinedOx(other, place, length);
+        }
+        
+        throw new IllegalArgumentException("Invalid muration type " + type);
     }
 
     @Override

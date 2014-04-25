@@ -88,7 +88,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
     }
 
     @Override
-    public BinaryChromosome getCombined (BinaryChromosome other, int type, int place) {
+    public BinaryChromosome getCombined (BinaryChromosome other, int type, int place, int len) {
         if (this.length != other.length) {
             throw new IllegalArgumentException("unmatching lengths (" + length + " != " + other.length + ")");
         }
