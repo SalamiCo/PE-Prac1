@@ -39,6 +39,7 @@ import pe1314.g11.pr1.P1F2Problem;
 import pe1314.g11.pr1.P1F3Problem;
 import pe1314.g11.pr1.P1F4Problem;
 import pe1314.g11.pr1.P1F5Problem;
+import pe1314.g11.pr2.HeuristicMutationStep;
 import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
@@ -88,6 +89,7 @@ public final class MainFrame extends JFrame {
     private static final String MUT_INVERSION = "Inversión";
     private static final String MUT_EXCHANGE = "Intercambio";
     private static final String MUT_INSERTION = "Inserción";
+    private static final String MUT_HEURISTIC = "Heurística";
 
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
@@ -126,6 +128,7 @@ public final class MainFrame extends JFrame {
     private JButton buttonStop;
 
     /* package */SwingWorker<?,?> geneticWorker;
+    /* package */volatile boolean stopWorker;
 
     /* package */ResultsPanel resultsPanel;
 
@@ -302,7 +305,7 @@ public final class MainFrame extends JFrame {
 
         comboMutationType = new JComboBox<String>();
         comboMutationType.setModel(new DefaultComboBoxModel<String>(new String[] {
-            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION }));
+            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION, MUT_HEURISTIC }));
 
         spinnerCombineProb = new JSpinner();
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
@@ -542,7 +545,7 @@ public final class MainFrame extends JFrame {
     }
 
     private int obtainMutationType () {
-        switch (comboCombinationType.getSelectedItem().toString()) {
+        switch (comboMutationType.getSelectedItem().toString()) {
             case MUT_EXCHANGE: return PermutationChromosome.MUTATION_EXCHANGE;
             case MUT_INSERTION: return PermutationChromosome.MUTATION_INSERTION;
             case MUT_INVERSION: return PermutationChromosome.MUTATION_INVERSION;
@@ -553,6 +556,10 @@ public final class MainFrame extends JFrame {
     
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainMutationStep () {
         double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
+        
+        if (comboMutationType.getSelectedItem().toString().equals(MUT_HEURISTIC)) {
+            return (SolverStep<V,C>) new HeuristicMutationStep<V>(mutateProb);
+        }
         
         switch (obtainPNum()) {
             case 1: return new MultiMutationStep<>(mutateProb, 0);
@@ -679,7 +686,7 @@ public final class MainFrame extends JFrame {
                 return true;
             }
 
-            return false;
+            return stopWorker;
         }
 
         @Override
