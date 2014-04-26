@@ -1,22 +1,20 @@
 package pe1314.g11.pr2;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import pe1314.g11.Problem;
 import pe1314.g11.SolverStep;
 import pe1314.g11.sga.PermutationChromosome;
 import pe1314.g11.util.FitnessComparator;
+import pe1314.g11.util.Permutations;
 
 public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromosome> {
     private static final int NMIN = 3;
-    private static final int NMAX = 6;
+    private static final int NMAX = 5;
     private static final List<Integer> NUMS = new ArrayList<>();
 
     private final double probability;
@@ -60,7 +58,9 @@ public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromos
         PermutationChromosome best = null;
 
         List<Integer> elems = selectRandom(perm.size(), spsize);
-        for (List<Integer> elemPerm : permutations(elems)) {
+        Iterable<List<Integer>>permutations = Permutations.permutations(elems);
+
+        for (List<Integer> elemPerm : permutations) {
             for (int i = 0; i < spsize; i++) {
                 perm.set(elems.get(i).intValue(), operm.get(elemPerm.get(i).intValue()));
             }
@@ -84,31 +84,5 @@ public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromos
         return nums.subList(0, spsize);
     }
 
-    private static Set<List<Integer>> permutations (List<Integer> elems) {
-        // No elements: No permutations
-        if (elems.size() == 0) {
-            return Collections.emptySet();
-        }
 
-        // One element: A single permutation
-        if (elems.size() == 1) {
-            return Collections.singleton(elems);
-        }
-
-        // More elements: Remove one element, get permutations, restore element
-        Set<List<Integer>> allPerms = new HashSet<>();
-        List<Integer> elemsMinusI = new ArrayList<>(elems);
-        Integer oldElem = elemsMinusI.remove(0);
-
-        Set<List<Integer>> subPerms = permutations(elemsMinusI);
-        for (List<Integer> subPerm : subPerms) {
-            for (int i = 0; i <= subPerm.size(); i++) {
-                subPerm.add(i, oldElem);
-                allPerms.add(new ArrayList<>(subPerm));
-                subPerm.remove(i);
-            }
-        }
-        
-        return allPerms;
-    }
 }
