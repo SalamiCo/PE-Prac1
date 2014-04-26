@@ -57,7 +57,7 @@ public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromos
 
         PermutationChromosome best = null;
 
-        List<Integer> elems = selectRandom(perm.size(), spsize);
+        List<Integer> elems = selectRandom(perm.size(), spsize, random);
         Iterable<List<Integer>>permutations = Permutations.permutations(elems);
 
         for (List<Integer> elemPerm : permutations) {
@@ -74,13 +74,13 @@ public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromos
         return best;
     }
 
-    private static List<Integer> selectRandom (int size, int spsize) {
+    private static List<Integer> selectRandom (int size, int spsize, Random random) {
         while (NUMS.size() < size) {
             NUMS.add(Integer.valueOf(NUMS.size()));
         }
 
         List<Integer> nums = new ArrayList<>(NUMS.subList(0, size));
-        Collections.shuffle(nums);
+        Collections.shuffle(nums, random);
         return nums.subList(0, spsize);
     }
 

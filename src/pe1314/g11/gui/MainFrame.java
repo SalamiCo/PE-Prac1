@@ -40,7 +40,9 @@ import pe1314.g11.pr1.P1F3Problem;
 import pe1314.g11.pr1.P1F4Problem;
 import pe1314.g11.pr1.P1F5Problem;
 import pe1314.g11.pr2.HeuristicMutationStep;
+import pe1314.g11.pr2.OrderPriorityOrderCombinationStep;
 import pe1314.g11.pr2.P2Problem;
+import pe1314.g11.pr2.PositionPriorityOrderCombinationStep;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
 import pe1314.g11.sga.DuplicateRemovalStep;
@@ -85,6 +87,8 @@ public final class MainFrame extends JFrame {
 
     private static final String COMB_PMX = "Emp. Parcial";
     private static final String COMB_OX = "Orden";
+    private static final String COMB_OX_POS = "Orden (Pos. Prior.)";
+    private static final String COMB_OX_ORD = "Orden (Ord. Prior.)";
     private static final String COMB_CX = "Ciclos";
 
     private static final String MUT_INVERSION = "Inversión";
@@ -302,7 +306,8 @@ public final class MainFrame extends JFrame {
             SEL_ROULETTE, SEL_TOURNAMENT, SEL_RANKING }));
 
         comboCombinationType = new JComboBox<String>();
-        comboCombinationType.setModel(new DefaultComboBoxModel<String>(new String[] { COMB_PMX, COMB_OX, COMB_CX }));
+        comboCombinationType.setModel(new DefaultComboBoxModel<String>(new String[] {
+            COMB_PMX, COMB_OX, COMB_OX_POS, COMB_OX_ORD, COMB_CX }));
 
         comboMutationType = new JComboBox<String>();
         comboMutationType.setModel(new DefaultComboBoxModel<String>(new String[] {
@@ -549,6 +554,13 @@ public final class MainFrame extends JFrame {
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainCombinationStep () {
         double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
+
+        if (comboCombinationType.getSelectedItem().toString().equals(COMB_OX_POS)) {
+            return (SolverStep<V,C>) new PositionPriorityOrderCombinationStep<V>(combineProb);
+        }
+        if (comboCombinationType.getSelectedItem().toString().equals(COMB_OX_ORD)) {
+            return (SolverStep<V,C>) new OrderPriorityOrderCombinationStep<V>(combineProb);
+        }
 
         switch (obtainPNum()) {
             case 1:

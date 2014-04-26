@@ -32,7 +32,6 @@ public final class CombinationStep<V, C extends Chromosome<C>> implements Solver
 
     @Override
     public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
-
         Iterator<C> it = input.iterator();
         while (it.hasNext()) {
             C a = it.next();
