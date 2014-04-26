@@ -357,6 +357,12 @@ public final class MainFrame extends JFrame {
         buttonPause = new JButton("\u275A\u275A");
 
         buttonStop = new JButton("\u25FE");
+        buttonStop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed (ActionEvent arg0) {
+                clickedStop();
+            }
+        });
     }
 
     private JPanel createLeftFormButtonPanel () {
@@ -365,7 +371,7 @@ public final class MainFrame extends JFrame {
 
         panel.add(buttonPlay);
         // panel.add(buttonPause);
-        // panel.add(buttonStop);
+        panel.add(buttonStop);
 
         return panel;
     }
@@ -488,6 +494,10 @@ public final class MainFrame extends JFrame {
             case PRB_P1_F5:
                 solveBinaryProblem(new P1F5Problem(precission));
         }
+    }
+    
+    /* package */void clickedStop () {
+        stopWorker = true;
     }
 
     // =========================
@@ -643,6 +653,7 @@ public final class MainFrame extends JFrame {
 
             this.geneticWorker = obtainWorker(solver, random);
             if (geneticWorker != null) {
+                stopWorker = false;
                 geneticWorker.execute();
             }
         } catch (IOException exc) {
