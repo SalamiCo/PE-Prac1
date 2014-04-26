@@ -44,6 +44,7 @@ import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
 import pe1314.g11.sga.DuplicateRemovalStep;
+import pe1314.g11.sga.InversionStep;
 import pe1314.g11.sga.LengthedMutationStep;
 import pe1314.g11.sga.MultiMutationStep;
 import pe1314.g11.sga.PermutationChromosome;
@@ -386,7 +387,7 @@ public final class MainFrame extends JFrame {
         if (Arrays.asList(PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30).contains(comboProblem.getSelectedItem())) {
             return 2;
         }
-        
+
         return 0;
     }
 
@@ -495,7 +496,7 @@ public final class MainFrame extends JFrame {
                 solveBinaryProblem(new P1F5Problem(precission));
         }
     }
-    
+
     /* package */void clickedStop () {
         stopWorker = true;
     }
@@ -532,14 +533,17 @@ public final class MainFrame extends JFrame {
 
         return null;
     }
-    
+
     private int obtainCombinationType () {
         switch (comboCombinationType.getSelectedItem().toString()) {
-            case COMB_PMX: return PermutationChromosome.COMBINATION_PMX;
-            case COMB_OX: return PermutationChromosome.COMBINATION_OX;
-            case COMB_CX: return PermutationChromosome.COMBINATION_CX;
+            case COMB_PMX:
+                return PermutationChromosome.COMBINATION_PMX;
+            case COMB_OX:
+                return PermutationChromosome.COMBINATION_OX;
+            case COMB_CX:
+                return PermutationChromosome.COMBINATION_CX;
         }
-        
+
         return 0;
     }
 
@@ -547,36 +551,47 @@ public final class MainFrame extends JFrame {
         double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
 
         switch (obtainPNum()) {
-            case 1:return new CombinationStep<>(combineProb, 0);
-            case 2:return new CombinationStep<>(combineProb, obtainCombinationType());
+            case 1:
+                return new CombinationStep<>(combineProb, 0);
+            case 2:
+                return new CombinationStep<>(combineProb, obtainCombinationType());
         }
-        
+
         return null;
     }
 
     private int obtainMutationType () {
         switch (comboMutationType.getSelectedItem().toString()) {
-            case MUT_EXCHANGE: return PermutationChromosome.MUTATION_EXCHANGE;
-            case MUT_INSERTION: return PermutationChromosome.MUTATION_INSERTION;
-            case MUT_INVERSION: return PermutationChromosome.MUTATION_INVERSION;
+            case MUT_EXCHANGE:
+                return PermutationChromosome.MUTATION_EXCHANGE;
+            case MUT_INSERTION:
+                return PermutationChromosome.MUTATION_INSERTION;
+            case MUT_INVERSION:
+                return PermutationChromosome.MUTATION_INVERSION;
         }
-        
+
         return 0;
     }
-    
+
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainMutationStep () {
         double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
-        
+
         if (comboMutationType.getSelectedItem().toString().equals(MUT_HEURISTIC)) {
             return (SolverStep<V,C>) new HeuristicMutationStep<V>(mutateProb);
         }
-        
+
         switch (obtainPNum()) {
-            case 1: return new MultiMutationStep<>(mutateProb, 0);
-            case 2: return new LengthedMutationStep<>(mutateProb, obtainMutationType());
+            case 1:
+                return new MultiMutationStep<>(mutateProb, 0);
+            case 2:
+                return new LengthedMutationStep<>(mutateProb, obtainMutationType());
         }
-        
+
         return null;
+    }
+
+    private <V, C extends Chromosome<C>> SolverStep<V,C> obtainInversionStep () {
+        return new InversionStep<>(0.1);
     }
 
     private <V, C extends Chromosome<C>> ElitismStepPair<V,C> obtainEletismPair () {
@@ -637,6 +652,7 @@ public final class MainFrame extends JFrame {
             SolverStep<List<Integer>,PermutationChromosome> selectionStep = obtainSelectionStep();
             SolverStep<List<Integer>,PermutationChromosome> combinationStep = obtainCombinationStep();
             SolverStep<List<Integer>,PermutationChromosome> mutationStep = obtainMutationStep();
+            SolverStep<List<Integer>,PermutationChromosome> inversionStep = obtainInversionStep();
             SolverStep<List<Integer>,PermutationChromosome> dedupStep = new DuplicateRemovalStep<>();
 
             /* @formatter:off */
@@ -646,6 +662,7 @@ public final class MainFrame extends JFrame {
                 .step(selectionStep)
                 .step(combinationStep)
                 .step(mutationStep)
+                .step(inversionStep)
                 .step(esp.getRestoreStep())
                 .step(dedupStep)
                 .build();
