@@ -156,27 +156,24 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
             }
         }
 
-        try {
-            return new PermutationChromosome(newPerm);
-        } catch (Exception e) {
-            throw e;
-        }
+        return new PermutationChromosome(newPerm);
+
     }
 
     private PermutationChromosome getCombinedOx (PermutationChromosome other, int place, int length) {
         List<Integer> newPerm = new ArrayList<>(permutation);
 
         final int li = Math.min(place, place + length);
-        final int ri = Math.max(place, place + length); 
+        final int ri = Math.max(place, place + length);
 
         for (int i = li; i <= ri; i++) {
             newPerm.set(i, other.permutation.get(i));
         }
 
-        int pos = place + length + 1;
+        int pos = ri + 1;
         int i = pos;
         List<Integer> subPerm = newPerm.subList(li, ri + 1);
-        while (pos != place) {
+        while (pos != li) {
             if (!(subPerm.contains(permutation.get(i)))) {
                 newPerm.set(pos, permutation.get(i));
                 pos++;
@@ -193,7 +190,11 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
             }
         }
 
-        return new PermutationChromosome(newPerm);
+        try {
+            return new PermutationChromosome(newPerm);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     private PermutationChromosome getCombinedCycles (PermutationChromosome other, int place, int length) {
