@@ -158,15 +158,17 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void updateSlider (int num) {
+        if (slider != null) {
             slider.setMinimum(0);
             slider.setValue(0); // Avoid NPE (range-check)
             slider.setMaximum(Math.max(1, num));
             slider.setValue(num);
-            
+
             slider.setMajorTickSpacing(Math.max(1, num / 15));
             slider.setMinorTickSpacing(Math.max(1, num / 150));
             slider.createStandardLabels(Math.max(1, num / 15), Math.max(0, num - 15 * (num / 15)));
             slider.setEnabled(true);
+        }
     }
 
     /* package */void sliderChange () {
