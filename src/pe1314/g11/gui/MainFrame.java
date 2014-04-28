@@ -96,6 +96,7 @@ public final class MainFrame extends JFrame {
     private static final String MUT_EXCHANGE = "Intercambio";
     private static final String MUT_INSERTION = "Inserción";
     private static final String MUT_HEURISTIC = "Heurística";
+    private static final String MUT_ROTATION = "Rotación";
 
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
@@ -116,6 +117,7 @@ public final class MainFrame extends JFrame {
     private JComboBox<String> comboMutationType;
     private JSpinner spinnerCombineProb;
     private JSpinner spinnerMutateProb;
+    private JSpinner spinnerInversionProb;
 
     private JLabel labelStopGeneration;
     private JCheckBox checkboxStopGeneration;
@@ -203,7 +205,7 @@ public final class MainFrame extends JFrame {
                 new FormLayout(
                     "right:pref, 3dlu, right:pref, 3dlu, pref", //
                     "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
-                        + "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
+                        + "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
                         + "pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
 
             PanelBuilder builder = new PanelBuilder(layout);
@@ -241,27 +243,29 @@ public final class MainFrame extends JFrame {
             builder.add(comboMutationType,         cc.xy (5, 21));
             builder.addLabel("Prob. Mutación:",    cc.xyw(1, 23, 3));
             builder.add(spinnerMutateProb,         cc.xy (5, 23));
+            builder.addLabel("Prob. Inversión:",   cc.xyw(1, 25, 3));
+            builder.add(spinnerInversionProb,      cc.xy (5, 25));
 
 
-            builder.addSeparator("Parada",          cc.xyw(1, 25, 5));
-            builder.add(checkboxStopGeneration,     cc.xy (1, 27));
+            builder.addSeparator("Parada",          cc.xyw(1, 27, 5));
+            builder.add(checkboxStopGeneration,     cc.xy (1, 29));
             labelStopGeneration =
-                builder.addLabel("Generaciones:",   cc.xy (3, 27));
-            builder.add(spinnerStopGenerations,     cc.xy (5, 27));
-            builder.add(checkboxStopStall,          cc.xy (1, 29));
+                builder.addLabel("Generaciones:",   cc.xy (3, 29));
+            builder.add(spinnerStopGenerations,     cc.xy (5, 29));
+            builder.add(checkboxStopStall,          cc.xy (1, 31));
             labelStopStall =
-                builder.addLabel("Estancamiento:",  cc.xy (3, 29));
-            builder.add(spinnerStopStalled,         cc.xy (5, 29));
+                builder.addLabel("Estancamiento:",  cc.xy (3, 31));
+            builder.add(spinnerStopStalled,         cc.xy (5, 31));
 
 
-            builder.addSeparator("Otros",         cc.xyw(1, 31, 5));
-            builder.add(checkboxRandomSeed,       cc.xy (1, 33));
+            builder.addSeparator("Otros",         cc.xyw(1, 33, 5));
+            builder.add(checkboxRandomSeed,       cc.xy (1, 35));
             labelRandomSeed =
-                builder.addLabel("Semilla RNG:",  cc.xy (3, 33));
-            builder.add(textfieldRandomSeed,      cc.xy (5, 33));
+                builder.addLabel("Semilla RNG:",  cc.xy (3, 35));
+            builder.add(textfieldRandomSeed,      cc.xy (5, 35));
 
 
-            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 35, 5));
+            builder.add(createLeftFormButtonPanel(), cc.xyw(1, 37, 5));
             /* @formatter:on */
 
             JPanel leftPanel = builder.getPanel();
@@ -297,7 +301,7 @@ public final class MainFrame extends JFrame {
         spinnerPrecission.setEditor(new JSpinner.NumberEditor(spinnerPrecission, "0.#########"));
 
         spinnerMinPopSize = new JSpinner();
-        spinnerMinPopSize.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
+        spinnerMinPopSize.setModel(new SpinnerNumberModel(1000, 10, 100000, 10));
 
         spinnerEliteSize = new JSpinner();
         spinnerEliteSize.setModel(new SpinnerNumberModel(0.01, 0, 0.5, 0.005));
@@ -312,13 +316,16 @@ public final class MainFrame extends JFrame {
 
         comboMutationType = new JComboBox<String>();
         comboMutationType.setModel(new DefaultComboBoxModel<String>(new String[] {
-            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION, MUT_HEURISTIC }));
+            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION, MUT_HEURISTIC , MUT_ROTATION}));
 
         spinnerCombineProb = new JSpinner();
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
 
         spinnerMutateProb = new JSpinner();
-        spinnerMutateProb.setModel(new SpinnerNumberModel(0.05, 0.0, 1.0, 0.001));
+        spinnerMutateProb.setModel(new SpinnerNumberModel(0.05, 0.0, 1.0, 0.01));
+        
+        spinnerInversionProb = new JSpinner();
+        spinnerInversionProb.setModel(new SpinnerNumberModel(0.3, 0.0, 1.0, 0.05));
 
         checkboxStopGeneration = new JCheckBox();
         checkboxStopGeneration.setSelected(true);
@@ -330,7 +337,7 @@ public final class MainFrame extends JFrame {
         });
 
         spinnerStopGenerations = new JSpinner();
-        spinnerStopGenerations.setModel(new SpinnerNumberModel(64, 8, 65536, 8));
+        spinnerStopGenerations.setModel(new SpinnerNumberModel(100, 10, 100000, 10));
 
         checkboxStopStall = new JCheckBox();
         checkboxStopStall.addActionListener(new ActionListener() {
@@ -341,7 +348,7 @@ public final class MainFrame extends JFrame {
         });
 
         spinnerStopStalled = new JSpinner();
-        spinnerStopStalled.setModel(new SpinnerNumberModel(32, 4, 128, 1));
+        spinnerStopStalled.setModel(new SpinnerNumberModel(50, 10, 1000, 10));
 
         checkboxRandomSeed = new JCheckBox();
         checkboxRandomSeed.addActionListener(new ActionListener() {
@@ -583,6 +590,8 @@ public final class MainFrame extends JFrame {
                 return PermutationChromosome.MUTATION_INSERTION;
             case MUT_INVERSION:
                 return PermutationChromosome.MUTATION_INVERSION;
+            case MUT_ROTATION:
+                return PermutationChromosome.MUTATION_ROTATION;
         }
 
         return 0;
@@ -606,7 +615,9 @@ public final class MainFrame extends JFrame {
     }
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainInversionStep () {
-        return new InversionStep<>(0.1);
+        double inversionProb = ((Number) spinnerInversionProb.getValue()).doubleValue();
+        
+        return new InversionStep<>(inversionProb);
     }
 
     private <V, C extends Chromosome<C>> ElitismStepPair<V,C> obtainEletismPair () {
