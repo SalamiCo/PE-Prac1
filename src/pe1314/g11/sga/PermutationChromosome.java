@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import pe1314.g11.Chromosome;
+import pe1314.g11.util.PermutationUtils;
 
 public final class PermutationChromosome extends Chromosome<PermutationChromosome>
     implements Comparable<PermutationChromosome>
@@ -35,10 +36,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     }
 
     public static PermutationChromosome newRandom (int length, Random random) {
-        List<Integer> nums = new ArrayList<Integer>();
-        for (int i = 0; i < length; i++) {
-            nums.add(Integer.valueOf(i));
-        }
+        List<Integer> nums = PermutationUtils.firstN(length);
 
         Collections.shuffle(nums, random);
         return new PermutationChromosome(nums);

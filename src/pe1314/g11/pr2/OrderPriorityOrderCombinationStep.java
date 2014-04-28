@@ -9,10 +9,9 @@ import java.util.Random;
 import pe1314.g11.Problem;
 import pe1314.g11.SolverStep;
 import pe1314.g11.sga.PermutationChromosome;
+import pe1314.g11.util.PermutationUtils;
 
 public final class OrderPriorityOrderCombinationStep<V> implements SolverStep<V,PermutationChromosome> {
-
-    private static final List<Integer> NUMS = new ArrayList<>();
 
     private final double probability;
 
@@ -79,11 +78,7 @@ public final class OrderPriorityOrderCombinationStep<V> implements SolverStep<V,
     }
 
     private static List<Integer> selectRandom (int size, int spsize, Random random) {
-        while (NUMS.size() < size) {
-            NUMS.add(Integer.valueOf(NUMS.size()));
-        }
-
-        List<Integer> nums = new ArrayList<>(NUMS.subList(0, size));
+        List<Integer> nums = PermutationUtils.firstN(size);
         Collections.shuffle(nums, random);
         return nums.subList(0, spsize);
     }

@@ -8,16 +8,38 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public final class Permutations {
+/**
+ * Utilities used a lot in permutations.
+ * 
+ * @author darkhogg Daniel Escoz Solana
+ * @author Pedro Morgado Alarcón
+ */
+public final class PermutationUtils {
 
     private static final List<Set<List<Integer>>> CACHED_PERMS = new ArrayList<>();
     private static final List<Integer> NUMS = new ArrayList<>();
+    
+    static {
+        firstN(100);
+    }
+    
+    public static Integer wrapInt (int i) {
+        return (i < NUMS.size()) ? NUMS.get(i) : Integer.valueOf(i);
+    }
+    
+    public static List<Integer> firstN (int size) {
+        while (NUMS.size() < size) {
+            NUMS.add(Integer.valueOf(NUMS.size()));
+        }
+
+        return new ArrayList<>(NUMS.subList(0, size));
+    }
 
     public static Iterable<List<Integer>> permutations (List<Integer> elems) {
         return new PermutationsIterable(elems);
     }
 
-    public static Set<List<Integer>> computePermutations (List<Integer> elems) {
+    private static Set<List<Integer>> computePermutations (List<Integer> elems) {
         // No elements: No permutations
         if (elems.size() == 0) {
             return Collections.emptySet();
@@ -45,7 +67,7 @@ public final class Permutations {
         return allPerms;
     }
 
-    /*package*/ static Set<List<Integer>> cachePermutations (int size) {
+    /* package */static Set<List<Integer>> cachePermutations (int size) {
         if (size < 0) {
             // Base case
             return null;
@@ -57,14 +79,6 @@ public final class Permutations {
         }
 
         return CACHED_PERMS.get(size);
-    }
-
-    private static List<Integer> firstN (int size) {
-        while (NUMS.size() < size) {
-            NUMS.add(Integer.valueOf(NUMS.size()));
-        }
-        
-        return new ArrayList<>(NUMS.subList(0, size));
     }
 
     private static class PermutationsIterable implements Iterable<List<Integer>> {
@@ -86,7 +100,7 @@ public final class Permutations {
 
         private List<Integer> elements;
         private Iterator<List<Integer>> permIt;
-        
+
         private final List<Integer> permElems = new ArrayList<>();
 
         /* package */PermutationsIterator (List<Integer> elements) {
@@ -102,12 +116,12 @@ public final class Permutations {
         @Override
         public List<Integer> next () {
             List<Integer> perm = permIt.next();
-            
+
             permElems.clear();
             for (Integer i : perm) {
                 permElems.add(elements.get(i.intValue()));
             }
-            
+
             return permElems;
         }
 
