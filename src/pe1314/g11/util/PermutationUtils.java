@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Utilities used a lot in permutations.
  * 
- * @author darkhogg Daniel Escoz Solana
+ * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  */
 public final class PermutationUtils {
