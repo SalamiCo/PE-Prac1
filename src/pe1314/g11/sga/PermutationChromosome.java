@@ -19,6 +19,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     public static final int COMBINATION_PMX = 0;
     public static final int COMBINATION_OX = 1;
     public static final int COMBINATION_CX = 2;
+    public static final int COMBINATION_ORDCOD = 3;
 
     private final List<Integer> permutation;
 
@@ -111,24 +112,60 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     @Override
     public int getCombinationTypes () {
-        return 1;
+        return 4;
     }
 
     @Override
     public PermutationChromosome getCombined (PermutationChromosome other, int type, int place, int length) {
         switch (type) {
             case COMBINATION_PMX:
-                return getCombinedPmx(other, place, length);
+                return getPmxCombined(other, place, length);
             case COMBINATION_OX:
-                return getCombinedOx(other, place, length);
+                return getOxCombined(other, place, length);
             case COMBINATION_CX:
-                return getCombinedCycles(other, place, length);
+                return getCxCombined(other, place, length);
+            case COMBINATION_ORDCOD:
+                return getOrdCodCombined(other, place, length);
         }
 
         throw new IllegalArgumentException("Invalid muration type " + type);
     }
 
-    private PermutationChromosome getCombinedPmx (PermutationChromosome other, int place, int length) {
+    private PermutationChromosome getOrdCodCombined (PermutationChromosome other, int place, int length) {
+        int[] codThis = ordinalEncode(this);
+        int[] codOther = ordinalEncode(other);
+        
+        for (int i = place; i < permutation.size(); i++) {
+            codThis[i] = codOther[i];
+        }
+        
+        return ordinalDecode(codThis);
+    }
+
+    private static int[] ordinalEncode (PermutationChromosome chromo) {
+        int[] cod = new int[chromo.permutation.size()];
+        List<Integer> nums = PermutationUtils.firstN(cod.length);
+        
+        for (int i = 0; i < cod.length; i++) {
+            cod[i] = nums.indexOf(chromo.permutation.get(i));
+            nums.remove(cod[i]);
+        }
+        
+        return cod;
+    }
+
+    private static PermutationChromosome ordinalDecode (int[] cod) {
+        List<Integer> nums = PermutationUtils.firstN(cod.length);
+        List<Integer> perm = new ArrayList<>();
+        
+        for (int i = 0; i < cod.length; i++) {
+            perm.add(nums.remove(cod[i]));
+        }
+        
+        return new PermutationChromosome(perm);
+    }
+
+    private PermutationChromosome getPmxCombined (PermutationChromosome other, int place, int length) {
         List<Integer> newPerm = new ArrayList<>(permutation);
 
         final int li = Math.min(place, place + length);
@@ -158,7 +195,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     }
 
-    private PermutationChromosome getCombinedOx (PermutationChromosome other, int place, int length) {
+    private PermutationChromosome getOxCombined (PermutationChromosome other, int place, int length) {
         List<Integer> newPerm = new ArrayList<>(permutation);
 
         final int li = Math.min(place, place + length);
@@ -195,7 +232,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         }
     }
 
-    private PermutationChromosome getCombinedCycles (PermutationChromosome other, int place, int length) {
+    private PermutationChromosome getCxCombined (PermutationChromosome other, int place, int length) {
         List<Integer> newPerm = new ArrayList<Integer>(Collections.<Integer>nCopies(permutation.size(), null));
 
         // First, make a full cycle
