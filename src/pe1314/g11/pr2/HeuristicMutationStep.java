@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import pe1314.g11.Problem;
+import pe1314.g11.Solver;
 import pe1314.g11.SolverStep;
 import pe1314.g11.sga.PermutationChromosome;
 import pe1314.g11.util.FitnessComparator;
@@ -38,6 +39,7 @@ public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromos
                 // Should we mutate this place?
                 if (random.nextDouble() < probability) {
                     chromo = performMutation(chromo, problem, random);
+                    Solver.NUM_MUTS++;
                 }
             }
 
@@ -57,7 +59,7 @@ public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromos
         PermutationChromosome best = null;
 
         List<Integer> elems = selectRandom(perm.size(), spsize, random);
-        Iterable<List<Integer>>permutations = PermutationUtils.permutations(elems);
+        Iterable<List<Integer>> permutations = PermutationUtils.permutations(elems);
 
         for (List<Integer> elemPerm : permutations) {
             for (int i = 0; i < spsize; i++) {
@@ -78,6 +80,5 @@ public class HeuristicMutationStep<V> implements SolverStep<V,PermutationChromos
         Collections.shuffle(nums, random);
         return nums.subList(0, spsize);
     }
-
 
 }
