@@ -114,8 +114,18 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     public void clearResults () {
-        slider.setMinimum(0);
+        slider.setLabelTable(null);
         slider.setEnabled(false);
+        slider.setMinimum(0);
+        slider.setValue(0);
+
+        try {
+            slider.setMaximum(1);
+        } catch (NullPointerException exc) {
+            // Dunno lol
+            System.err.printf("NPE in clearResults%n");
+            slider.setMaximum(1);
+        }
 
         tables.clear();
 
@@ -158,15 +168,21 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     private void updateSlider (int num) {
-            slider.setMinimum(0);
-            slider.setValue(0); // Avoid NPE (range-check)
+        slider.setMinimum(0);
+        slider.setValue(0); // Avoid NPE (range-check)
+        try {
             slider.setMaximum(Math.max(1, num));
-            slider.setValue(num);
-            
-            slider.setMajorTickSpacing(Math.max(1, num / 15));
-            slider.setMinorTickSpacing(Math.max(1, num / 150));
-            slider.createStandardLabels(Math.max(1, num / 15), Math.max(0, num - 15 * (num / 15)));
-            slider.setEnabled(true);
+        } catch (NullPointerException exc) {
+            // Dunno lol
+            System.err.printf("NPE in updateSlider (num: %d)%n", num);
+            slider.setMaximum(Math.max(1, num));
+        }
+        slider.setValue(num);
+
+        slider.setMajorTickSpacing(Math.max(1, num / 15));
+        slider.setMinorTickSpacing(Math.max(1, num / 150));
+        slider.createStandardLabels(Math.max(1, num / 15), Math.max(0, num - 15 * (num / 15)));
+        slider.setEnabled(true);
     }
 
     /* package */void sliderChange () {
