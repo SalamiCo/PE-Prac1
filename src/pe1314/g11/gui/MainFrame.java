@@ -325,7 +325,7 @@ public final class MainFrame extends JFrame {
         spinnerMutateProb.setModel(new SpinnerNumberModel(0.05, 0.0, 1.0, 0.01));
         
         spinnerInversionProb = new JSpinner();
-        spinnerInversionProb.setModel(new SpinnerNumberModel(0.3, 0.0, 1.0, 0.05));
+        spinnerInversionProb.setModel(new SpinnerNumberModel(0.1, 0.0, 1.0, 0.05));
 
         checkboxStopGeneration = new JCheckBox();
         checkboxStopGeneration.setSelected(true);
@@ -425,6 +425,7 @@ public final class MainFrame extends JFrame {
             labelMutationType.setEnabled(!p1);
             spinnerMutateProb.setEnabled(true);
             spinnerCombineProb.setEnabled(true);
+            spinnerInversionProb.setEnabled(!p1);
 
             checkboxStopGeneration.setEnabled(true);
             checkboxStopStall.setEnabled(true);
@@ -459,6 +460,7 @@ public final class MainFrame extends JFrame {
             comboMutationType.setEnabled(false);
             spinnerMutateProb.setEnabled(false);
             spinnerCombineProb.setEnabled(false);
+            spinnerInversionProb.setEnabled(false);
 
             checkboxStopGeneration.setEnabled(false);
             spinnerStopGenerations.setEnabled(false);
