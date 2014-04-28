@@ -96,6 +96,7 @@ public final class MainFrame extends JFrame {
     private static final String MUT_EXCHANGE = "Intercambio";
     private static final String MUT_INSERTION = "Inserción";
     private static final String MUT_HEURISTIC = "Heurística";
+    private static final String MUT_ROTATION = "Rotación";
 
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
@@ -312,7 +313,7 @@ public final class MainFrame extends JFrame {
 
         comboMutationType = new JComboBox<String>();
         comboMutationType.setModel(new DefaultComboBoxModel<String>(new String[] {
-            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION, MUT_HEURISTIC }));
+            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION, MUT_HEURISTIC , MUT_ROTATION}));
 
         spinnerCombineProb = new JSpinner();
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
@@ -583,6 +584,8 @@ public final class MainFrame extends JFrame {
                 return PermutationChromosome.MUTATION_INSERTION;
             case MUT_INVERSION:
                 return PermutationChromosome.MUTATION_INVERSION;
+            case MUT_ROTATION:
+                return PermutationChromosome.MUTATION_ROTATION;
         }
 
         return 0;
