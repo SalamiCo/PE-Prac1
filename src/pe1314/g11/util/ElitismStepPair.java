@@ -43,6 +43,9 @@ public final class ElitismStepPair<V, C extends Chromosome<C>> {
 
     private class SaveStep implements SolverStep<V,C> {
 
+        /* package */SaveStep () {
+        }
+
         @Override
         public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
             output.addAll(input);
@@ -59,6 +62,9 @@ public final class ElitismStepPair<V, C extends Chromosome<C>> {
     }
 
     private class RestoreStep implements SolverStep<V,C> {
+
+        /* package */RestoreStep () {
+        }
 
         @Override
         public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {

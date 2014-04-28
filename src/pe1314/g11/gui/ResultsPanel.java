@@ -174,7 +174,7 @@ public final class ResultsPanel extends JSplitPane {
             slider.setMaximum(Math.max(1, num));
         } catch (NullPointerException exc) {
             // Dunno lol
-            System.err.printf("NPE in updateSlider (num: %d)%n", num);
+            System.err.printf("NPE in updateSlider (num: %d)%n", Integer.valueOf(num));
             slider.setMaximum(Math.max(1, num));
         }
         slider.setValue(num);

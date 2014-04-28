@@ -6,9 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import pe1314.g11.Problem;
@@ -16,7 +14,7 @@ import pe1314.g11.sga.PermutationChromosome;
 import pe1314.g11.util.IntSqMatrix;
 
 public final class P2Problem extends Problem<List<Integer>,PermutationChromosome> {
-    
+
     private final IntSqMatrix distance;
     private final IntSqMatrix traffic;
 
@@ -74,26 +72,26 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
             /* Read the traffic matrix */
             IntSqMatrix traffic = readMatrix(reader, size);
             reader.readLine();
-            
+
             /* Read the distance matrix */
             IntSqMatrix distance = readMatrix(reader, size);
-            
+
             /* Return the result */
             return new P2Problem(distance, traffic);
         }
     }
-    
+
     private static IntSqMatrix readMatrix (BufferedReader reader, int size) throws IOException {
         IntSqMatrix matrix = new IntSqMatrix(size);
-        
+
         for (int i = 0; i < size; i++) {
             String[] line = reader.readLine().trim().split("\\s+");
-            
+
             for (int j = 0; j < size; j++) {
                 matrix.set(i, j, Integer.parseInt(line[j]));
             }
         }
-        
+
         return matrix;
     }
 }

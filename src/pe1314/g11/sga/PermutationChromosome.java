@@ -1,6 +1,7 @@
 package pe1314.g11.sga;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 
 import pe1314.g11.Chromosome;
 import pe1314.g11.util.PermutationUtils;
+import pe1314.g11.util.XorShiftRandom;
 
 public final class PermutationChromosome extends Chromosome<PermutationChromosome>
     implements Comparable<PermutationChromosome>
@@ -110,15 +112,13 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
         return new PermutationChromosome(newPerm);
     }
-    
+
     private PermutationChromosome getRotationMutated (int place, int length) {
         final List<Integer> newPerm = new ArrayList<>(permutation);
 
-        if (length < 0){
-            length += permutation.size();
-        }
-        
-        for (int i = 0; i < length; i++){
+        int alen = (length < 0) ? length + permutation.size() : length;
+
+        for (int i = 0; i < alen; i++) {
             newPerm.add(newPerm.remove(0));
         }
 
@@ -238,7 +238,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
             i++;
 
-            if (pos >= permutation.size()) {                pos = 0;
+            if (pos >= permutation.size()) {
+                pos = 0;
             }
 
             if (i >= permutation.size()) {
@@ -276,31 +277,76 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     }
 
     private PermutationChromosome getRecombCombined (PermutationChromosome other, int place, int length) {
-        List<Integer> perm = new ArrayList<>();
+        Random random = new XorShiftRandom(other.hashCode());
 
         // Create an empty table
-        List<Set<Integer>> neighbours = new ArrayList<>();
+        List<Set<Integer>> table = new ArrayList<>();
         for (int i = 0; i < other.permutation.size(); i++) {
-            Set<Integer> ns = new HashSet<>();
-            neighbours.add(ns);
+            Set<Integer> neighs = new HashSet<>();
+            table.add(neighs);
         }
 
         // Fill the table
-        
-        
-        // Start the process
-        BitSet used = new BitSet();
-        perm.add(other.permutation.get(0));
-        while (perm.size() < other.permutation.size()) {
-            Integer last = perm.get(perm.size() - 1);
-            
-            // Add to bitset
-            used.set(last.intValue());
-            
-            BitSet tocheck = new BitSet();
+        for (int i = 0; i < permutation.size(); i++) {
+            Integer ii = PermutationUtils.wrapInt(i);
+
+            int idxt = permutation.indexOf(ii);
+            int idxtr = (idxt + 1) % permutation.size();
+            int idxtl = (idxt + permutation.size() - 1) % permutation.size();
+
+            int idxo = other.permutation.indexOf(ii);
+            int idxor = (idxo + 1) % other.permutation.size();
+            int idxol = (idxo + other.permutation.size() - 1) % other.permutation.size();
+
+            table.get(i).addAll(Arrays.asList(//
+                permutation.get(idxtl), permutation.get(idxtr), //
+                other.permutation.get(idxol), other.permutation.get(idxor) //
+                ));
         }
-        
-        return new PermutationChromosome(perm);
+
+        // Start the process
+        int tries = 0;
+        while (tries < 100) {
+            tries++;
+
+            List<Integer> perm = new ArrayList<>();
+            perm.add(other.permutation.get(0));
+
+            while (perm.size() < permutation.size()) {
+                Integer last = perm.get(perm.size() - 1);
+
+                // Get the neighbours (unused)
+                Set<Integer> neighs = new HashSet<>(table.get(last.intValue()));
+                neighs.removeAll(perm);
+
+                // Stall?
+                if (neighs.isEmpty()) {
+                    break;
+                }
+
+                // Select next
+                List<Integer> mins = new ArrayList<>();
+                for (Integer neigh : neighs) {
+                    if (mins.isEmpty() || table.get(neigh.intValue()).size() < table.get(mins.get(0).intValue()).size())
+                    {
+                        mins.clear();
+                        mins.add(neigh);
+                    } else if (table.get(neigh.intValue()).size() == table.get(mins.get(0).intValue()).size()) {
+                        mins.add(neigh);
+                    }
+                }
+
+                // Select a min
+                perm.add(mins.get(random.nextInt(mins.size())));
+            }
+
+            if (perm.size() == permutation.size()) {
+                return new PermutationChromosome(perm);
+            }
+        }
+
+        System.err.println("Recombination Stalled! Skipping...");
+        return this;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pe1314.g11.gui;
 
-import javax.swing.JFrame;
+import java.awt.Frame;
+
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -35,7 +36,7 @@ public final class Main {
             public void run () {
                 MainFrame frame = new MainFrame();
                 frame.setLocationRelativeTo(null);
-                frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+                frame.setExtendedState(frame.getExtendedState() | Frame.MAXIMIZED_BOTH);
                 frame.setVisible(true);
             }
         });
@@ -43,7 +44,7 @@ public final class Main {
 
     /** Private constructor to avoid instantiation */
     private Main () {
-        new AssertionError();
+        throw new AssertionError();
     }
 
 }

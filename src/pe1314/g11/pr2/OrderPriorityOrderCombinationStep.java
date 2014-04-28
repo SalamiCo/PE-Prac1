@@ -58,7 +58,7 @@ public final class OrderPriorityOrderCombinationStep<V> implements SolverStep<V,
         }
     }
 
-    private PermutationChromosome performCombination (
+    private static PermutationChromosome performCombination (
         PermutationChromosome a, PermutationChromosome b, Random random, List<Integer> selected)
     {
         List<Integer> newPerm = new ArrayList<>(a.getPermutation());

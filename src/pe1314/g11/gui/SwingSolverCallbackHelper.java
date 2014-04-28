@@ -26,7 +26,7 @@ import pe1314.g11.SolverTrace;
 public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> implements Callbacks<V,C> {
 
     /** The wrapped callbacks */
-    private Callbacks<V,C> callbacks;
+    /* callkbacks */Callbacks<V,C> callbacks;
 
     private SwingSolverCallbackHelper (Callbacks<V,C> callbacks) {
         if (callbacks == null) {

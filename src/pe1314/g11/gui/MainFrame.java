@@ -91,6 +91,7 @@ public final class MainFrame extends JFrame {
     private static final String COMB_OX_ORD = "Orden (Ord. Prior.)";
     private static final String COMB_CX = "Ciclos";
     private static final String COMB_ORDCOD = "Cod. Ordinal";
+    private static final String COMB_RECOMB = "Recomb. Rutas";
 
     private static final String MUT_INVERSION = "Inversión";
     private static final String MUT_EXCHANGE = "Intercambio";
@@ -312,7 +313,7 @@ public final class MainFrame extends JFrame {
 
         comboCombinationType = new JComboBox<String>();
         comboCombinationType.setModel(new DefaultComboBoxModel<String>(new String[] {
-            COMB_PMX, COMB_OX, COMB_OX_POS, COMB_OX_ORD, COMB_CX, COMB_ORDCOD }));
+            COMB_PMX, COMB_OX, COMB_OX_POS, COMB_OX_ORD, COMB_CX, COMB_ORDCOD, COMB_RECOMB }));
 
         comboMutationType = new JComboBox<String>();
         comboMutationType.setModel(new DefaultComboBoxModel<String>(new String[] {
@@ -472,6 +473,7 @@ public final class MainFrame extends JFrame {
 
     /** The user pressed an exit button */
     /* package */void actionExit () {
+        stopWorker = true;
         dispose();
     }
 
@@ -557,11 +559,14 @@ public final class MainFrame extends JFrame {
                 return PermutationChromosome.COMBINATION_CX;
             case COMB_ORDCOD:
                 return PermutationChromosome.COMBINATION_ORDCOD;
+            case COMB_RECOMB:
+                return PermutationChromosome.COMBINATION_RECOMB;
         }
 
         return 0;
     }
 
+    @SuppressWarnings("unchecked")
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainCombinationStep () {
         double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
 
@@ -597,6 +602,7 @@ public final class MainFrame extends JFrame {
         return 0;
     }
 
+    @SuppressWarnings("unchecked")
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainMutationStep () {
         double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
 

@@ -58,22 +58,22 @@ public final class PositionPriorityOrderCombinationStep<V> implements SolverStep
         }
     }
 
-    private PermutationChromosome performCombination (
+    private static PermutationChromosome performCombination (
         PermutationChromosome a, PermutationChromosome b, Random random, List<Integer> selected)
     {
         List<Integer> newPerm = new ArrayList<>(a.getPermutation());
         Collections.sort(selected);
-        
+
         // Remove all numbers from a
         for (Integer idx : selected) {
             newPerm.remove(b.getPermutation().get(idx.intValue()));
         }
-        
+
         // Add them again
         for (Integer idx : selected) {
             newPerm.add(idx.intValue(), b.getPermutation().get(idx.intValue()));
         }
-        
+
         return new PermutationChromosome(newPerm);
     }
 
