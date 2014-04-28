@@ -6,6 +6,7 @@ import java.util.Random;
 
 import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
+import pe1314.g11.Solver;
 import pe1314.g11.SolverStep;
 
 /**
@@ -48,6 +49,8 @@ public final class CombinationStep<V, C extends Chromosome<C>> implements Solver
 
                     output.add(a.getCombined(b, type, place, p2 - place));
                     output.add(b.getCombined(a, type, place, p2 - place));
+                    
+                    Solver.NUM_COMBS++;
 
                 } else {
                     output.add(a);

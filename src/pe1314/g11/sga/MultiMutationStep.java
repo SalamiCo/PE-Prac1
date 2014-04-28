@@ -5,6 +5,7 @@ import java.util.Random;
 
 import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
+import pe1314.g11.Solver;
 import pe1314.g11.SolverStep;
 
 /**
@@ -41,6 +42,8 @@ public final class MultiMutationStep<V,C extends Chromosome<C>> implements Solve
                 // Should we mutate this place?
                 if (random.nextDouble() < probability) {
                     chromo = chromo.getMutated(type, i, 1);
+                    
+                    Solver.NUM_MUTS++;
                 }
             }
 

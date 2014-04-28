@@ -16,6 +16,15 @@ import java.util.Random;
  */
 public final class Solver<V, C extends Chromosome<C>> {
 
+    public static Chromosome<?> CHROMOSOME;
+    public static double MAX_FITNESS;
+    public static double MIN_FITNESS;
+    public static double SUM_FITNESS;
+    public static int N_SUM_FITNESS;
+    public static long NUM_COMBS;
+    public static long NUM_MUTS;
+    public static long NUM_INVS;
+
     /** The problem being solved */
     private final Problem<V,C> problem;
 
@@ -52,6 +61,15 @@ public final class Solver<V, C extends Chromosome<C>> {
     private SolverTrace<V,C> doTrace (Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks) {
         SolverTrace<V,C> trace = new SolverTrace<V,C>(problem);
 
+        CHROMOSOME = null;
+        MAX_FITNESS = Double.NEGATIVE_INFINITY;
+        MIN_FITNESS = Double.POSITIVE_INFINITY;
+        SUM_FITNESS = 0.0;
+        N_SUM_FITNESS = 0;
+        NUM_COMBS = 0;
+        NUM_MUTS = 0;
+        NUM_INVS = 0;
+
         List<C> population = new ArrayList<C>();
         List<C> buffer = new ArrayList<C>();
 
@@ -65,7 +83,7 @@ public final class Solver<V, C extends Chromosome<C>> {
             callbacks.startGeneration(gen, Collections.unmodifiableList(population));
 
             // Apply every step
-            long time = System.nanoTime();
+            long gtime = System.nanoTime();
             for (SolverStep<V,C> step : steps) {
                 // Notify the start of the step
                 callbacks.startStep(step, Collections.unmodifiableList(population));
@@ -83,18 +101,30 @@ public final class Solver<V, C extends Chromosome<C>> {
                 // Notify the end of the step
                 callbacks.endStep(Collections.unmodifiableList(population));
             }
-            time = System.nanoTime() - time;
+            gtime = System.nanoTime() - gtime;
 
             // Update generation
             gen++;
-            trace.generation(population, time);
+            trace.generation(population, gtime);
 
             // Notify the end of the generation
             callbacks.endGeneration(Collections.unmodifiableList(population));
+
+            for (C c : population) {
+                double f = problem.fitness(c);
+                MAX_FITNESS = Math.max(MAX_FITNESS, f);
+                MIN_FITNESS = Math.min(MIN_FITNESS, f);
+                SUM_FITNESS += f;
+                N_SUM_FITNESS++;
+            }
         }
 
         // Notify of the end of the process
         callbacks.endProcess(trace);
+
+        System.out.printf(
+            "%.0f, %.0f, %.0f | %d, %d, %d :: %s%n", MIN_FITNESS, SUM_FITNESS / N_SUM_FITNESS, MAX_FITNESS, NUM_COMBS,
+            NUM_MUTS, NUM_INVS, trace.getBestSeen());
 
         return trace;
     }

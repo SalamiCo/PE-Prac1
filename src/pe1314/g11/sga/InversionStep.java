@@ -6,6 +6,7 @@ import java.util.Random;
 
 import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
+import pe1314.g11.Solver;
 import pe1314.g11.SolverStep;
 import pe1314.g11.util.FitnessComparator;
 
@@ -39,6 +40,7 @@ public class InversionStep<V, C extends Chromosome<C>> implements SolverStep<V,C
                 
                 if (comp.compare(newChromo, chromo) < 0){
                     chromo = newChromo;
+                    Solver.NUM_INVS++;
                 }
             }
 

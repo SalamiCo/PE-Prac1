@@ -5,6 +5,7 @@ import java.util.Random;
 
 import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
+import pe1314.g11.Solver;
 import pe1314.g11.SolverStep;
 
 public class LengthedMutationStep<V, C extends Chromosome<C>> implements SolverStep<V,C> {
@@ -35,6 +36,8 @@ public class LengthedMutationStep<V, C extends Chromosome<C>> implements SolverS
                 }
 
                 chromo = chromo.getMutated(type, p1, p2 - p1);
+                
+                Solver.NUM_MUTS++;
             }
 
             output.add(chromo);
