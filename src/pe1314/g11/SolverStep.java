@@ -7,7 +7,7 @@ import java.util.Random;
  * Represents a step of a genetic algorithm.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <C> Type of the chromosomes
  */
 public interface SolverStep<V, C extends Chromosome<C>> {

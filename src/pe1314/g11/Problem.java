@@ -6,7 +6,7 @@ import java.util.Random;
  * Representation of a genetic problem.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <C> Type of the chromosomes used in this problem
  */
 public abstract class Problem<V, C extends Chromosome<C>> {
@@ -45,7 +45,7 @@ public abstract class Problem<V, C extends Chromosome<C>> {
      * The kind of problem we are trying to solve.
      * 
      * @author Daniel Escoz Solana
-     * @author Pedro Morgado Alarcón
+     * @author Pedro Morgado Alarc&oacute;n
      */
     public static enum Type {
         /** This problem tries to maximize fitness */

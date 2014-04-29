@@ -10,7 +10,7 @@ import java.util.Random;
  * algorithm variations.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <V> Type of the values of the solved problem
  * @param <C> Type of the chromosomes to be processed
  */
@@ -119,7 +119,7 @@ public final class Solver<V, C extends Chromosome<C>> {
      * Fluent interface for creating {@link Solver ProblemSolvers}.
      * 
      * @author Daniel Escoz Solana
-     * @author Pedro Morgado Alarcón
+     * @author Pedro Morgado Alarc&oacute;n
      * @param <V> Type of the values of the solved problem
      * @param <C> Type of the chromosomes to be processed
      */
@@ -176,7 +176,7 @@ public final class Solver<V, C extends Chromosome<C>> {
      * Callbacks interface with methods called by the tracer when certains events occur.
      * 
      * @author Daniel Escoz Solana
-     * @author Pedro Morgado Alarcón
+     * @author Pedro Morgado Alarc&oacute;n
      * @param <V> Type of the values of the solved problem
      * @param <C> Type of the chromosomes to be processed
      */

@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 /**
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  */
 public final class Main {
 

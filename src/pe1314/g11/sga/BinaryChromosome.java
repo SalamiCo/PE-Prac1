@@ -11,7 +11,7 @@ import pe1314.g11.util.XorShiftRandom;
  * A chromosome that uses a bit string.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  */
 public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
 

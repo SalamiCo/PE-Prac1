@@ -20,7 +20,7 @@ import pe1314.g11.sga.BinaryChromosome;
  * </pre>
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  */
 public final class P1F1Problem extends Problem<Double,BinaryChromosome> {
 

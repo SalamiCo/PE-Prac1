@@ -66,7 +66,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * The main frame for the application graphical interface.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  */
 public final class MainFrame extends JFrame {
 
@@ -75,11 +75,11 @@ public final class MainFrame extends JFrame {
     private static final String PRB_P2_15 = "(P2) Hospital (15x15)";
     private static final String PRB_P2_30 = "(P2) Hospital (30x30)";
 
-    private static final String PRB_P1_F1 = "(P1) Función 1";
-    private static final String PRB_P1_F2 = "(P1) Función 2";
-    private static final String PRB_P1_F3 = "(P1) Función 3";
-    private static final String PRB_P1_F4 = "(P1) Función 4";
-    private static final String PRB_P1_F5 = "(P1) Función 5";
+    private static final String PRB_P1_F1 = "(P1) Funci\u00F3n 1";
+    private static final String PRB_P1_F2 = "(P1) Funci\u00F3n 2";
+    private static final String PRB_P1_F3 = "(P1) Funci\u00F3n 3";
+    private static final String PRB_P1_F4 = "(P1) Funci\u00F3n 4";
+    private static final String PRB_P1_F5 = "(P1) Funci\u00F3n 5";
 
     private static final String SEL_ROULETTE = "Ruleta";
     private static final String SEL_TOURNAMENT = "Torneo";
@@ -93,11 +93,11 @@ public final class MainFrame extends JFrame {
     private static final String COMB_ORDCOD = "Cod. Ordinal";
     private static final String COMB_RECOMB = "Recomb. Rutas";
 
-    private static final String MUT_INVERSION = "Inversión";
+    private static final String MUT_INVERSION = "Inversi\u00F3n";
     private static final String MUT_EXCHANGE = "Intercambio";
-    private static final String MUT_INSERTION = "Inserción";
-    private static final String MUT_HEURISTIC = "Heurística";
-    private static final String MUT_ROTATION = "Rotación";
+    private static final String MUT_INSERTION = "Inserci\u00F3n";
+    private static final String MUT_HEURISTIC = "Heur\u00EDstica";
+    private static final String MUT_ROTATION = "Rotaci\u00F3n";
 
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
@@ -145,7 +145,7 @@ public final class MainFrame extends JFrame {
      * Creates an empty frame and fills it with the necessary components to work.
      */
     public MainFrame () {
-        setTitle("Grupo 11 - Programación Evolutiva");
+        setTitle("Grupo 11 - Programaci\u00F3n Evolutiva");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         /* Schedule the GUI creation for later for greater responsivity */
@@ -219,7 +219,7 @@ public final class MainFrame extends JFrame {
             builder.addLabel("Problema:",    cc.xyw(1, 3, 3));
             builder.add(comboProblem,        cc.xy (5, 3));
             labelPrecission =
-                builder.addLabel("Precisión:",   cc.xyw(1, 5, 3));
+                builder.addLabel("Precisi\u00F3n:",   cc.xyw(1, 5, 3));
             builder.add(spinnerPrecission,   cc.xy (5, 5));
             
             labelExtra1 =
@@ -228,23 +228,23 @@ public final class MainFrame extends JFrame {
 
 
             builder.addSeparator("Algoritmo",      cc.xyw(1,  9, 5));
-            builder.addLabel("Tamaño Población:",  cc.xyw(1, 11, 3));
+            builder.addLabel("Tama\u00F1o Poblaci\u00F3n:",  cc.xyw(1, 11, 3));
             builder.add(spinnerMinPopSize,         cc.xy (5, 11));
-            builder.addLabel("Tamaño Élite:",      cc.xyw(1, 13, 3));
+            builder.addLabel("Tama\u00F1o \u00C9lite:",      cc.xyw(1, 13, 3));
             builder.add(spinnerEliteSize,          cc.xy (5, 13));
-            builder.addLabel("Selección:",         cc.xyw(1, 15, 3));
+            builder.addLabel("Selecci\u00F3n:",         cc.xyw(1, 15, 3));
             builder.add(comboSelectionType,        cc.xy (5, 15));
             labelCombinationType = 
-                builder.addLabel("Combinación:",       cc.xyw(1, 17, 3));
+                builder.addLabel("Combinaci\u00F3n:",       cc.xyw(1, 17, 3));
             builder.add(comboCombinationType,      cc.xy (5, 17));
-            builder.addLabel("Prob. Combinación:", cc.xyw(1, 19, 3));
+            builder.addLabel("Prob. Combinaci\u00F3n:", cc.xyw(1, 19, 3));
             builder.add(spinnerCombineProb,        cc.xy (5, 19));
             labelMutationType =
-                builder.addLabel("Mutación:",          cc.xyw(1, 21, 3));
+                builder.addLabel("Mutaci\u00F3n:",          cc.xyw(1, 21, 3));
             builder.add(comboMutationType,         cc.xy (5, 21));
-            builder.addLabel("Prob. Mutación:",    cc.xyw(1, 23, 3));
+            builder.addLabel("Prob. Mutaci\u00F3n:",    cc.xyw(1, 23, 3));
             builder.add(spinnerMutateProb,         cc.xy (5, 23));
-            builder.addLabel("Prob. Inversión:",   cc.xyw(1, 25, 3));
+            builder.addLabel("Prob. Inversi\u00F3n:",   cc.xyw(1, 25, 3));
             builder.add(spinnerInversionProb,      cc.xy (5, 25));
 
 
@@ -641,7 +641,7 @@ public final class MainFrame extends JFrame {
 
         if (!generationsIsChecked && !stallIsChecked) {
             JOptionPane.showMessageDialog(
-                this, "Elige al menos una condición de parada", "Formulario incompleto", JOptionPane.WARNING_MESSAGE);
+                this, "Elige al menos una condici\u00F3n de parada", "Formulario incompleto", JOptionPane.WARNING_MESSAGE);
             return null;
         }
 

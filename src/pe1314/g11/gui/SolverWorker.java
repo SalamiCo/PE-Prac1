@@ -11,7 +11,7 @@ import pe1314.g11.Solver;
  * A worker that runs a solver.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <V> Type of the values of the solved problem
  * @param <C> Type of the chromosomes to be processed
  */

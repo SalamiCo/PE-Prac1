@@ -35,7 +35,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * A Swing Panel that shows the results of a genetic algorithm run.
  * 
  * @author Daniel Escoz solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  */
 public final class ResultsPanel extends JSplitPane {
     private static final long serialVersionUID = -3430866206930351967L;
@@ -147,7 +147,7 @@ public final class ResultsPanel extends JSplitPane {
         dataset.addSeries(seriesBestLocal);
         dataset.addSeries(seriesBestGlobal);
 
-        chart = ChartFactory.createXYLineChart("Results", "Generación", "Fitness", dataset);
+        chart = ChartFactory.createXYLineChart("Results", "Generaci\u00F3n", "Fitness", dataset);
         ((NumberAxis) chart.getXYPlot().getRangeAxis()).setAutoRangeIncludesZero(false);
         ((NumberAxis) chart.getXYPlot().getDomainAxis()).setAutoRangeIncludesZero(false);
 

@@ -11,7 +11,7 @@ import java.util.List;
  * after being returned. This class can be considered immutable from the eyes of clients.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <V> Type of the values
  * @param <C> Type of the chromosomes
  */

@@ -6,7 +6,7 @@ import java.util.Arrays;
  * A class that represetns a square matrix of <tt>int</tt>s.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  */
 public final class IntSqMatrix {
 

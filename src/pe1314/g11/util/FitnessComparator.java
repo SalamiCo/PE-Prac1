@@ -11,7 +11,7 @@ import pe1314.g11.Problem;
  * Objects of this class need a {@link Problem} instance to know with fitness function to use.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <C> Type of the chromosomes
  */
 public final class FitnessComparator<C extends Chromosome<C>> implements Comparator<C> {

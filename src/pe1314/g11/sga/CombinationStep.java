@@ -12,7 +12,7 @@ import pe1314.g11.SolverStep;
  * A problem solver step that combines binary chromosomes with a given probability on a random combination point.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <V> Type of the values
  */
 public final class CombinationStep<V, C extends Chromosome<C>> implements SolverStep<V,C> {

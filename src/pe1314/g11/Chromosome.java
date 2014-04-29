@@ -15,7 +15,7 @@ package pe1314.g11;
  * This is the intended way of fulfilling the generic constraints of this class.
  * 
  * @author Daniel Escoz Solana
- * @author Pedro Morgado Alarcón
+ * @author Pedro Morgado Alarc&oacute;n
  * @param <C> Self-type, for better method signature
  */
 public abstract class Chromosome<C extends Chromosome<C>> {
