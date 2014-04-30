@@ -48,7 +48,7 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
             for (int j = 0; j < size; j++) {
                 int pi = chromosome.getPermutation().get(i).intValue();
                 int pj = chromosome.getPermutation().get(j).intValue();
-                sum += traffic.get(i, j) * distance.get(pi, pj);
+                sum += traffic.get(pi, pj) * distance.get(i, j);
             }
         }
 
