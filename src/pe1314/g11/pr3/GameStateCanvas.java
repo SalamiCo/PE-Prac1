@@ -2,7 +2,10 @@ package pe1314.g11.pr3;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 /**
@@ -17,6 +20,20 @@ public class GameStateCanvas extends JComponent {
     /** Size of the sprites */
     private static final int SPRSIZE = 16;
 
+    private static final BufferedImage IMG_ALIEN = loadImage("alien"); 
+    private static final BufferedImage IMG_SHIP = loadImage("ship"); 
+    private static final BufferedImage IMG_SHOT = loadImage("shot"); 
+
+    private static BufferedImage loadImage (String name) {
+        try {
+            return ImageIO.read(Object.class.getResource("/pe1314/g11/pr3/"+name+".png"));
+            
+        } catch (IOException exc) {
+            exc.printStackTrace();
+            throw new RuntimeException(exc);
+        }
+    }
+    
     /** Game state to show */
     private GameState state;
 
@@ -40,9 +57,7 @@ public class GameStateCanvas extends JComponent {
 
         if (state != null) {
             g.setColor(Color.RED);
-            g.fillRect(
-                state.getAlienCoord().x * SPRSIZE, (GameState.SIZE - state.getAlienCoord().y - 1) * SPRSIZE, SPRSIZE,
-                SPRSIZE);
+            g.drawImage(IMG_ALIEN, state.getAlienCoord().x * SPRSIZE, (GameState.SIZE - state.getAlienCoord().y - 1) * SPRSIZE, null);
 
             g.setColor(Color.GREEN);
             g.fillRect(
