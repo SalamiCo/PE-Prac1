@@ -18,7 +18,7 @@ public class GameStateCanvas extends JComponent {
     private static final long serialVersionUID = -8699666715467480924L;
 
     /** Size of the sprites */
-    private static final int SPRSIZE = 16;
+    private static final int SPRSIZE = 12;
 
     private static final BufferedImage IMG_ALIEN = loadImage("alien");
     private static final BufferedImage IMG_SHIP = loadImage("ship");
