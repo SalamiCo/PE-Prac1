@@ -20,20 +20,20 @@ public class GameStateCanvas extends JComponent {
     /** Size of the sprites */
     private static final int SPRSIZE = 16;
 
-    private static final BufferedImage IMG_ALIEN = loadImage("alien"); 
-    private static final BufferedImage IMG_SHIP = loadImage("ship"); 
-    private static final BufferedImage IMG_SHOT = loadImage("shot"); 
+    private static final BufferedImage IMG_ALIEN = loadImage("alien");
+    private static final BufferedImage IMG_SHIP = loadImage("ship");
+    private static final BufferedImage IMG_SHOT = loadImage("shot");
 
     private static BufferedImage loadImage (String name) {
         try {
-            return ImageIO.read(Object.class.getResource("/pe1314/g11/pr3/"+name+".png"));
-            
+            return ImageIO.read(Object.class.getResource("/pe1314/g11/pr3/" + name + ".png"));
+
         } catch (IOException exc) {
             exc.printStackTrace();
             throw new RuntimeException(exc);
         }
     }
-    
+
     /** Game state to show */
     private GameState state;
 
@@ -56,19 +56,14 @@ public class GameStateCanvas extends JComponent {
         g.fillRect(0, 0, getSize().width, getSize().height);
 
         if (state != null) {
-            g.setColor(Color.RED);
-            g.drawImage(IMG_ALIEN, state.getAlienCoord().x * SPRSIZE, (GameState.SIZE - state.getAlienCoord().y - 1) * SPRSIZE, null);
-
-            g.setColor(Color.GREEN);
-            g.fillRect(
-                state.getShipCoord().x * SPRSIZE, (GameState.SIZE - state.getShipCoord().y - 1) * SPRSIZE, SPRSIZE,
-                SPRSIZE);
+            g.drawImage(IMG_ALIEN, state.getAlienCoord().x * SPRSIZE, (GameState.SIZE - state.getAlienCoord().y - 1)
+                * SPRSIZE, null);
+            g.drawImage(IMG_SHIP, state.getShipCoord().x * SPRSIZE, (GameState.SIZE - state.getShipCoord().y - 1)
+                * SPRSIZE, null);
 
             if (state.getShotCoord() != null) {
-                g.setColor(Color.YELLOW);
-                g.fillRect(
-                    state.getShotCoord().x * SPRSIZE, (GameState.SIZE - state.getShotCoord().y - 1) * SPRSIZE, SPRSIZE,
-                    SPRSIZE);
+                g.drawImage(IMG_SHOT, state.getShotCoord().x * SPRSIZE, (GameState.SIZE - state.getShotCoord().y - 1)
+                    * SPRSIZE, null);
             }
         }
     }
