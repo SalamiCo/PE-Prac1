@@ -18,11 +18,15 @@ public final class LispList {
     public LispList (List<? extends LispValue> values) {
         this.values = Collections.unmodifiableList(new ArrayList<LispValue>(values));
     }
-    
+
     public int size () {
         return values.size();
     }
-    
+
+    public LispValue get (int n) {
+        return values.get(n);
+    }
+
     public int depth () {
         int max = 0;
         for (LispValue lv : values) {
@@ -37,7 +41,7 @@ public final class LispList {
         Iterator<LispValue> it = values.iterator();
         if (it.hasNext()) {
             sb.append(it.next());
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 sb.append(" ").append(it.next());
             }
         }

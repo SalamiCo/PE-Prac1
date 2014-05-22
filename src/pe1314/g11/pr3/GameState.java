@@ -1,8 +1,7 @@
 package pe1314.g11.pr3;
 
 import java.util.Objects;
-
-import pe1314.g11.util.XorShiftRandom;
+import java.util.Random;
 
 /**
  * Representation of the state of a game.
@@ -56,7 +55,9 @@ public final class GameState {
 
     private Coord shot;
 
-    public GameState (Coord ship, Coord alien, Coord shot) {
+    private boolean dirToggle;
+
+    public GameState (Coord ship, Coord alien, Coord shot, boolean dirToggle) {
         Objects.requireNonNull(ship, "ship");
         Objects.requireNonNull(alien, "alien");
 
@@ -67,6 +68,7 @@ public final class GameState {
         this.ship = ship;
         this.alien = alien;
         this.shot = shot;
+        this.dirToggle = dirToggle;
     }
 
     public void advance (Move move) {
@@ -74,7 +76,7 @@ public final class GameState {
             shot = shot.y == SIZE - 1 ? null : Coord.of(shot.x, shot.y + 1);
         }
 
-        if (alien.y % 2 == 0) {
+        if (alienLeft()) {
             // Go left!
             if (alien.x == 0) {
                 alien = Coord.of(alien.x, alien.y - 1);
@@ -125,7 +127,7 @@ public final class GameState {
     public int getDistX () {
         int dist = Math.abs(alien.x - ship.x);
 
-        if ((alien.y % 2 == 0 && alien.x > ship.x) || (alien.y % 2 == 1 && alien.x < ship.x)) {
+        if ((alienLeft() && alien.x > ship.x) || (!alienLeft() && alien.x < ship.x)) {
             return dist;
         } else {
             return -dist;
@@ -148,13 +150,17 @@ public final class GameState {
         return alien.y == 0;
     }
 
+    public boolean alienLeft () {
+        return dirToggle ? alien.y % 2 == 0 : alien.y % 2 == 1;
+    }
+
     @Override
     public String toString () {
         return "[ship=" + ship + "; alien=" + alien + "; shot=" + shot + "]";
     }
 
-    public static GameState newRandom (XorShiftRandom random) {
+    public static GameState newRandom (Random random) {
         return new GameState(Coord.of(random.nextInt(SIZE), 0), Coord.of(
-            random.nextInt(SIZE), SIZE - 1 - random.nextInt(6)), null);
+            random.nextInt(SIZE), SIZE - 1 - random.nextInt(6)), null, random.nextBoolean());
     }
 }

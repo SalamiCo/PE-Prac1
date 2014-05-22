@@ -3,6 +3,8 @@ package pe1314.g11.pr3;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import pe1314.g11.pr3.GameState.Move;
+
 /**
  * An object that, given a <tt>GameState</tt> and a <tt>LispList</tt> in the form of a program, will run the game. This
  * class also keeps track of certain statistics about the game.
@@ -47,32 +49,115 @@ public final class LispGameRunner {
     }
 
     /**
-     * Runs a single execution step of the program.
+     * Runs a single execution step izquierdas o de derechasof the program.
      * 
      * @return <tt>true</tt> if the game advanced, <tt>false</tt> otherwise
      */
     public boolean step () {
         /* If the stack is empty, add an initial frame */
         if (stack.isEmpty()) {
-            stack.addLast(new StackFrame(program, 0));
+            stack.addLast(new StackFrame(program, 1));
         }
-        
+
         /* Remove frames if they are finished */
         StackFrame frame = stack.getLast();
         while (frame != null && frame.position >= frame.scope.size()) {
-            stack.removeLast();
+            StackFrame oldFrame = stack.removeLast();
             frame = stack.isEmpty() ? null : stack.getLast();
+            frame.returns[frame.position - 1] = oldFrame.returns[0];
         }
-        
+
         /* If no frame (stack is empty), apply a NOP then return */
         if (frame == null) {
             game.advance(null);
             return true;
         }
-        
-        /* At this point, frame contains the next instruction to run */
+
+        /* At this point, frame contains the next instruction to run, so do it */
+        boolean adv = stepFunc(frame);
+        frame.position++;
+
+        return adv;
+    }
+
+    private boolean stepFunc (StackFrame frame) {
+        String fun = ((LispTerminal) frame.scope.get(0)).toString();
+
+        switch (fun) {
+            case IF:
+                return stepIf(frame);
+            case EQ:
+                return stepEq(frame);
+            case PROG2:
+                return stepProg2(frame);
+            case PROG3:
+                return stepProg3(frame);
+            default:
+                throw new IllegalArgumentException("'" + fun + "' is not a function");
+        }
+    }
+
+    private boolean stepIf (StackFrame frame) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    private boolean stepEq (StackFrame frame) {
+        if (frame.position > 0) {
+            return stepCall(frame);
+        } else {
+            frame.returns[0] = (frame.returns[1] == frame.returns[2]) ? 1 : 0;
+            return false;
+        }
+    }
+
+    private boolean stepProg2 (StackFrame frame) {
+        if (frame.position > 0) {
+            return stepCall(frame);
+        }
 
         return false;
+    }
+
+    private boolean stepProg3 (StackFrame frame) {
+        if (frame.position > 0) {
+            return stepCall(frame);
+        }
+
+        return false;
+    }
+
+    private boolean stepCall (StackFrame frame) {
+        LispValue what = frame.scope.get(frame.position);
+
+        if (what instanceof LispList) {
+            stack.addLast(new StackFrame((LispList) what, 1));
+            return false;
+        }
+
+        String fun = ((LispTerminal) what).toString();
+        switch (fun) {
+            case LEFT:
+                game.advance(Move.LEFT);
+                return true;
+            case RIGHT:
+                game.advance(Move.RIGHT);
+                return true;
+            case SHOOT:
+                game.advance(Move.SHOOT);
+                return true;
+
+            case DST_X:
+                frame.returns[frame.position] = game.getDistX();
+                return false;
+
+            case DST_Y:
+                frame.returns[frame.position] = game.getDistY();
+                return false;
+
+            default:
+                throw new IllegalArgumentException("'" + fun + "' is not a function");
+        }
     }
 
     /**
@@ -108,12 +193,14 @@ public final class LispGameRunner {
     }
 
     private static final class StackFrame {
-        /* package */LispList scope;
+        /* package */final LispList scope;
         /* package */int position;
+        /* package */final int[] returns;
 
         public StackFrame (LispList scope, int position) {
             this.scope = scope;
             this.position = position;
+            returns = new int[scope.size()];
         }
     }
 }
