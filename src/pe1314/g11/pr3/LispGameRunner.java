@@ -1,6 +1,7 @@
 package pe1314.g11.pr3;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 
 import pe1314.g11.pr3.GameState.Move;
@@ -61,10 +62,12 @@ public final class LispGameRunner {
 
         /* Remove frames if they are finished */
         StackFrame frame = stack.getLast();
-        while (frame != null && frame.position >= frame.scope.size()) {
+        while (frame != null && frame.position < 0) {
             StackFrame oldFrame = stack.removeLast();
             frame = stack.isEmpty() ? null : stack.getLast();
-            frame.returns[frame.position - 1] = oldFrame.returns[0];
+            if (frame != null) {
+                frame.returns[frame.position - 1] = oldFrame.returns[0];
+            }
         }
 
         /* If no frame (stack is empty), apply a NOP then return */
@@ -75,7 +78,16 @@ public final class LispGameRunner {
 
         /* At this point, frame contains the next instruction to run, so do it */
         boolean adv = stepFunc(frame);
-        frame.position++;
+        if (frame.position == 0) {
+            frame.position--;
+        } else {
+            frame.position++;
+        }
+
+        /* Back to position 0 */
+        if (frame.position == frame.scope.size()) {
+            frame.position = 0;
+        }
 
         return adv;
     }
@@ -212,6 +224,11 @@ public final class LispGameRunner {
             this.scope = scope;
             this.position = position;
             returns = new int[scope.size()];
+        }
+
+        @Override
+        public String toString () {
+            return position + " @ " + scope + " = " + Arrays.toString(returns);
         }
     }
 }
