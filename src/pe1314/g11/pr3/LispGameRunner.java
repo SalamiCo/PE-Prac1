@@ -98,7 +98,18 @@ public final class LispGameRunner {
     }
 
     private boolean stepIf (StackFrame frame) {
-        // TODO Auto-generated method stub
+        if (frame.position == 1) {
+            return stepCall(frame);
+        }
+
+        if (frame.position == 2 && frame.returns[1] != 0) {
+            return stepCall(frame);
+        }
+
+        if (frame.position == 3 && frame.returns[1] == 0) {
+            return stepCall(frame);
+        }
+
         return false;
     }
 
