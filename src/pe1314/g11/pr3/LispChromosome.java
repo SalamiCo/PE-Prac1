@@ -16,6 +16,10 @@ public class LispChromosome extends Chromosome<LispChromosome> {
     public static LispChromosome newRandom (Random random) {
         return new LispChromosome(LispUtils.generateRandom(random, 0));
     }
+    
+    public LispList getLispList(){
+        return list;
+    }
 
     @Override
     public int getMutationPlaces () {
