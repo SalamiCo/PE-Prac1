@@ -19,6 +19,10 @@ public final class LispList {
         this.values = Collections.unmodifiableList(new ArrayList<LispValue>(values));
     }
     
+    public int size () {
+        return values.size();
+    }
+    
     public int depth () {
         int max = 0;
         for (LispValue lv : values) {
@@ -39,4 +43,5 @@ public final class LispList {
         }
         return sb.append(")").toString();
     }
+
 }
