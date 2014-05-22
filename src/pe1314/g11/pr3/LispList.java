@@ -11,7 +11,7 @@ import java.util.List;
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  */
-public final class LispList {
+public final class LispList implements LispValue{
 
     private final List<LispValue> values;
 
