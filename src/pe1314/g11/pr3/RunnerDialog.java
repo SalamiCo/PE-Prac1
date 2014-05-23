@@ -7,6 +7,7 @@ import java.awt.event.WindowListener;
 import java.util.Random;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import pe1314.g11.util.XorShiftRandom;
@@ -35,6 +36,8 @@ public final class RunnerDialog extends JDialog implements ActionListener, Windo
         pack();
         
         addWindowListener(this);
+        
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     @Override

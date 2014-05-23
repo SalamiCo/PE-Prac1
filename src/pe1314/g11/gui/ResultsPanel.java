@@ -1,5 +1,7 @@
 package pe1314.g11.gui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -7,6 +9,7 @@ import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -25,6 +28,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import pe1314.g11.Chromosome;
 import pe1314.g11.Problem;
+import pe1314.g11.pr3.LispChromosome;
+import pe1314.g11.pr3.RunnerDialog;
 import pe1314.g11.util.FitnessComparator;
 
 import com.jgoodies.forms.builder.PanelBuilder;
@@ -59,6 +64,7 @@ public final class ResultsPanel extends JSplitPane {
     private XYSeries seriesBestGlobal;
 
     private final List<List<String[]>> tables = new ArrayList<>();
+    private final List<List<Chromosome<?>>> chromosomes = new ArrayList<>();
 
     public ResultsPanel () {
         super(JSplitPane.VERTICAL_SPLIT);
@@ -69,6 +75,15 @@ public final class ResultsPanel extends JSplitPane {
         chartPanel = new ChartPanel(null);
 
         table = new JTable();
+        table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked (MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JTable target = (JTable) e.getSource();
+                    int row = target.getSelectedRow();
+                    doubleClicked(row);
+                }
+            }
+        });
 
         slider = new JSlider();
         slider.setPaintTicks(true);
@@ -154,8 +169,14 @@ public final class ResultsPanel extends JSplitPane {
         chartPanel.setChart(chart);
     }
 
+    @SuppressWarnings("serial")
     private void clearTable () {
-        tableModel = new DefaultTableModel(new String[] { "Chromosome", "Value", "Fitness" }, 0);
+        tableModel = new DefaultTableModel(new String[] { "Chromosome", "Value", "Fitness" }, 0) {
+            @Override
+            public boolean isCellEditable (int row, int column) {
+                return false;
+            }
+        };
 
         table.setModel(tableModel);
     }
@@ -212,19 +233,35 @@ public final class ResultsPanel extends JSplitPane {
 
         List<C> sorted = new ArrayList<>(population);
         Collections.sort(sorted, fcmp);
+        
         List<String[]> rows = new ArrayList<>();
+        List<Chromosome<?>> crows = new ArrayList<>();
         clearTable();
         for (C chromo : sorted) {
+            crows.add(chromo);
             rows.add(new String[] { //
                 chromo.toString(), problem.value(chromo).toString(), String.valueOf(problem.fitness(chromo)) });
         }
 
         tables.add(rows);
+        chromosomes.add(crows);
+        
         updateTable(rows);
         updateSlider(gen);
 
         bestChromo.setText(best.toString());
         bestValue.setText(problem.value(best).toString());
         bestFitness.setText(String.valueOf(problem.fitness(best)));
+    }
+
+    /* package */void doubleClicked (int row) {
+        Chromosome<?> chromo = chromosomes.get(slider.getValue()).get(row);
+        
+        if (chromo instanceof LispChromosome) {
+            JDialog dialog = new RunnerDialog(((LispChromosome)chromo).getLispList());
+            dialog.setModal(true);
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
+        }
     }
 }
