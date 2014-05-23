@@ -11,7 +11,7 @@ import java.util.List;
  * @author Daniel Escoz Solana
  * @author Pedro Morgado Alarcón
  */
-public final class LispList implements LispValue{
+public final class LispList implements LispValue {
 
     private final List<LispValue> values;
 
@@ -33,6 +33,20 @@ public final class LispList implements LispValue{
             max = Math.max(max, lv.depth());
         }
         return 1 + max;
+    }
+
+    @Override
+    public int hashCode () {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals (Object obj) {
+        if (!(obj instanceof LispList)) {
+            return false;
+        }
+        LispList lc = (LispList) obj;
+        return values.equals(lc.values);
     }
 
     @Override

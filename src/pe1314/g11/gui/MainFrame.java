@@ -43,6 +43,9 @@ import pe1314.g11.pr2.HeuristicMutationStep;
 import pe1314.g11.pr2.OrderPriorityOrderCombinationStep;
 import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.pr2.PositionPriorityOrderCombinationStep;
+import pe1314.g11.pr3.LispChromosome;
+import pe1314.g11.pr3.LispList;
+import pe1314.g11.pr3.SpaceInvadersProblem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
 import pe1314.g11.sga.DuplicateRemovalStep;
@@ -80,6 +83,8 @@ public final class MainFrame extends JFrame {
     private static final String PRB_P1_F3 = "(P1) Funci\u00F3n 3";
     private static final String PRB_P1_F4 = "(P1) Funci\u00F3n 4";
     private static final String PRB_P1_F5 = "(P1) Funci\u00F3n 5";
+
+    private static final String PRB_P3 = "(P3) Space Invaders";
 
     private static final String SEL_ROULETTE = "Ruleta";
     private static final String SEL_TOURNAMENT = "Torneo";
@@ -285,8 +290,10 @@ public final class MainFrame extends JFrame {
 
     private void createLeftFormElements () {
         comboProblem = new JComboBox<String>();
-        comboProblem.setModel(new DefaultComboBoxModel<String>(new String[] {
-            PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4, PRB_P1_F5 }));
+        comboProblem
+            .setModel(new DefaultComboBoxModel<String>(new String[] {
+                PRB_P3, PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4,
+                PRB_P1_F5 }));
         comboProblem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (ActionEvent arg0) {
@@ -317,14 +324,14 @@ public final class MainFrame extends JFrame {
 
         comboMutationType = new JComboBox<String>();
         comboMutationType.setModel(new DefaultComboBoxModel<String>(new String[] {
-            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION, MUT_HEURISTIC , MUT_ROTATION}));
+            MUT_INVERSION, MUT_EXCHANGE, MUT_INSERTION, MUT_HEURISTIC, MUT_ROTATION }));
 
         spinnerCombineProb = new JSpinner();
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
 
         spinnerMutateProb = new JSpinner();
         spinnerMutateProb.setModel(new SpinnerNumberModel(0.05, 0.0, 1.0, 0.01));
-        
+
         spinnerInversionProb = new JSpinner();
         spinnerInversionProb.setModel(new SpinnerNumberModel(0.1, 0.0, 1.0, 0.05));
 
@@ -400,6 +407,10 @@ public final class MainFrame extends JFrame {
 
         if (Arrays.asList(PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30).contains(comboProblem.getSelectedItem())) {
             return 2;
+        }
+
+        if (comboProblem.getSelectedItem().equals(PRB_P3)) {
+            return 3;
         }
 
         return 0;
@@ -511,6 +522,9 @@ public final class MainFrame extends JFrame {
                 break;
             case PRB_P1_F5:
                 solveBinaryProblem(new P1F5Problem(precission));
+
+            case PRB_P3:
+                solveSpaceInvadersProblem();
         }
     }
 
@@ -624,7 +638,7 @@ public final class MainFrame extends JFrame {
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainInversionStep () {
         double inversionProb = ((Number) spinnerInversionProb.getValue()).doubleValue();
-        
+
         return new InversionStep<>(inversionProb);
     }
 
@@ -641,7 +655,8 @@ public final class MainFrame extends JFrame {
 
         if (!generationsIsChecked && !stallIsChecked) {
             JOptionPane.showMessageDialog(
-                this, "Elige al menos una condici\u00F3n de parada", "Formulario incompleto", JOptionPane.WARNING_MESSAGE);
+                this, "Elige al menos una condici\u00F3n de parada", "Formulario incompleto",
+                JOptionPane.WARNING_MESSAGE);
             return null;
         }
 
@@ -710,6 +725,35 @@ public final class MainFrame extends JFrame {
         } catch (IOException exc) {
             exc.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error de entrada/salida:\n" + exc, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void solveSpaceInvadersProblem () {
+        SpaceInvadersProblem problem = new SpaceInvadersProblem();
+
+        Random random = obtainRandomGenerator();
+
+        ElitismStepPair<LispList,LispChromosome> esp = obtainEletismPair();
+        SolverStep<LispList,LispChromosome> generationStep = obtainGenerationStep();
+        SolverStep<LispList,LispChromosome> selectionStep = obtainSelectionStep();
+        SolverStep<LispList,LispChromosome> combinationStep = obtainCombinationStep();
+        SolverStep<LispList,LispChromosome> mutationStep = obtainMutationStep();
+
+        /* @formatter:off */
+        Solver<LispList,LispChromosome> solver = Solver.builder(problem)
+            .step(generationStep)
+            .step(esp.getSaveStep())
+            .step(selectionStep)
+            //.step(combinationStep)
+            //.step(mutationStep)
+            .step(esp.getRestoreStep())
+            .build();
+        /* @formatter:on */
+
+        this.geneticWorker = obtainWorker(solver, random);
+        if (geneticWorker != null) {
+            stopWorker = false;
+            geneticWorker.execute();
         }
     }
 

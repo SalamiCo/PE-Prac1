@@ -14,7 +14,7 @@ public class LispChromosome extends Chromosome<LispChromosome> {
     }
 
     public static LispChromosome newRandom (Random random) {
-        return new LispChromosome(LispUtils.generateRandom(random, 0));
+        return new LispChromosome(LispUtils.generateRandom(random, 4));
     }
     
     public LispList getLispList(){
@@ -64,7 +64,11 @@ public class LispChromosome extends Chromosome<LispChromosome> {
 
     @Override
     public boolean equals (Object obj) {
-        return list.equals(obj);
+        if (!(obj instanceof LispChromosome)) {
+            return false;
+        }
+        LispChromosome lc = (LispChromosome) obj;
+        return list.equals(lc.list);
     }
     
     @Override
