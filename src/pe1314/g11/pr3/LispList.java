@@ -66,4 +66,13 @@ public final class LispList implements LispValue {
         return sb.append(")").toString();
     }
 
+    @Override
+    public int nodes () {
+        int num = 0;
+        for (LispValue lv : values) {
+            num += lv.nodes();
+        }
+        return 1 + num;
+    }
+
 }

@@ -39,4 +39,9 @@ public final class LispTerminal implements LispValue {
     public String toString () {
         return string;
     }
+
+    @Override
+    public int nodes () {
+        return 1;
+    }
 }

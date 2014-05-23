@@ -36,7 +36,7 @@ public class LispChromosome extends Chromosome<LispChromosome> {
     @Override
     public LispChromosome getMutated (int type, int place, int length) {
         // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class LispChromosome extends Chromosome<LispChromosome> {
     @Override
     public LispChromosome getCombined (LispChromosome other, int type, int place, int length) {
         // TODO Auto-generated method stub
-        return null;
+        return this;
     }
     
     @Override
