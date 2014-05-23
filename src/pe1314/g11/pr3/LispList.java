@@ -35,6 +35,10 @@ public final class LispList implements LispValue {
         return 1 + max;
     }
 
+    public List<LispValue> values () {
+        return values;
+    }
+
     @Override
     public int hashCode () {
         return super.hashCode();
