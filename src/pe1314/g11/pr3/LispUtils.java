@@ -40,8 +40,8 @@ public class LispUtils {
         list.add(new LispTerminal(function));
 
         for (int i = 1; i <= arity; i++) {
-            if (depth < 4 && random.nextBoolean()) {
-                list.add(generateRandom(random, depth + 1));
+            if (depth > 0 && random.nextBoolean()) {
+                list.add(generateRandom(random, depth - 1));
             } else {
                 list.add(new LispTerminal(TERMINALS.get(random.nextInt(TERMINALS.size()))));
             }

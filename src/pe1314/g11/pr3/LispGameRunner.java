@@ -65,7 +65,7 @@ public final class LispGameRunner {
         while (frame != null && frame.position < 0) {
             StackFrame oldFrame = stack.removeLast();
             frame = stack.isEmpty() ? null : stack.getLast();
-            if (frame != null) {
+            if (frame != null && frame.position > 0) {
                 frame.returns[frame.position - 1] = oldFrame.returns[0];
             }
         }

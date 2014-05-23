@@ -44,8 +44,12 @@ public class GameStateCanvas extends JComponent {
     public GameStateCanvas (GameState state) {
         this.state = state;
 
-        setSize(SPRSIZE * GameState.SIZE, SPRSIZE * GameState.SIZE);
+        setSize(8 + SPRSIZE * GameState.SIZE, 8 + SPRSIZE * GameState.SIZE);
         setPreferredSize(getSize());
+    }
+
+    public void setGameState (GameState state) {
+        this.state = state;
     }
 
     @Override
@@ -56,14 +60,14 @@ public class GameStateCanvas extends JComponent {
         g.fillRect(0, 0, getSize().width, getSize().height);
 
         if (state != null) {
-            g.drawImage(IMG_ALIEN, state.getAlienCoord().x * SPRSIZE, (GameState.SIZE - state.getAlienCoord().y - 1)
-                * SPRSIZE, null);
-            g.drawImage(IMG_SHIP, state.getShipCoord().x * SPRSIZE, (GameState.SIZE - state.getShipCoord().y - 1)
-                * SPRSIZE, null);
+            g.drawImage(IMG_ALIEN, 4 + state.getAlienCoord().x * SPRSIZE, 4
+                + (GameState.SIZE - state.getAlienCoord().y - 1) * SPRSIZE, null);
+            g.drawImage(IMG_SHIP, 4 + state.getShipCoord().x * SPRSIZE, 4
+                + (GameState.SIZE - state.getShipCoord().y - 1) * SPRSIZE, null);
 
             if (state.getShotCoord() != null) {
-                g.drawImage(IMG_SHOT, state.getShotCoord().x * SPRSIZE, (GameState.SIZE - state.getShotCoord().y - 1)
-                    * SPRSIZE, null);
+                g.drawImage(IMG_SHOT, 4 + state.getShotCoord().x * SPRSIZE, 4
+                    + (GameState.SIZE - state.getShotCoord().y - 1) * SPRSIZE, null);
             }
         }
     }
