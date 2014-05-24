@@ -1,5 +1,6 @@
 package pe1314.g11.pr3;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -70,18 +71,45 @@ public class LispCombinationStep implements SolverStep<LispList,LispChromosome> 
                 return lv;
             }
             int toSkip = lv.nodes();
-            if (skipped + 1 < pos && pos < skipped + toSkip) {
-                return obtainSubtree((LispList) lv, pos - skipped);
+            if (skipped < pos && pos < skipped + toSkip) {
+                return obtainSubtree((LispList) lv, pos - skipped - 1);
             }
             skipped += toSkip;
         }
-        
+
         throw new IllegalArgumentException("pos " + pos);
     }
 
     private static LispList replaceSubtree (LispList list, int pos, LispValue subtree) {
-        // TODO Auto-generated method stub
-        return null;
+        int skipped = 0;
+        List<LispValue> values = new ArrayList<>(list.values());
+        
+        for (int i = 0; i < values.size(); i++) {
+            LispValue lv = values.get(i);
+            
+            if (skipped == pos) {
+                values.set(i, subtree);
+                return new LispList(values);
+            }
+            
+            int toSkip = lv.nodes();
+            if (skipped < pos && pos < skipped + toSkip) {
+                values.set(i, replaceSubtree((LispList) lv, pos - skipped - 1, subtree));
+                return new LispList(values);
+            }
+            skipped += toSkip;
+        }
+
+        throw new IllegalArgumentException("pos " + pos);
     }
 
+    public static void main (String[] args) {
+        LispList l = LispUtils.generateRandom(new Random(), 2);
+        LispValue t = new LispTerminal("@");
+        System.out.println(l);
+        for (int n = 0; n < l.nodes() - 1; n++) {
+            //System.out.println(n + ": " + obtainSubtree(l, n));
+            System.out.println(n + ": " + replaceSubtree(l, n, t));
+        }
+    }
 }
