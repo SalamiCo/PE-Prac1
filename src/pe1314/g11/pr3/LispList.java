@@ -75,4 +75,35 @@ public final class LispList implements LispValue {
         return 1 + num;
     }
 
+    @Override
+    public int expressions () {
+        int num = 0;
+        for (int i = 1; i < values.size(); i++) {
+            num += values.get(i).expressions();
+        }
+        return 1 + num;
+    }
+
+    @Override
+    public int compareTo (LispValue o) {
+        if (o instanceof LispTerminal) {
+            return -o.compareTo(this);
+        }
+        
+        LispList ll = (LispList) o;
+        
+        int cmp = size() - ll.size();
+        if (cmp != 0) {
+            return cmp;
+        }
+        
+        for (int i = 0; i < size(); i++) {
+            cmp = get(i).compareTo(ll.get(i));
+            if (cmp != 0) {
+                return cmp;
+            }
+        }
+        
+        return 0;
+    }
 }

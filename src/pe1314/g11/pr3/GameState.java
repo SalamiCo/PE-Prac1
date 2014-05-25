@@ -71,7 +71,7 @@ public final class GameState {
         this.dirToggle = dirToggle;
     }
 
-    public void advance (Move move) {
+    public boolean advance (Move move) {
         if (shot != null) {
             shot = shot.y == SIZE - 1 ? null : Coord.of(shot.x, shot.y + 1);
         }
@@ -96,20 +96,24 @@ public final class GameState {
         if (move != null) {
             switch (move) {
                 case LEFT:
+                    boolean left = (ship.x == 0);
                     ship = Coord.of(Math.max(0, ship.x - 1), ship.y);
-                    break;
+                    return !left;
 
                 case RIGHT:
+                    boolean right = (ship.x == SIZE - 1);
                     ship = Coord.of(Math.min(SIZE - 1, ship.x + 1), ship.y);
-                    break;
+                    return !right;
 
                 case SHOOT:
                     if (shot == null) {
                         shot = Coord.of(ship.x, ship.y + 1);
+                        return true;
                     }
-                    break;
             }
         }
+        
+        return false;
     }
 
     public Coord getShipCoord () {

@@ -44,7 +44,9 @@ import pe1314.g11.pr2.OrderPriorityOrderCombinationStep;
 import pe1314.g11.pr2.P2Problem;
 import pe1314.g11.pr2.PositionPriorityOrderCombinationStep;
 import pe1314.g11.pr3.LispChromosome;
+import pe1314.g11.pr3.LispCombinationStep;
 import pe1314.g11.pr3.LispList;
+import pe1314.g11.pr3.LispMutationStep;
 import pe1314.g11.pr3.SpaceInvadersProblem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
@@ -309,10 +311,10 @@ public final class MainFrame extends JFrame {
         spinnerPrecission.setEditor(new JSpinner.NumberEditor(spinnerPrecission, "0.#########"));
 
         spinnerMinPopSize = new JSpinner();
-        spinnerMinPopSize.setModel(new SpinnerNumberModel(1000, 10, 100000, 10));
+        spinnerMinPopSize.setModel(new SpinnerNumberModel(100, 10, 100000, 10));
 
         spinnerEliteSize = new JSpinner();
-        spinnerEliteSize.setModel(new SpinnerNumberModel(0.01, 0, 0.5, 0.005));
+        spinnerEliteSize.setModel(new SpinnerNumberModel(0.03, 0, 0.5, 0.005));
 
         comboSelectionType = new JComboBox<String>();
         comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] {
@@ -419,6 +421,7 @@ public final class MainFrame extends JFrame {
     /* package */void updateLeftForm () {
         if (geneticWorker == null) {
             boolean p1 = obtainPNum() == 1;
+            boolean p2 = obtainPNum() == 2;
 
             buttonPlay.setEnabled(true);
             buttonPause.setEnabled(false);
@@ -431,13 +434,13 @@ public final class MainFrame extends JFrame {
             spinnerMinPopSize.setEnabled(true);
             spinnerEliteSize.setEnabled(true);
             comboSelectionType.setEnabled(true);
-            comboCombinationType.setEnabled(!p1);
-            labelCombinationType.setEnabled(!p1);
-            comboMutationType.setEnabled(!p1);
-            labelMutationType.setEnabled(!p1);
+            comboCombinationType.setEnabled(p2);
+            labelCombinationType.setEnabled(p2);
+            comboMutationType.setEnabled(p2);
+            labelMutationType.setEnabled(p2);
             spinnerMutateProb.setEnabled(true);
             spinnerCombineProb.setEnabled(true);
-            spinnerInversionProb.setEnabled(!p1);
+            spinnerInversionProb.setEnabled(p2);
 
             checkboxStopGeneration.setEnabled(true);
             checkboxStopStall.setEnabled(true);
@@ -598,6 +601,8 @@ public final class MainFrame extends JFrame {
                 return new CombinationStep<>(combineProb, 0);
             case 2:
                 return new CombinationStep<>(combineProb, obtainCombinationType());
+            case 3:
+                return (SolverStep<V,C>) new LispCombinationStep(combineProb);
         }
 
         return null;
@@ -631,6 +636,8 @@ public final class MainFrame extends JFrame {
                 return new MultiMutationStep<>(mutateProb, 0);
             case 2:
                 return new LengthedMutationStep<>(mutateProb, obtainMutationType());
+            case 3:
+                return (SolverStep<V,C>) new LispMutationStep(mutateProb);
         }
 
         return null;
@@ -738,15 +745,17 @@ public final class MainFrame extends JFrame {
         SolverStep<LispList,LispChromosome> selectionStep = obtainSelectionStep();
         SolverStep<LispList,LispChromosome> combinationStep = obtainCombinationStep();
         SolverStep<LispList,LispChromosome> mutationStep = obtainMutationStep();
+        SolverStep<LispList,LispChromosome> dedupStep = new DuplicateRemovalStep<>();
 
         /* @formatter:off */
         Solver<LispList,LispChromosome> solver = Solver.builder(problem)
             .step(generationStep)
             .step(esp.getSaveStep())
             .step(selectionStep)
-            //.step(combinationStep)
-            //.step(mutationStep)
+            .step(combinationStep)
+            .step(mutationStep)
             .step(esp.getRestoreStep())
+            .step(dedupStep)
             .build();
         /* @formatter:on */
 
@@ -813,14 +822,10 @@ public final class MainFrame extends JFrame {
 
         @Override
         public void startStep (SolverStep<V,C> step, List<C> population) {
-            // TODO Auto-generated method stub
-
         }
 
         @Override
         public void endStep (List<C> population) {
-            // TODO Auto-generated method stub
-
         }
 
         @Override

@@ -5,7 +5,7 @@ import java.util.Random;
 import pe1314.g11.Chromosome;
 import pe1314.g11.sga.PermutationChromosome;
 
-public class LispChromosome extends Chromosome<LispChromosome> {
+public class LispChromosome extends Chromosome<LispChromosome> implements Comparable<LispChromosome> {
 
     private final LispList list;
 
@@ -23,37 +23,31 @@ public class LispChromosome extends Chromosome<LispChromosome> {
 
     @Override
     public int getMutationPlaces () {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public int getMutationTypes () {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public LispChromosome getMutated (int type, int place, int length) {
-        // TODO Auto-generated method stub
         return this;
     }
 
     @Override
     public int getCombinationPlaces () {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public int getCombinationTypes () {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public LispChromosome getCombined (LispChromosome other, int type, int place, int length) {
-        // TODO Auto-generated method stub
         return this;
     }
     
@@ -74,5 +68,10 @@ public class LispChromosome extends Chromosome<LispChromosome> {
     @Override
     public String toString () {
         return list.toString();
+    }
+    
+    @Override
+    public int compareTo (LispChromosome o) {
+        return list.compareTo(o.list);
     }
 }

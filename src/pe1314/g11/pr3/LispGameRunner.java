@@ -161,13 +161,19 @@ public final class LispGameRunner {
         String fun = ((LispTerminal) what).toString();
         switch (fun) {
             case LEFT:
-                game.advance(Move.LEFT);
+                if (game.advance(Move.LEFT)) {
+                    frame.returns[frame.position] = 1;
+                }
                 return true;
             case RIGHT:
-                game.advance(Move.RIGHT);
+                if (game.advance(Move.RIGHT)) {
+                    frame.returns[frame.position] = 1;
+                }
                 return true;
             case SHOOT:
-                game.advance(Move.SHOOT);
+                if (game.advance(Move.SHOOT)) {
+                    frame.returns[frame.position] = 1;
+                }
                 return true;
 
             case DST_X:

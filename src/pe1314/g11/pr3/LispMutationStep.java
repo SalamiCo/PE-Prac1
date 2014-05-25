@@ -7,7 +7,7 @@ import java.util.Random;
 import pe1314.g11.Problem;
 import pe1314.g11.SolverStep;
 
-public class LispMutationStep<V> implements SolverStep<LispList,LispChromosome> {
+public class LispMutationStep implements SolverStep<LispList,LispChromosome> {
     private static final int NMIN = 3;
     private static final int NMAX = 5;
 

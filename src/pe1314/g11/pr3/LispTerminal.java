@@ -44,4 +44,18 @@ public final class LispTerminal implements LispValue {
     public int nodes () {
         return 1;
     }
+    @Override
+    public int expressions () {
+        return 1;
+    }
+    
+    @Override
+    public int compareTo (LispValue o) {
+        if (o instanceof LispList) {
+            return -1;
+        }
+        
+        LispTerminal lt = (LispTerminal) o;
+        return string.compareTo(lt.string);
+    }
 }
