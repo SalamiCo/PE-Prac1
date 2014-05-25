@@ -17,32 +17,32 @@ public final class P1F3Problem extends Problem<DoubleDouble,BinaryChromosome> {
     private final int lengthX;
     private final int lengthY;
 
-    public P1F3Problem (double precission) {
+    public P1F3Problem (final double precission) {
         lengthX = (int) Math.ceil(Math.log((DOMAIN_MAX_X - DOMAIN_MIN_X) / precission) / Math.log(2));
         lengthY = (int) Math.ceil(Math.log((DOMAIN_MAX_Y - DOMAIN_MIN_Y) / precission) / Math.log(2));
     }
 
     @Override
-    public BinaryChromosome random (Random random) {
+    public BinaryChromosome random (final Random random) {
         return BinaryChromosome.newRandom(lengthX + lengthY, random);
     }
 
     @Override
-    public DoubleDouble value (BinaryChromosome chromosome) {
-        double x = chromosome.toPartialBigInteger(0, lengthX).doubleValue();
-        double y = chromosome.toPartialBigInteger(lengthX, lengthY).doubleValue();
-        double mx = BigInteger.ONE.shiftLeft(lengthX).doubleValue();
-        double my = BigInteger.ONE.shiftLeft(lengthY).doubleValue();
+    public DoubleDouble value (final BinaryChromosome chromosome) {
+        final double x = chromosome.toPartialBigInteger(0, lengthX).doubleValue();
+        final double y = chromosome.toPartialBigInteger(lengthX, lengthY).doubleValue();
+        final double mx = BigInteger.ONE.shiftLeft(lengthX).doubleValue();
+        final double my = BigInteger.ONE.shiftLeft(lengthY).doubleValue();
         return new DoubleDouble(//
             Double.valueOf(DOMAIN_MIN_X + (x / mx * (DOMAIN_MAX_X - DOMAIN_MIN_X))), //
             Double.valueOf(DOMAIN_MIN_Y + (y / my * (DOMAIN_MAX_Y - DOMAIN_MIN_Y))));
     }
 
     @Override
-    public double fitness (BinaryChromosome chromosome) {
-        DoubleDouble xy = value(chromosome);
-        double x = xy.getX().doubleValue();
-        double y = xy.getY().doubleValue();
+    public double fitness (final BinaryChromosome chromosome) {
+        final DoubleDouble xy = value(chromosome);
+        final double x = xy.getX().doubleValue();
+        final double y = xy.getY().doubleValue();
         return 21.5 + x * Math.sin(4 * Math.PI * x) + y * Math.sin(20 * Math.PI * y);
     }
 

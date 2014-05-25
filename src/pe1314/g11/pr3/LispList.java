@@ -15,7 +15,7 @@ public final class LispList implements LispValue {
 
     private final List<LispValue> values;
 
-    public LispList (List<? extends LispValue> values) {
+    public LispList (final List<? extends LispValue> values) {
         this.values = Collections.unmodifiableList(new ArrayList<LispValue>(values));
     }
 
@@ -23,13 +23,14 @@ public final class LispList implements LispValue {
         return values.size();
     }
 
-    public LispValue get (int n) {
+    public LispValue get (final int n) {
         return values.get(n);
     }
 
+    @Override
     public int depth () {
         int max = 0;
-        for (LispValue lv : values) {
+        for (final LispValue lv : values) {
             max = Math.max(max, lv.depth());
         }
         return 1 + max;
@@ -45,18 +46,18 @@ public final class LispList implements LispValue {
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals (final Object obj) {
         if (!(obj instanceof LispList)) {
             return false;
         }
-        LispList lc = (LispList) obj;
+        final LispList lc = (LispList) obj;
         return values.equals(lc.values);
     }
 
     @Override
     public String toString () {
-        StringBuilder sb = new StringBuilder("(");
-        Iterator<LispValue> it = values.iterator();
+        final StringBuilder sb = new StringBuilder("(");
+        final Iterator<LispValue> it = values.iterator();
         if (it.hasNext()) {
             sb.append(it.next());
             while (it.hasNext()) {
@@ -69,7 +70,7 @@ public final class LispList implements LispValue {
     @Override
     public int nodes () {
         int num = 0;
-        for (LispValue lv : values) {
+        for (final LispValue lv : values) {
             num += lv.nodes();
         }
         return 1 + num;
@@ -85,25 +86,25 @@ public final class LispList implements LispValue {
     }
 
     @Override
-    public int compareTo (LispValue o) {
+    public int compareTo (final LispValue o) {
         if (o instanceof LispTerminal) {
             return -o.compareTo(this);
         }
-        
-        LispList ll = (LispList) o;
-        
+
+        final LispList ll = (LispList) o;
+
         int cmp = size() - ll.size();
         if (cmp != 0) {
             return cmp;
         }
-        
+
         for (int i = 0; i < size(); i++) {
             cmp = get(i).compareTo(ll.get(i));
             if (cmp != 0) {
                 return cmp;
             }
         }
-        
+
         return 0;
     }
 }

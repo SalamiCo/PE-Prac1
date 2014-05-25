@@ -19,7 +19,7 @@ public final class Main {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-        } catch (Exception exc) {
+        } catch (final Exception exc) {
             exc.printStackTrace();
         }
     }
@@ -29,12 +29,13 @@ public final class Main {
      * 
      * @param args Unused
      */
-    public static void main (String[] args) {
+    public static void main (final String[] args) {
         setupLookAndFeel();
 
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run () {
-                MainFrame frame = new MainFrame();
+                final MainFrame frame = new MainFrame();
                 frame.setLocationRelativeTo(null);
                 frame.setExtendedState(frame.getExtendedState() | Frame.MAXIMIZED_BOTH);
                 frame.setVisible(true);

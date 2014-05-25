@@ -1,7 +1,6 @@
 package pe1314.g11.pr3;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -16,17 +15,17 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
     private static final Map<LispChromosome,Double> CACHE = new HashMap<>();
 
     @Override
-    public LispChromosome random (Random random) {
+    public LispChromosome random (final Random random) {
         return LispChromosome.newRandom(random);
     }
 
     @Override
-    public LispList value (LispChromosome chromosome) {
+    public LispList value (final LispChromosome chromosome) {
         return chromosome.getLispList();
     }
 
     @Override
-    public double fitness (LispChromosome chromosome) {
+    public double fitness (final LispChromosome chromosome) {
         if (isInCache(chromosome)) {
             return getFromCache(chromosome);
         }
@@ -34,23 +33,23 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
         int fitness = 0;
 
         try {
-            Random r = new XorShiftRandom(SEED);
+            final Random r = new XorShiftRandom(SEED);
             for (int i = 0; i < REPETITIONS; i++) {
-                GameState gs = GameState.newRandom(r);
-                LispGameRunner lgr = new LispGameRunner(gs, chromosome.getLispList());
+                final GameState gs = GameState.newRandom(r);
+                final LispGameRunner lgr = new LispGameRunner(gs, chromosome.getLispList());
                 int min = GameState.SIZE;
                 while (!gs.finished()) {
                     lgr.runUntilGameAdvances();
                     if (gs.getShotCoord() != null) {
                         if (gs.getShotCoord().y == gs.getAlienCoord().y) {
-                            int distance = Math.abs(gs.getShotCoord().x - gs.getAlienCoord().x);
+                            final int distance = Math.abs(gs.getShotCoord().x - gs.getAlienCoord().x);
                             min = Math.min(min, distance);
                         }
                     }
                 }
                 fitness += min;
             }
-        } catch (Exception exc) {
+        } catch (final Exception exc) {
             System.err.println("Unrunnable chromosome: " + chromosome);
             fitness = REPETITIONS * GameState.SIZE * 10;
         }
@@ -60,7 +59,7 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
         return fitness;
     }
 
-    private void addToCache (LispChromosome chromosome, int fitness) {
+    private void addToCache (final LispChromosome chromosome, final int fitness) {
         if (CACHE.size() >= 4096) {
             CACHE.clear();
         }
@@ -68,11 +67,11 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
         CACHE.put(chromosome, Double.valueOf(fitness));
     }
 
-    private double getFromCache (LispChromosome chromosome) {
+    private double getFromCache (final LispChromosome chromosome) {
         return CACHE.get(chromosome).doubleValue();
     }
 
-    private boolean isInCache (LispChromosome chromosome) {
+    private boolean isInCache (final LispChromosome chromosome) {
         return CACHE.containsKey(chromosome);
     }
 

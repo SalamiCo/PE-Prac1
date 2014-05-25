@@ -29,25 +29,25 @@ public final class P1F1Problem extends Problem<Double,BinaryChromosome> {
 
     private final int length;
 
-    public P1F1Problem (double precission) {
+    public P1F1Problem (final double precission) {
         length = (int) Math.ceil(Math.log((DOMAIN_MAX - DOMAIN_MIN) / precission) / Math.log(2));
     }
 
     @Override
-    public BinaryChromosome random (Random random) {
+    public BinaryChromosome random (final Random random) {
         return BinaryChromosome.newRandom(length, random);
     }
 
     @Override
-    public Double value (BinaryChromosome chromosome) {
-        double binVal = chromosome.toBigInteger().doubleValue();
-        double binMax = BigInteger.ONE.shiftLeft(length).doubleValue();
+    public Double value (final BinaryChromosome chromosome) {
+        final double binVal = chromosome.toBigInteger().doubleValue();
+        final double binMax = BigInteger.ONE.shiftLeft(length).doubleValue();
         return Double.valueOf(DOMAIN_MIN + (binVal / binMax * (DOMAIN_MAX - DOMAIN_MIN)));
     }
 
     @Override
-    public double fitness (BinaryChromosome chromosome) {
-        double x = value(chromosome).doubleValue();
+    public double fitness (final BinaryChromosome chromosome) {
+        final double x = value(chromosome).doubleValue();
         return (Math.sin(x)) / (1.0 + Math.sqrt(x) + (Math.cos(x) / (1.0 + x)));
     }
 

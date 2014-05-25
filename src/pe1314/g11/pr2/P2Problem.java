@@ -18,7 +18,7 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
     private final IntSqMatrix distance;
     private final IntSqMatrix traffic;
 
-    public P2Problem (IntSqMatrix distance, IntSqMatrix traffic) {
+    public P2Problem (final IntSqMatrix distance, final IntSqMatrix traffic) {
         if (distance.size() != traffic.size()) {
             throw new IllegalArgumentException("traffic and distance matrices are not equally large ("
                 + distance.size() + " != " + traffic.size() + ")");
@@ -30,24 +30,24 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
     }
 
     @Override
-    public PermutationChromosome random (Random random) {
+    public PermutationChromosome random (final Random random) {
         return PermutationChromosome.newRandom(distance.size(), random);
     }
 
     @Override
-    public List<Integer> value (PermutationChromosome chromosome) {
+    public List<Integer> value (final PermutationChromosome chromosome) {
         return chromosome.getPermutation();
     }
 
     @Override
-    public double fitness (PermutationChromosome chromosome) {
+    public double fitness (final PermutationChromosome chromosome) {
         long sum = 0;
 
         final int size = distance.size();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                int pi = chromosome.getPermutation().get(i).intValue();
-                int pj = chromosome.getPermutation().get(j).intValue();
+                final int pi = chromosome.getPermutation().get(i).intValue();
+                final int pj = chromosome.getPermutation().get(j).intValue();
                 sum += traffic.get(pi, pj) * distance.get(i, j);
             }
         }
@@ -60,32 +60,32 @@ public final class P2Problem extends Problem<List<Integer>,PermutationChromosome
         return Problem.Type.MINIMIZATION;
     }
 
-    public static P2Problem readFromURL (URL url) throws IOException {
-        Charset UTF8 = Charset.forName("UTF-8");
+    public static P2Problem readFromURL (final URL url) throws IOException {
+        final Charset UTF8 = Charset.forName("UTF-8");
         try (InputStream in = url.openStream()) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF8));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF8));
 
             /* First line tells us the size of the matrices */
-            int size = Integer.parseInt(reader.readLine().trim());
+            final int size = Integer.parseInt(reader.readLine().trim());
             reader.readLine();
 
             /* Read the traffic matrix */
-            IntSqMatrix traffic = readMatrix(reader, size);
+            final IntSqMatrix traffic = readMatrix(reader, size);
             reader.readLine();
 
             /* Read the distance matrix */
-            IntSqMatrix distance = readMatrix(reader, size);
+            final IntSqMatrix distance = readMatrix(reader, size);
 
             /* Return the result */
             return new P2Problem(distance, traffic);
         }
     }
 
-    private static IntSqMatrix readMatrix (BufferedReader reader, int size) throws IOException {
-        IntSqMatrix matrix = new IntSqMatrix(size);
+    private static IntSqMatrix readMatrix (final BufferedReader reader, final int size) throws IOException {
+        final IntSqMatrix matrix = new IntSqMatrix(size);
 
         for (int i = 0; i < size; i++) {
-            String[] line = reader.readLine().trim().split("\\s+");
+            final String[] line = reader.readLine().trim().split("\\s+");
 
             for (int j = 0; j < size; j++) {
                 matrix.set(i, j, Integer.parseInt(line[j]));

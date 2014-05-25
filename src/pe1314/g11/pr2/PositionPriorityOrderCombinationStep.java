@@ -15,7 +15,7 @@ public final class PositionPriorityOrderCombinationStep<V> implements SolverStep
 
     private final double probability;
 
-    public PositionPriorityOrderCombinationStep (double probability) {
+    public PositionPriorityOrderCombinationStep (final double probability) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
@@ -25,24 +25,24 @@ public final class PositionPriorityOrderCombinationStep<V> implements SolverStep
 
     @Override
     public void apply (
-        Problem<V,PermutationChromosome> problem, List<PermutationChromosome> input, Random random, int generation,
-        List<PermutationChromosome> output)
+        final Problem<V,PermutationChromosome> problem, final List<PermutationChromosome> input, final Random random,
+        final int generation, final List<PermutationChromosome> output)
     {
-        Iterator<PermutationChromosome> it = input.iterator();
+        final Iterator<PermutationChromosome> it = input.iterator();
         while (it.hasNext()) {
-            PermutationChromosome a = it.next();
+            final PermutationChromosome a = it.next();
 
             if (it.hasNext()) {
-                PermutationChromosome b = it.next();
+                final PermutationChromosome b = it.next();
 
                 if (random.nextDouble() < probability) {
-                    int place = random.nextInt(a.getCombinationPlaces());
+                    final int place = random.nextInt(a.getCombinationPlaces());
                     int p2 = place;
                     while (place == p2) {
                         p2 = random.nextInt(a.getCombinationPlaces());
                     }
 
-                    List<Integer> selected =
+                    final List<Integer> selected =
                         selectRandom(a.getPermutation().size(), a.getPermutation().size() / 3, random);
                     output.add(performCombination(a, b, random, selected));
                     output.add(performCombination(b, a, random, selected));
@@ -58,27 +58,29 @@ public final class PositionPriorityOrderCombinationStep<V> implements SolverStep
         }
     }
 
-    private static PermutationChromosome performCombination (
-        PermutationChromosome a, PermutationChromosome b, Random random, List<Integer> selected)
+    private static
+        PermutationChromosome performCombination (
+            final PermutationChromosome a, final PermutationChromosome b, final Random random,
+            final List<Integer> selected)
     {
-        List<Integer> newPerm = new ArrayList<>(a.getPermutation());
+        final List<Integer> newPerm = new ArrayList<>(a.getPermutation());
         Collections.sort(selected);
 
         // Remove all numbers from a
-        for (Integer idx : selected) {
+        for (final Integer idx : selected) {
             newPerm.remove(b.getPermutation().get(idx.intValue()));
         }
 
         // Add them again
-        for (Integer idx : selected) {
+        for (final Integer idx : selected) {
             newPerm.add(idx.intValue(), b.getPermutation().get(idx.intValue()));
         }
 
         return new PermutationChromosome(newPerm);
     }
 
-    private static List<Integer> selectRandom (int size, int spsize, Random random) {
-        List<Integer> nums = PermutationUtils.firstN(size);
+    private static List<Integer> selectRandom (final int size, final int spsize, final Random random) {
+        final List<Integer> nums = PermutationUtils.firstN(size);
         Collections.shuffle(nums, random);
         return nums.subList(0, spsize);
     }

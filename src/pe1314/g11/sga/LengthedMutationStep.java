@@ -13,7 +13,7 @@ public class LengthedMutationStep<V, C extends Chromosome<C>> implements SolverS
 
     private final int type;
 
-    public LengthedMutationStep (double probability, int type) {
+    public LengthedMutationStep (final double probability, final int type) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
@@ -23,11 +23,15 @@ public class LengthedMutationStep<V, C extends Chromosome<C>> implements SolverS
     }
 
     @Override
-    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
+    public
+        void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+    {
         // For every input chromosome...
         for (C chromo : input) {
             if (random.nextDouble() < probability) {
-                int p1 = random.nextInt(chromo.getMutationPlaces());
+                final int p1 = random.nextInt(chromo.getMutationPlaces());
 
                 int p2 = p1;
                 while (p1 == p2) {

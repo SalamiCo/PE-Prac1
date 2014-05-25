@@ -28,16 +28,20 @@ public final class RandomGenerationStep<V, C extends Chromosome<C>> implements S
      * @param minPopulationSize Minimum size of the generated population
      * @param chromosomeLength Length of the generated chromosomes
      */
-    public RandomGenerationStep (int minPopulationSize, int minInserted) {
+    public RandomGenerationStep (final int minPopulationSize, final int minInserted) {
         this.populationSize = minPopulationSize;
         this.minInserted = minInserted;
     }
 
     @Override
-    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
+    public
+        void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+    {
         output.addAll(input);
 
-        int inserted = 0;
+        final int inserted = 0;
 
         // Keep generating until population is large enough
         while (output.size() < populationSize || inserted < minInserted) {

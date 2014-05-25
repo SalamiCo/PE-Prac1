@@ -14,32 +14,32 @@ public final class P1F2Problem extends Problem<DoubleDouble,BinaryChromosome> {
 
     private final int length;
 
-    public P1F2Problem (double precission) {
+    public P1F2Problem (final double precission) {
         length = (int) Math.ceil(Math.log((DOMAIN_MAX - DOMAIN_MIN) / precission) / Math.log(2));
     }
 
     @Override
-    public BinaryChromosome random (Random random) {
+    public BinaryChromosome random (final Random random) {
         return BinaryChromosome.newRandom(length * 2, random);
     }
 
     @Override
-    public DoubleDouble value (BinaryChromosome chromosome) {
-        double x = chromosome.toPartialBigInteger(0, length).doubleValue();
-        double y = chromosome.toPartialBigInteger(length, length).doubleValue();
-        double max = BigInteger.ONE.shiftLeft(length).doubleValue();
+    public DoubleDouble value (final BinaryChromosome chromosome) {
+        final double x = chromosome.toPartialBigInteger(0, length).doubleValue();
+        final double y = chromosome.toPartialBigInteger(length, length).doubleValue();
+        final double max = BigInteger.ONE.shiftLeft(length).doubleValue();
         return new DoubleDouble(//
             Double.valueOf(DOMAIN_MIN + (x / max * (DOMAIN_MAX - DOMAIN_MIN))), //
             Double.valueOf(DOMAIN_MIN + (y / max * (DOMAIN_MAX - DOMAIN_MIN))));
     }
 
     @Override
-    public double fitness (BinaryChromosome chromosome) {
-        DoubleDouble xy = value(chromosome);
-        double x = xy.getX().doubleValue();
-        double y = xy.getY().doubleValue();
-        double v1 = x * x + y - 11;
-        double v2 = x + y * y - 7;
+    public double fitness (final BinaryChromosome chromosome) {
+        final DoubleDouble xy = value(chromosome);
+        final double x = xy.getX().doubleValue();
+        final double y = xy.getY().doubleValue();
+        final double v1 = x * x + y - 11;
+        final double v2 = x + y * y - 7;
         return (2186.0 - v1 * v1 - v2 * v2) / 2186.0;
     }
 

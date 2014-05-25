@@ -56,7 +56,7 @@ public abstract class Problem<V, C extends Chromosome<C>> {
 
         private final int mult;
 
-        private Type (int mult) {
+        private Type (final int mult) {
             this.mult = mult;
         }
 

@@ -29,11 +29,11 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     private final List<Integer> permutation;
 
-    public PermutationChromosome (List<Integer> permutation) {
+    public PermutationChromosome (final List<Integer> permutation) {
         this.permutation = Collections.unmodifiableList(new ArrayList<>(permutation));
 
-        BitSet seen = new BitSet();
-        for (Integer i : permutation) {
+        final BitSet seen = new BitSet();
+        for (final Integer i : permutation) {
             if (i.intValue() < 0 || i.intValue() >= permutation.size() || seen.get(i.intValue())) {
                 throw new IllegalArgumentException("not a permutation: " + permutation);
             }
@@ -42,8 +42,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         }
     }
 
-    public static PermutationChromosome newRandom (int length, Random random) {
-        List<Integer> nums = PermutationUtils.firstN(length);
+    public static PermutationChromosome newRandom (final int length, final Random random) {
+        final List<Integer> nums = PermutationUtils.firstN(length);
 
         Collections.shuffle(nums, random);
         return new PermutationChromosome(nums);
@@ -64,7 +64,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     }
 
     @Override
-    public PermutationChromosome getMutated (int type, int place, int length) {
+    public PermutationChromosome getMutated (final int type, final int place, final int length) {
         switch (type) {
             case MUTATION_INVERSION:
                 return getInversionMutated(place, length);
@@ -79,7 +79,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         throw new IllegalArgumentException("Invalid muration type " + type);
     }
 
-    private PermutationChromosome getInversionMutated (int place, int length) {
+    private PermutationChromosome getInversionMutated (final int place, final int length) {
         final List<Integer> newPerm = new ArrayList<>(permutation);
 
         int i = Math.min(place, place + length);
@@ -96,8 +96,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         return new PermutationChromosome(newPerm);
     }
 
-    private PermutationChromosome getExchangeMutated (int place, int length) {
-        List<Integer> newPerm = new ArrayList<>(permutation);
+    private PermutationChromosome getExchangeMutated (final int place, final int length) {
+        final List<Integer> newPerm = new ArrayList<>(permutation);
 
         newPerm.set(place, permutation.get(place + length));
         newPerm.set(place + length, permutation.get(place));
@@ -105,7 +105,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         return new PermutationChromosome(newPerm);
     }
 
-    private PermutationChromosome getInsertionMutated (int place, int length) {
+    private PermutationChromosome getInsertionMutated (final int place, final int length) {
         final List<Integer> newPerm = new ArrayList<>(permutation);
 
         newPerm.add(place + length, newPerm.remove(place));
@@ -113,10 +113,10 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         return new PermutationChromosome(newPerm);
     }
 
-    private PermutationChromosome getRotationMutated (int place, int length) {
+    private PermutationChromosome getRotationMutated (final int place, final int length) {
         final List<Integer> newPerm = new ArrayList<>(permutation);
 
-        int alen = (length < 0) ? length + permutation.size() : length;
+        final int alen = (length < 0) ? length + permutation.size() : length;
 
         for (int i = 0; i < alen; i++) {
             newPerm.add(newPerm.remove(0));
@@ -136,7 +136,9 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     }
 
     @Override
-    public PermutationChromosome getCombined (PermutationChromosome other, int type, int place, int length) {
+    public PermutationChromosome getCombined (
+        final PermutationChromosome other, final int type, final int place, final int length)
+    {
         switch (type) {
             case COMBINATION_PMX:
                 return getPmxCombined(other, place, length);
@@ -153,9 +155,11 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         throw new IllegalArgumentException("Invalid muration type " + type);
     }
 
-    private PermutationChromosome getOrdCodCombined (PermutationChromosome other, int place, int length) {
-        int[] codThis = ordinalEncode(this);
-        int[] codOther = ordinalEncode(other);
+    private PermutationChromosome getOrdCodCombined (
+        final PermutationChromosome other, final int place, final int length)
+    {
+        final int[] codThis = ordinalEncode(this);
+        final int[] codOther = ordinalEncode(other);
 
         for (int i = place; i < permutation.size(); i++) {
             codThis[i] = codOther[i];
@@ -164,9 +168,9 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         return ordinalDecode(codThis);
     }
 
-    private static int[] ordinalEncode (PermutationChromosome chromo) {
-        int[] cod = new int[chromo.permutation.size()];
-        List<Integer> nums = PermutationUtils.firstN(cod.length);
+    private static int[] ordinalEncode (final PermutationChromosome chromo) {
+        final int[] cod = new int[chromo.permutation.size()];
+        final List<Integer> nums = PermutationUtils.firstN(cod.length);
 
         for (int i = 0; i < cod.length; i++) {
             cod[i] = nums.indexOf(chromo.permutation.get(i));
@@ -176,19 +180,20 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         return cod;
     }
 
-    private static PermutationChromosome ordinalDecode (int[] cod) {
-        List<Integer> nums = PermutationUtils.firstN(cod.length);
-        List<Integer> perm = new ArrayList<>();
+    private static PermutationChromosome ordinalDecode (final int[] cod) {
+        final List<Integer> nums = PermutationUtils.firstN(cod.length);
+        final List<Integer> perm = new ArrayList<>();
 
-        for (int i = 0; i < cod.length; i++) {
-            perm.add(nums.remove(cod[i]));
+        for (final int element : cod) {
+            perm.add(nums.remove(element));
         }
 
         return new PermutationChromosome(perm);
     }
 
-    private PermutationChromosome getPmxCombined (PermutationChromosome other, int place, int length) {
-        List<Integer> newPerm = new ArrayList<>(permutation);
+    private PermutationChromosome getPmxCombined (final PermutationChromosome other, final int place, final int length)
+    {
+        final List<Integer> newPerm = new ArrayList<>(permutation);
 
         final int li = Math.min(place, place + length);
         final int ri = Math.max(place, place + length);
@@ -199,7 +204,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         }
 
         // For every non-range number: if in the range, swap for the other
-        List<Integer> subPerm = newPerm.subList(li, ri + 1);
+        final List<Integer> subPerm = newPerm.subList(li, ri + 1);
         for (int i = 0; i < newPerm.size(); i++) {
             // Skip the range
             if (i == li) {
@@ -217,8 +222,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
     }
 
-    private PermutationChromosome getOxCombined (PermutationChromosome other, int place, int length) {
-        List<Integer> newPerm = new ArrayList<>(permutation);
+    private PermutationChromosome getOxCombined (final PermutationChromosome other, final int place, final int length) {
+        final List<Integer> newPerm = new ArrayList<>(permutation);
 
         final int li = Math.min(place, place + length);
         final int ri = Math.max(place, place + length);
@@ -229,7 +234,7 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
         int pos = ri + 1;
         int i = pos;
-        List<Integer> subPerm = newPerm.subList(li, ri + 1);
+        final List<Integer> subPerm = newPerm.subList(li, ri + 1);
         while (pos != li) {
             if (!(subPerm.contains(permutation.get(i)))) {
                 newPerm.set(pos, permutation.get(i));
@@ -249,18 +254,18 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
 
         try {
             return new PermutationChromosome(newPerm);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw e;
         }
     }
 
-    private PermutationChromosome getCxCombined (PermutationChromosome other, int place, int length) {
-        List<Integer> newPerm = new ArrayList<Integer>(Collections.<Integer>nCopies(permutation.size(), null));
+    private PermutationChromosome getCxCombined (final PermutationChromosome other, final int place, final int length) {
+        final List<Integer> newPerm = new ArrayList<Integer>(Collections.<Integer>nCopies(permutation.size(), null));
 
         // First, make a full cycle
         int idx = 0;
         do {
-            Integer n = other.permutation.get(idx);
+            final Integer n = other.permutation.get(idx);
             idx = permutation.indexOf(n);
 
             newPerm.set(idx, n);
@@ -276,27 +281,29 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         return new PermutationChromosome(newPerm);
     }
 
-    private PermutationChromosome getRecombCombined (PermutationChromosome other, int place, int length) {
-        Random random = new XorShiftRandom(other.hashCode());
+    private PermutationChromosome getRecombCombined (
+        final PermutationChromosome other, final int place, final int length)
+    {
+        final Random random = new XorShiftRandom(other.hashCode());
 
         // Create an empty table
-        List<Set<Integer>> table = new ArrayList<>();
+        final List<Set<Integer>> table = new ArrayList<>();
         for (int i = 0; i < other.permutation.size(); i++) {
-            Set<Integer> neighs = new HashSet<>();
+            final Set<Integer> neighs = new HashSet<>();
             table.add(neighs);
         }
 
         // Fill the table
         for (int i = 0; i < permutation.size(); i++) {
-            Integer ii = PermutationUtils.wrapInt(i);
+            final Integer ii = PermutationUtils.wrapInt(i);
 
-            int idxt = permutation.indexOf(ii);
-            int idxtr = (idxt + 1) % permutation.size();
-            int idxtl = (idxt + permutation.size() - 1) % permutation.size();
+            final int idxt = permutation.indexOf(ii);
+            final int idxtr = (idxt + 1) % permutation.size();
+            final int idxtl = (idxt + permutation.size() - 1) % permutation.size();
 
-            int idxo = other.permutation.indexOf(ii);
-            int idxor = (idxo + 1) % other.permutation.size();
-            int idxol = (idxo + other.permutation.size() - 1) % other.permutation.size();
+            final int idxo = other.permutation.indexOf(ii);
+            final int idxor = (idxo + 1) % other.permutation.size();
+            final int idxol = (idxo + other.permutation.size() - 1) % other.permutation.size();
 
             table.get(i).addAll(Arrays.asList(//
                 permutation.get(idxtl), permutation.get(idxtr), //
@@ -309,14 +316,14 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
         while (tries < 100) {
             tries++;
 
-            List<Integer> perm = new ArrayList<>();
+            final List<Integer> perm = new ArrayList<>();
             perm.add(other.permutation.get(0));
 
             while (perm.size() < permutation.size()) {
-                Integer last = perm.get(perm.size() - 1);
+                final Integer last = perm.get(perm.size() - 1);
 
                 // Get the neighbours (unused)
-                Set<Integer> neighs = new HashSet<>(table.get(last.intValue()));
+                final Set<Integer> neighs = new HashSet<>(table.get(last.intValue()));
                 neighs.removeAll(perm);
 
                 // Stall?
@@ -325,8 +332,8 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
                 }
 
                 // Select next
-                List<Integer> mins = new ArrayList<>();
-                for (Integer neigh : neighs) {
+                final List<Integer> mins = new ArrayList<>();
+                for (final Integer neigh : neighs) {
                     if (mins.isEmpty() || table.get(neigh.intValue()).size() < table.get(mins.get(0).intValue()).size())
                     {
                         mins.clear();
@@ -355,19 +362,19 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals (final Object obj) {
         if (!(obj instanceof PermutationChromosome)) {
             return false;
         }
 
-        PermutationChromosome pc = (PermutationChromosome) obj;
+        final PermutationChromosome pc = (PermutationChromosome) obj;
 
         return permutation.equals(pc.permutation);
     }
 
     @Override
     public String toString () {
-        StringBuilder sb = new StringBuilder("[");
+        final StringBuilder sb = new StringBuilder("[");
 
         for (int i = 0; i < permutation.size(); i++) {
             if (i != 0) {
@@ -380,12 +387,12 @@ public final class PermutationChromosome extends Chromosome<PermutationChromosom
     }
 
     @Override
-    public int compareTo (PermutationChromosome other) {
+    public int compareTo (final PermutationChromosome other) {
         final int length = Math.min(permutation.size(), other.permutation.size());
 
         for (int i = 0; i < length; i++) {
-            int i1 = permutation.get(i).intValue();
-            int i2 = other.permutation.get(i).intValue();
+            final int i1 = permutation.get(i).intValue();
+            final int i2 = other.permutation.get(i).intValue();
 
             if (i1 != i2) {
                 return i1 - i2;

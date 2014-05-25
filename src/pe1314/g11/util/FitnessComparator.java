@@ -18,14 +18,14 @@ public final class FitnessComparator<C extends Chromosome<C>> implements Compara
 
     private final Problem<?,C> problem;
 
-    public FitnessComparator (Problem<?,C> problem) {
+    public FitnessComparator (final Problem<?,C> problem) {
         this.problem = problem;
     }
 
     @Override
-    public int compare (C c1, C c2) {
-        double f1 = problem.fitness(c1);
-        double f2 = problem.fitness(c2);
+    public int compare (final C c1, final C c2) {
+        final double f1 = problem.fitness(c1);
+        final double f2 = problem.fitness(c2);
         return problem.type().getCompareMultiplier() * (int) Math.signum(f1 - f2);
     }
 }

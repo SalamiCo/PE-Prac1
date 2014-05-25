@@ -35,7 +35,7 @@ public final class LispGameRunner {
     /** The stack for the current state */
     private final Deque<StackFrame> stack = new ArrayDeque<>();
 
-    public LispGameRunner (GameState game, LispList program) {
+    public LispGameRunner (final GameState game, final LispList program) {
         this.game = game;
         this.program = checkProgram(program);
 
@@ -63,7 +63,7 @@ public final class LispGameRunner {
         /* Remove frames if they are finished */
         StackFrame frame = stack.getLast();
         while (frame != null && frame.position < 0) {
-            StackFrame oldFrame = stack.removeLast();
+            final StackFrame oldFrame = stack.removeLast();
             frame = stack.isEmpty() ? null : stack.getLast();
             if (frame != null && frame.position > 0) {
                 frame.returns[frame.position - 1] = oldFrame.returns[0];
@@ -77,7 +77,7 @@ public final class LispGameRunner {
         }
 
         /* At this point, frame contains the next instruction to run, so do it */
-        boolean adv = stepFunc(frame);
+        final boolean adv = stepFunc(frame);
         if (frame.position == 0) {
             frame.position--;
         } else {
@@ -92,8 +92,8 @@ public final class LispGameRunner {
         return adv;
     }
 
-    private boolean stepFunc (StackFrame frame) {
-        String fun = ((LispTerminal) frame.scope.get(0)).toString();
+    private boolean stepFunc (final StackFrame frame) {
+        final String fun = ((LispTerminal) frame.scope.get(0)).toString();
 
         switch (fun) {
             case IF:
@@ -109,7 +109,7 @@ public final class LispGameRunner {
         }
     }
 
-    private boolean stepIf (StackFrame frame) {
+    private boolean stepIf (final StackFrame frame) {
         if (frame.position == 1) {
             return stepCall(frame);
         }
@@ -125,7 +125,7 @@ public final class LispGameRunner {
         return false;
     }
 
-    private boolean stepEq (StackFrame frame) {
+    private boolean stepEq (final StackFrame frame) {
         if (frame.position > 0) {
             return stepCall(frame);
         } else {
@@ -134,7 +134,7 @@ public final class LispGameRunner {
         }
     }
 
-    private boolean stepProg2 (StackFrame frame) {
+    private boolean stepProg2 (final StackFrame frame) {
         if (frame.position > 0) {
             return stepCall(frame);
         }
@@ -142,7 +142,7 @@ public final class LispGameRunner {
         return false;
     }
 
-    private boolean stepProg3 (StackFrame frame) {
+    private boolean stepProg3 (final StackFrame frame) {
         if (frame.position > 0) {
             return stepCall(frame);
         }
@@ -150,15 +150,15 @@ public final class LispGameRunner {
         return false;
     }
 
-    private boolean stepCall (StackFrame frame) {
-        LispValue what = frame.scope.get(frame.position);
+    private boolean stepCall (final StackFrame frame) {
+        final LispValue what = frame.scope.get(frame.position);
 
         if (what instanceof LispList) {
             stack.addLast(new StackFrame((LispList) what, 1));
             return false;
         }
 
-        String fun = ((LispTerminal) what).toString();
+        final String fun = ((LispTerminal) what).toString();
         switch (fun) {
             case LEFT:
                 if (game.advance(Move.LEFT)) {
@@ -216,7 +216,7 @@ public final class LispGameRunner {
         return game.won();
     }
 
-    /* package */static LispList checkProgram (LispList program) {
+    /* package */static LispList checkProgram (final LispList program) {
         /* TODO Write some actual checks */
         return program;
     }
@@ -226,7 +226,7 @@ public final class LispGameRunner {
         /* package */int position;
         /* package */final int[] returns;
 
-        public StackFrame (LispList scope, int position) {
+        public StackFrame (final LispList scope, final int position) {
             this.scope = scope;
             this.position = position;
             returns = new int[scope.size()];

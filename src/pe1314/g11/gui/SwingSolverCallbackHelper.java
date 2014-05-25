@@ -28,7 +28,7 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
     /** The wrapped callbacks */
     /* callkbacks */Callbacks<V,C> callbacks;
 
-    private SwingSolverCallbackHelper (Callbacks<V,C> callbacks) {
+    private SwingSolverCallbackHelper (final Callbacks<V,C> callbacks) {
         if (callbacks == null) {
             throw new NullPointerException("callbacks");
         }
@@ -43,7 +43,7 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
      * @param callbacks The callbacks object to wrap
      * @return A new callbacks object that is Swing-friendly
      */
-    public static <V, C extends Chromosome<C>> SwingSolverCallbackHelper<V,C> wrap (Callbacks<V,C> callbacks) {
+    public static <V, C extends Chromosome<C>> SwingSolverCallbackHelper<V,C> wrap (final Callbacks<V,C> callbacks) {
         return new SwingSolverCallbackHelper<V,C>(callbacks);
     }
 
@@ -59,7 +59,7 @@ public final class SwingSolverCallbackHelper<V, C extends Chromosome<C>> impleme
                     /* Nothing, just wait */
                 }
             });
-        } catch (Exception exc) {
+        } catch (final Exception exc) {
             exc.printStackTrace();
         }
 

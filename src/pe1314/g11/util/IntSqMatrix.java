@@ -21,7 +21,7 @@ public final class IntSqMatrix {
      * 
      * @param size Length of both matrix dimensions
      */
-    public IntSqMatrix (int size) {
+    public IntSqMatrix (final int size) {
         if (size < 0) {
             throw new IllegalArgumentException("invalid size: " + size);
         }
@@ -35,7 +35,7 @@ public final class IntSqMatrix {
      * 
      * @param other The matrix to copy into a new one
      */
-    public IntSqMatrix (IntSqMatrix other) {
+    public IntSqMatrix (final IntSqMatrix other) {
         size = other.size;
         values = Arrays.copyOf(other.values, other.values.length);
     }
@@ -52,7 +52,7 @@ public final class IntSqMatrix {
      * @throws IndexOutOfBoundsException if <tt>row</tt> or <tt>col</tt> are negative or greater than or equal to
      *         <tt>size</tt>
      */
-    public int get (int row, int col) {
+    public int get (final int row, final int col) {
         checkRange(row, col);
         return values[index(row, col)];
     }
@@ -64,7 +64,7 @@ public final class IntSqMatrix {
      * @throws IndexOutOfBoundsException if <tt>row</tt> or <tt>col</tt> are negative or greater than or equal to
      *         <tt>size</tt>
      */
-    public void set (int row, int col, int val) {
+    public void set (final int row, final int col, final int val) {
         checkRange(row, col);
         values[index(row, col)] = val;
     }
@@ -77,7 +77,7 @@ public final class IntSqMatrix {
      * @throws IndexOutOfBoundsException if <tt>row</tt> or <tt>col</tt> are negative or greater than or equal to
      *         <tt>size</tt>
      */
-    private void checkRange (int row, int col) {
+    private void checkRange (final int row, final int col) {
         if (row < 0 || row >= size) {
             throw new IndexOutOfBoundsException("row: " + row);
         }
@@ -95,13 +95,13 @@ public final class IntSqMatrix {
      * @param col Matrix column
      * @return The index of the internal array for the given position
      */
-    private int index (int row, int col) {
+    private int index (final int row, final int col) {
         return row * size + col;
     }
 
     @Override
     public String toString () {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < size; i++) {
             if (i > 0) {
@@ -116,7 +116,7 @@ public final class IntSqMatrix {
                 }
                 sb.append(get(i, j));
             }
-            
+
             sb.append('|');
         }
 

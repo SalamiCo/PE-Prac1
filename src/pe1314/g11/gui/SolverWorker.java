@@ -26,7 +26,7 @@ public final class SolverWorker<V, C extends Chromosome<C>> extends SwingWorker<
     /** A random number generator to be used */
     private final Random random;
 
-    public SolverWorker (Solver<V,C> solver, Solver.Callbacks<V,C> callbacks, Random random) {
+    public SolverWorker (final Solver<V,C> solver, final Solver.Callbacks<V,C> callbacks, final Random random) {
         this.solver = solver;
         this.callbacks = callbacks;
         this.random = random;
@@ -36,7 +36,7 @@ public final class SolverWorker<V, C extends Chromosome<C>> extends SwingWorker<
     protected Void doInBackground () throws Exception {
         try {
             solver.solve(random, callbacks);
-        } catch (Throwable exc) {
+        } catch (final Throwable exc) {
             exc.printStackTrace();
 
             // Retrhow if not an exception

@@ -172,22 +172,22 @@ public final class MainFrame extends JFrame {
     }
 
     private void setupMenuBar () {
-        JMenuBar menubar = new JMenuBar();
+        final JMenuBar menubar = new JMenuBar();
         setJMenuBar(menubar);
         menubar.setVisible(true);
 
         { /* File Menu */
-            JMenu menu = new JMenu("File");
+            final JMenu menu = new JMenu("File");
             menubar.add(menu);
 
             { /* Exit Option */
-                JMenuItem item = new JMenuItem("Exit");
+                final JMenuItem item = new JMenuItem("Exit");
                 menu.add(item);
 
                 item.setMnemonic('x');
                 item.addActionListener(new ActionListener() {
                     @Override
-                    public void actionPerformed (ActionEvent evt) {
+                    public void actionPerformed (final ActionEvent evt) {
                         actionExit();
                     }
                 });
@@ -202,24 +202,24 @@ public final class MainFrame extends JFrame {
     }
 
     private void setupContent () {
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         setContentPane(panel);
         panel.setLayout(new BorderLayout());
 
         { /* Left Form */
             createLeftFormElements();
 
-            FormLayout layout =
+            final FormLayout layout =
                 new FormLayout(
                     "right:pref, 3dlu, right:pref, 3dlu, pref", //
                     "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
                         + "pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 2dlu, pref, 8dlu, "
                         + "pref, 2dlu, pref, 2dlu, pref, 8dlu, pref, 2dlu, pref, 8dlu, pref");
 
-            PanelBuilder builder = new PanelBuilder(layout);
+            final PanelBuilder builder = new PanelBuilder(layout);
             builder.setDefaultDialogBorder();
 
-            CellConstraints cc = new CellConstraints();
+            final CellConstraints cc = new CellConstraints();
 
             /* @formatter:off */
             builder.addSeparator("Problema", cc.xyw(1, 1, 5));
@@ -276,7 +276,7 @@ public final class MainFrame extends JFrame {
             builder.add(createLeftFormButtonPanel(), cc.xyw(1, 37, 5));
             /* @formatter:on */
 
-            JPanel leftPanel = builder.getPanel();
+            final JPanel leftPanel = builder.getPanel();
             panel.add(leftPanel, BorderLayout.LINE_START);
 
             updateLeftForm();
@@ -298,7 +298,7 @@ public final class MainFrame extends JFrame {
                 PRB_P1_F5 }));
         comboProblem.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed (ActionEvent arg0) {
+            public void actionPerformed (final ActionEvent arg0) {
                 updateLeftForm();
             }
         });
@@ -341,7 +341,7 @@ public final class MainFrame extends JFrame {
         checkboxStopGeneration.setSelected(true);
         checkboxStopGeneration.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed (ActionEvent arg0) {
+            public void actionPerformed (final ActionEvent arg0) {
                 updateLeftForm();
             }
         });
@@ -352,7 +352,7 @@ public final class MainFrame extends JFrame {
         checkboxStopStall = new JCheckBox();
         checkboxStopStall.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed (ActionEvent arg0) {
+            public void actionPerformed (final ActionEvent arg0) {
                 updateLeftForm();
             }
         });
@@ -363,7 +363,7 @@ public final class MainFrame extends JFrame {
         checkboxRandomSeed = new JCheckBox();
         checkboxRandomSeed.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed (ActionEvent arg0) {
+            public void actionPerformed (final ActionEvent arg0) {
                 updateLeftForm();
             }
         });
@@ -373,7 +373,7 @@ public final class MainFrame extends JFrame {
         buttonPlay = new JButton("\u25B6");
         buttonPlay.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed (ActionEvent arg0) {
+            public void actionPerformed (final ActionEvent arg0) {
                 clickedPlay();
             }
         });
@@ -383,14 +383,14 @@ public final class MainFrame extends JFrame {
         buttonStop = new JButton("\u25FE");
         buttonStop.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed (ActionEvent arg0) {
+            public void actionPerformed (final ActionEvent arg0) {
                 clickedStop();
             }
         });
     }
 
     private JPanel createLeftFormButtonPanel () {
-        JPanel panel = new JPanel();
+        final JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
 
         panel.add(buttonPlay);
@@ -420,8 +420,8 @@ public final class MainFrame extends JFrame {
 
     /* package */void updateLeftForm () {
         if (geneticWorker == null) {
-            boolean p1 = obtainPNum() == 1;
-            boolean p2 = obtainPNum() == 2;
+            final boolean p1 = obtainPNum() == 1;
+            final boolean p2 = obtainPNum() == 2;
 
             buttonPlay.setEnabled(true);
             buttonPause.setEnabled(false);
@@ -446,7 +446,7 @@ public final class MainFrame extends JFrame {
             checkboxStopStall.setEnabled(true);
             checkboxRandomSeed.setEnabled(true);
 
-            boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
+            final boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
             labelExtra1.setEnabled(extra1);
             spinnerExtra1.setEnabled(extra1);
 
@@ -494,8 +494,8 @@ public final class MainFrame extends JFrame {
     }
 
     /* package */void clickedPlay () {
-        String problemName = (String) comboProblem.getSelectedItem();
-        double precission = ((Number) spinnerPrecission.getValue()).doubleValue();
+        final String problemName = (String) comboProblem.getSelectedItem();
+        final double precission = ((Number) spinnerPrecission.getValue()).doubleValue();
         switch (problemName) {
             case PRB_P2_A:
                 solveHospitalProblem("ajuste");
@@ -520,7 +520,7 @@ public final class MainFrame extends JFrame {
                 solveBinaryProblem(new P1F3Problem(precission));
                 break;
             case PRB_P1_F4:
-                int n = ((Number) spinnerExtra1.getValue()).intValue();
+                final int n = ((Number) spinnerExtra1.getValue()).intValue();
                 solveBinaryProblem(new P1F4Problem(precission, n));
                 break;
             case PRB_P1_F5:
@@ -539,20 +539,20 @@ public final class MainFrame extends JFrame {
     // === GENERIC OBTAINERS ===
 
     private Random obtainRandomGenerator () {
-        boolean rngIsSelected = checkboxRandomSeed.isSelected();
-        String seed = rngIsSelected ? textfieldRandomSeed.getText() : String.valueOf(System.nanoTime());
+        final boolean rngIsSelected = checkboxRandomSeed.isSelected();
+        final String seed = rngIsSelected ? textfieldRandomSeed.getText() : String.valueOf(System.nanoTime());
         textfieldRandomSeed.setText(seed);
         return new XorShiftRandom(seed.hashCode());
     }
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainGenerationStep () {
-        int populationSize = ((Number) spinnerMinPopSize.getValue()).intValue();
+        final int populationSize = ((Number) spinnerMinPopSize.getValue()).intValue();
         return new RandomGenerationStep<>(populationSize, 0);
     }
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainSelectionStep () {
-        String selection = (String) comboSelectionType.getSelectedItem();
-        int tournamentSize = 8;
+        final String selection = (String) comboSelectionType.getSelectedItem();
+        final int tournamentSize = 8;
 
         switch (selection) {
             case SEL_ROULETTE:
@@ -587,7 +587,7 @@ public final class MainFrame extends JFrame {
 
     @SuppressWarnings("unchecked")
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainCombinationStep () {
-        double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
+        final double combineProb = ((Number) spinnerCombineProb.getValue()).doubleValue();
 
         if (comboCombinationType.getSelectedItem().toString().equals(COMB_OX_POS)) {
             return (SolverStep<V,C>) new PositionPriorityOrderCombinationStep<V>(combineProb);
@@ -625,7 +625,7 @@ public final class MainFrame extends JFrame {
 
     @SuppressWarnings("unchecked")
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainMutationStep () {
-        double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
+        final double mutateProb = ((Number) spinnerMutateProb.getValue()).doubleValue();
 
         if (comboMutationType.getSelectedItem().toString().equals(MUT_HEURISTIC)) {
             return (SolverStep<V,C>) new HeuristicMutationStep<V>(mutateProb);
@@ -644,21 +644,22 @@ public final class MainFrame extends JFrame {
     }
 
     private <V, C extends Chromosome<C>> SolverStep<V,C> obtainInversionStep () {
-        double inversionProb = ((Number) spinnerInversionProb.getValue()).doubleValue();
+        final double inversionProb = ((Number) spinnerInversionProb.getValue()).doubleValue();
 
         return new InversionStep<>(inversionProb);
     }
 
     private <V, C extends Chromosome<C>> ElitismStepPair<V,C> obtainEletismPair () {
-        double eliteSize = ((Number) spinnerEliteSize.getValue()).doubleValue();
+        final double eliteSize = ((Number) spinnerEliteSize.getValue()).doubleValue();
         return new ElitismStepPair<>(eliteSize);
     }
 
-    private <V, C extends Chromosome<C>> SolverWorker<V,C> obtainWorker (Solver<V,C> solver, Random random) {
-        boolean generationsIsChecked = checkboxStopGeneration.isSelected();
-        int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
-        boolean stallIsChecked = checkboxStopStall.isSelected();
-        int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
+    private <V, C extends Chromosome<C>> SolverWorker<V,C> obtainWorker (final Solver<V,C> solver, final Random random)
+    {
+        final boolean generationsIsChecked = checkboxStopGeneration.isSelected();
+        final int generations = generationsIsChecked ? ((Number) spinnerStopGenerations.getValue()).intValue() : 0;
+        final boolean stallIsChecked = checkboxStopStall.isSelected();
+        final int stall = stallIsChecked ? ((Number) spinnerStopStalled.getValue()).intValue() : 0;
 
         if (!generationsIsChecked && !stallIsChecked) {
             JOptionPane.showMessageDialog(
@@ -671,17 +672,17 @@ public final class MainFrame extends JFrame {
             solver, SwingSolverCallbackHelper.wrap(new SolverCallbacks<V,C>(generations, stall)), random);
     }
 
-    private <V> void solveBinaryProblem (Problem<V,BinaryChromosome> problem) {
-        Random random = obtainRandomGenerator();
+    private <V> void solveBinaryProblem (final Problem<V,BinaryChromosome> problem) {
+        final Random random = obtainRandomGenerator();
 
-        ElitismStepPair<V,BinaryChromosome> esp = obtainEletismPair();
-        SolverStep<V,BinaryChromosome> generationStep = obtainGenerationStep();
-        SolverStep<V,BinaryChromosome> selectionStep = obtainSelectionStep();
-        SolverStep<V,BinaryChromosome> combinationStep = obtainCombinationStep();
-        SolverStep<V,BinaryChromosome> mutationStep = obtainMutationStep();
+        final ElitismStepPair<V,BinaryChromosome> esp = obtainEletismPair();
+        final SolverStep<V,BinaryChromosome> generationStep = obtainGenerationStep();
+        final SolverStep<V,BinaryChromosome> selectionStep = obtainSelectionStep();
+        final SolverStep<V,BinaryChromosome> combinationStep = obtainCombinationStep();
+        final SolverStep<V,BinaryChromosome> mutationStep = obtainMutationStep();
 
         /* @formatter:off */
-        Solver<V, BinaryChromosome> solver = Solver.builder(problem)
+        final Solver<V, BinaryChromosome> solver = Solver.builder(problem)
             .step(generationStep)
             .step(esp.getSaveStep())
             .step(selectionStep)
@@ -691,28 +692,29 @@ public final class MainFrame extends JFrame {
             .build();
         /* @formatter:on */
 
-        this.geneticWorker = obtainWorker(solver, random);
+        geneticWorker = obtainWorker(solver, random);
         if (geneticWorker != null) {
             geneticWorker.execute();
         }
     }
 
-    private void solveHospitalProblem (String fname) {
+    private void solveHospitalProblem (final String fname) {
         try {
-            P2Problem problem = P2Problem.readFromURL(MainFrame.class.getResource("/pe1314/g11/pr2/" + fname + ".dat"));
+            final P2Problem problem =
+                P2Problem.readFromURL(MainFrame.class.getResource("/pe1314/g11/pr2/" + fname + ".dat"));
 
-            Random random = obtainRandomGenerator();
+            final Random random = obtainRandomGenerator();
 
-            ElitismStepPair<List<Integer>,PermutationChromosome> esp = obtainEletismPair();
-            SolverStep<List<Integer>,PermutationChromosome> generationStep = obtainGenerationStep();
-            SolverStep<List<Integer>,PermutationChromosome> selectionStep = obtainSelectionStep();
-            SolverStep<List<Integer>,PermutationChromosome> combinationStep = obtainCombinationStep();
-            SolverStep<List<Integer>,PermutationChromosome> mutationStep = obtainMutationStep();
-            SolverStep<List<Integer>,PermutationChromosome> inversionStep = obtainInversionStep();
-            SolverStep<List<Integer>,PermutationChromosome> dedupStep = new DuplicateRemovalStep<>();
+            final ElitismStepPair<List<Integer>,PermutationChromosome> esp = obtainEletismPair();
+            final SolverStep<List<Integer>,PermutationChromosome> generationStep = obtainGenerationStep();
+            final SolverStep<List<Integer>,PermutationChromosome> selectionStep = obtainSelectionStep();
+            final SolverStep<List<Integer>,PermutationChromosome> combinationStep = obtainCombinationStep();
+            final SolverStep<List<Integer>,PermutationChromosome> mutationStep = obtainMutationStep();
+            final SolverStep<List<Integer>,PermutationChromosome> inversionStep = obtainInversionStep();
+            final SolverStep<List<Integer>,PermutationChromosome> dedupStep = new DuplicateRemovalStep<>();
 
             /* @formatter:off */
-            Solver<List<Integer>, PermutationChromosome> solver = Solver.builder(problem)
+            final Solver<List<Integer>, PermutationChromosome> solver = Solver.builder(problem)
                 .step(generationStep)
                 .step(esp.getSaveStep())
                 .step(selectionStep)
@@ -724,31 +726,31 @@ public final class MainFrame extends JFrame {
                 .build();
             /* @formatter:on */
 
-            this.geneticWorker = obtainWorker(solver, random);
+            geneticWorker = obtainWorker(solver, random);
             if (geneticWorker != null) {
                 stopWorker = false;
                 geneticWorker.execute();
             }
-        } catch (IOException exc) {
+        } catch (final IOException exc) {
             exc.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error de entrada/salida:\n" + exc, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void solveSpaceInvadersProblem () {
-        SpaceInvadersProblem problem = new SpaceInvadersProblem();
+        final SpaceInvadersProblem problem = new SpaceInvadersProblem();
 
-        Random random = obtainRandomGenerator();
+        final Random random = obtainRandomGenerator();
 
-        ElitismStepPair<LispList,LispChromosome> esp = obtainEletismPair();
-        SolverStep<LispList,LispChromosome> generationStep = obtainGenerationStep();
-        SolverStep<LispList,LispChromosome> selectionStep = obtainSelectionStep();
-        SolverStep<LispList,LispChromosome> combinationStep = obtainCombinationStep();
-        SolverStep<LispList,LispChromosome> mutationStep = obtainMutationStep();
-        SolverStep<LispList,LispChromosome> dedupStep = new DuplicateRemovalStep<>();
+        final ElitismStepPair<LispList,LispChromosome> esp = obtainEletismPair();
+        final SolverStep<LispList,LispChromosome> generationStep = obtainGenerationStep();
+        final SolverStep<LispList,LispChromosome> selectionStep = obtainSelectionStep();
+        final SolverStep<LispList,LispChromosome> combinationStep = obtainCombinationStep();
+        final SolverStep<LispList,LispChromosome> mutationStep = obtainMutationStep();
+        final SolverStep<LispList,LispChromosome> dedupStep = new DuplicateRemovalStep<>();
 
         /* @formatter:off */
-        Solver<LispList,LispChromosome> solver = Solver.builder(problem)
+        final Solver<LispList,LispChromosome> solver = Solver.builder(problem)
             .step(generationStep)
             .step(esp.getSaveStep())
             .step(selectionStep)
@@ -759,7 +761,7 @@ public final class MainFrame extends JFrame {
             .build();
         /* @formatter:on */
 
-        this.geneticWorker = obtainWorker(solver, random);
+        geneticWorker = obtainWorker(solver, random);
         if (geneticWorker != null) {
             stopWorker = false;
             geneticWorker.execute();
@@ -786,7 +788,7 @@ public final class MainFrame extends JFrame {
         /** Currently running generation */
         private volatile int currentStall;
 
-        /* package */SolverCallbacks (int generations, int stalled) {
+        /* package */SolverCallbacks (final int generations, final int stalled) {
             this.generations = generations;
             this.stalled = stalled;
         }
@@ -805,7 +807,7 @@ public final class MainFrame extends JFrame {
         }
 
         @Override
-        public void startProcess (Solver<V,C> psolver) {
+        public void startProcess (final Solver<V,C> psolver) {
             solver = psolver;
             best = null;
             currentStall = 0;
@@ -816,24 +818,24 @@ public final class MainFrame extends JFrame {
         }
 
         @Override
-        public void startGeneration (int gen, List<C> population) {
+        public void startGeneration (final int gen, final List<C> population) {
             currentGeneration = gen;
         }
 
         @Override
-        public void startStep (SolverStep<V,C> step, List<C> population) {
+        public void startStep (final SolverStep<V,C> step, final List<C> population) {
         }
 
         @Override
-        public void endStep (List<C> population) {
+        public void endStep (final List<C> population) {
         }
 
         @Override
-        public void endGeneration (List<C> population) {
-            Comparator<C> comp = new FitnessComparator<>(solver.getProblem());
+        public void endGeneration (final List<C> population) {
+            final Comparator<C> comp = new FitnessComparator<>(solver.getProblem());
 
             C nextBest = null;
-            for (C chromo : population) {
+            for (final C chromo : population) {
                 if (nextBest == null || comp.compare(chromo, nextBest) < 0) {
                     nextBest = chromo;
                 }
@@ -851,7 +853,7 @@ public final class MainFrame extends JFrame {
         }
 
         @Override
-        public void endProcess (SolverTrace<V,C> trace) {
+        public void endProcess (final SolverTrace<V,C> trace) {
             solver = null;
             best = null;
 

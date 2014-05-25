@@ -24,11 +24,11 @@ public class GameStateCanvas extends JComponent {
     private static final BufferedImage IMG_SHIP = loadImage("ship");
     private static final BufferedImage IMG_SHOT = loadImage("shot");
 
-    private static BufferedImage loadImage (String name) {
+    private static BufferedImage loadImage (final String name) {
         try {
             return ImageIO.read(Object.class.getResource("/pe1314/g11/pr3/" + name + ".png"));
 
-        } catch (IOException exc) {
+        } catch (final IOException exc) {
             exc.printStackTrace();
             throw new RuntimeException(exc);
         }
@@ -41,19 +41,19 @@ public class GameStateCanvas extends JComponent {
         this(null);
     }
 
-    public GameStateCanvas (GameState state) {
+    public GameStateCanvas (final GameState state) {
         this.state = state;
 
         setSize(8 + SPRSIZE * GameState.SIZE, 8 + SPRSIZE * GameState.SIZE);
         setPreferredSize(getSize());
     }
 
-    public void setGameState (GameState state) {
+    public void setGameState (final GameState state) {
         this.state = state;
     }
 
     @Override
-    protected void paintComponent (Graphics g) {
+    protected void paintComponent (final Graphics g) {
         super.paintComponent(g);
 
         g.setColor(Color.BLACK);

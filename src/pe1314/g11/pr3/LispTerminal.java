@@ -12,10 +12,10 @@ public final class LispTerminal implements LispValue {
 
     private final String string;
 
-    public LispTerminal (String string) {
+    public LispTerminal (final String string) {
         this.string = Objects.requireNonNull(string, "string");
     }
-    
+
     @Override
     public int depth () {
         return 0;
@@ -27,11 +27,11 @@ public final class LispTerminal implements LispValue {
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals (final Object obj) {
         if (!(obj instanceof LispTerminal)) {
             return false;
         }
-        LispTerminal lt = (LispTerminal) obj;
+        final LispTerminal lt = (LispTerminal) obj;
         return string.equals(lt.string);
     }
 
@@ -44,18 +44,19 @@ public final class LispTerminal implements LispValue {
     public int nodes () {
         return 1;
     }
+
     @Override
     public int expressions () {
         return 1;
     }
-    
+
     @Override
-    public int compareTo (LispValue o) {
+    public int compareTo (final LispValue o) {
         if (o instanceof LispList) {
             return -1;
         }
-        
-        LispTerminal lt = (LispTerminal) o;
+
+        final LispTerminal lt = (LispTerminal) o;
         return string.compareTo(lt.string);
     }
 }

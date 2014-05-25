@@ -18,7 +18,7 @@ import java.util.List;
 public final class SolverTrace<V, C extends Chromosome<C>> {
 
     /** The problem being traced */
-    private Problem<V,C> problem;
+    private final Problem<V,C> problem;
 
     /** The best chromosome seen */
     private C best = null;
@@ -26,7 +26,7 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
     /** List of generation summaries */
     private final List<Summary> summaries = new ArrayList<Summary>();
 
-    public SolverTrace (Problem<V,C> problem) {
+    public SolverTrace (final Problem<V,C> problem) {
         if (problem == null) {
             throw new NullPointerException("problem");
         }
@@ -38,7 +38,7 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
      * 
      * @return <tt>this</tt>
      */
-    /* package */SolverTrace<V,C> generation (List<C> population, long nanoseconds) {
+    /* package */SolverTrace<V,C> generation (final List<C> population, final long nanoseconds) {
         final int len = population.size();
 
         double sum = 0;
@@ -46,8 +46,8 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
         double max = Double.NEGATIVE_INFINITY;
         double min = Double.POSITIVE_INFINITY;
 
-        for (C chromo : population) {
-            double fitness = problem.fitness(chromo);
+        for (final C chromo : population) {
+            final double fitness = problem.fitness(chromo);
 
             // Set this as the best if better than the old best
             if (best == null || fitness > problem.fitness(best)) {
@@ -91,7 +91,8 @@ public final class SolverTrace<V, C extends Chromosome<C>> {
         private final double average;
         private final double standardDeviation;
 
-        /* protected */Summary (int gen, double max, double min, double avg, double stdev) {
+        /* protected */Summary (final int gen, final double max, final double min, final double avg, final double stdev)
+        {
             this.generation = gen;
             this.max = max;
             this.min = min;

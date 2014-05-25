@@ -18,13 +18,17 @@ import pe1314.g11.SolverStep;
 public final class RouletteSelectionStep<V, C extends Chromosome<C>> implements SolverStep<V,C> {
 
     @Override
-    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
+    public
+        void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+    {
         // An array of accumulated fitness
-        double[] accs = new double[input.size()];
+        final double[] accs = new double[input.size()];
 
         // Get the minimum of the fitnesses
         double minFitness = Double.POSITIVE_INFINITY;
-        double maxFitness = Double.NEGATIVE_INFINITY;
+        final double maxFitness = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < input.size(); i++) {
             minFitness = Math.min(minFitness, problem.fitness(input.get(i)));
         }
@@ -41,7 +45,7 @@ public final class RouletteSelectionStep<V, C extends Chromosome<C>> implements 
 
         // Make the selection
         for (int i = 0; i < input.size(); i++) {
-            double rnd = random.nextDouble() * fitnessSum;
+            final double rnd = random.nextDouble() * fitnessSum;
 
             C selected = null;
             for (int j = 0; j < accs.length && selected == null; j++) {

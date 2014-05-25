@@ -27,14 +27,18 @@ public class TournamentSelectionStep<V, C extends Chromosome<C>> implements Solv
     /**
      * @param tournamentSize Size of the tournament
      */
-    public TournamentSelectionStep (int tournamentSize) {
+    public TournamentSelectionStep (final int tournamentSize) {
         this.tournamentSize = tournamentSize;
     }
 
     @Override
-    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
-        List<C> tournament = new ArrayList<C>(tournamentSize);
-        Comparator<C> sorter = new FitnessComparator<C>(problem);
+    public
+        void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+    {
+        final List<C> tournament = new ArrayList<C>(tournamentSize);
+        final Comparator<C> sorter = new FitnessComparator<C>(problem);
 
         for (int i = 0; i < input.size(); i++) {
             tournament.clear();

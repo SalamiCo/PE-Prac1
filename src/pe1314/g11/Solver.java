@@ -27,7 +27,7 @@ public final class Solver<V, C extends Chromosome<C>> {
      * 
      * @param steps Steps to be applied to each generation
      */
-    Solver (Problem<V,C> problem, List<SolverStep<V,C>> steps) {
+    Solver (final Problem<V,C> problem, final List<SolverStep<V,C>> steps) {
         this.problem = problem;
         this.steps = steps;
     }
@@ -42,15 +42,17 @@ public final class Solver<V, C extends Chromosome<C>> {
      * @param callbacks The callbacks to use
      * @return The best value seen
      */
-    public SolverTrace<V,C> solve (Random random, Callbacks<V,C> callbacks) {
+    public SolverTrace<V,C> solve (final Random random, final Callbacks<V,C> callbacks) {
         return doTrace(random, true, callbacks);
     }
 
     // ===============================
     // === INTERNAL IMPLEMENTATION ===
 
-    private SolverTrace<V,C> doTrace (Random random, boolean traceOptions, Solver.Callbacks<V,C> callbacks) {
-        SolverTrace<V,C> trace = new SolverTrace<V,C>(problem);
+    private SolverTrace<V,C> doTrace (
+        final Random random, final boolean traceOptions, final Solver.Callbacks<V,C> callbacks)
+    {
+        final SolverTrace<V,C> trace = new SolverTrace<V,C>(problem);
 
         List<C> population = new ArrayList<C>();
         List<C> buffer = new ArrayList<C>();
@@ -66,12 +68,12 @@ public final class Solver<V, C extends Chromosome<C>> {
 
             // Apply every step
             long time = System.nanoTime();
-            for (SolverStep<V,C> step : steps) {
+            for (final SolverStep<V,C> step : steps) {
                 // Notify the start of the step
                 callbacks.startStep(step, Collections.unmodifiableList(population));
 
-                List<C> input = population;
-                List<C> output = buffer;
+                final List<C> input = population;
+                final List<C> output = buffer;
                 output.clear();
 
                 step.apply(problem, Collections.unmodifiableList(input), random, gen, output);
@@ -111,7 +113,7 @@ public final class Solver<V, C extends Chromosome<C>> {
      * 
      * @return A new <tt>Builder</tt>
      */
-    public static <V, C extends Chromosome<C>> Builder<V,C> builder (Problem<V,C> problem) {
+    public static <V, C extends Chromosome<C>> Builder<V,C> builder (final Problem<V,C> problem) {
         return new Builder<V,C>(problem);
     }
 
@@ -132,7 +134,7 @@ public final class Solver<V, C extends Chromosome<C>> {
         private List<SolverStep<V,C>> steps = new ArrayList<SolverStep<V,C>>(4);
 
         /** Creates a new problem solver builder */
-        /* package */Builder (Problem<V,C> problem) {
+        /* package */Builder (final Problem<V,C> problem) {
             this.problem = problem;
         }
 
@@ -144,7 +146,7 @@ public final class Solver<V, C extends Chromosome<C>> {
          * @param step Step to be added to this builder
          * @return <tt>this</tt>
          */
-        public Builder<V,C> step (SolverStep<V,C> step) {
+        public Builder<V,C> step (final SolverStep<V,C> step) {
             if (steps == null) {
                 throw new IllegalStateException("already used");
             }
@@ -163,7 +165,7 @@ public final class Solver<V, C extends Chromosome<C>> {
                 throw new IllegalStateException("already used");
             }
 
-            List<SolverStep<V,C>> unmsteps = this.steps;
+            final List<SolverStep<V,C>> unmsteps = this.steps;
             steps = null;
             return new Solver<V,C>(problem, Collections.unmodifiableList(unmsteps));
         }

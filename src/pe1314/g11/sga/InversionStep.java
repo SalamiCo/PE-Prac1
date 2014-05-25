@@ -13,7 +13,7 @@ public class InversionStep<V, C extends Chromosome<C>> implements SolverStep<V,C
 
     private final double probability;
 
-    public InversionStep (double probability) {
+    public InversionStep (final double probability) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
@@ -22,22 +22,26 @@ public class InversionStep<V, C extends Chromosome<C>> implements SolverStep<V,C
     }
 
     @Override
-    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
-        Comparator<C> comp = new FitnessComparator<>(problem);
+    public
+        void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+    {
+        final Comparator<C> comp = new FitnessComparator<>(problem);
 
         // For every input chromosome...
         for (C chromo : input) {
             if (random.nextDouble() < probability) {
-                int p1 = random.nextInt(chromo.getMutationPlaces());
+                final int p1 = random.nextInt(chromo.getMutationPlaces());
 
                 int p2 = p1;
                 while (p1 == p2) {
                     p2 = random.nextInt(chromo.getMutationPlaces());
                 }
 
-                C newChromo = chromo.getMutated(PermutationChromosome.MUTATION_INVERSION, p1, p2 - p1);
-                
-                if (comp.compare(newChromo, chromo) < 0){
+                final C newChromo = chromo.getMutated(PermutationChromosome.MUTATION_INVERSION, p1, p2 - p1);
+
+                if (comp.compare(newChromo, chromo) < 0) {
                     chromo = newChromo;
                 }
             }

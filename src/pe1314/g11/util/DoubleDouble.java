@@ -7,7 +7,7 @@ public final class DoubleDouble {
     private final Double x;
     private final Double y;
 
-    public DoubleDouble (Double x, Double y) {
+    public DoubleDouble (final Double x, final Double y) {
         this.x = x;
         this.y = y;
     }
@@ -26,11 +26,11 @@ public final class DoubleDouble {
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals (final Object obj) {
         if (!(obj instanceof DoubleDouble)) {
             return false;
         }
-        DoubleDouble dd = (DoubleDouble) obj;
+        final DoubleDouble dd = (DoubleDouble) obj;
         return Objects.equals(x, dd.x) && Objects.equals(y, dd.y);
     }
 

@@ -21,7 +21,7 @@ public final class CombinationStep<V, C extends Chromosome<C>> implements Solver
 
     private final int type;
 
-    public CombinationStep (double probability, int type) {
+    public CombinationStep (final double probability, final int type) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
@@ -31,16 +31,20 @@ public final class CombinationStep<V, C extends Chromosome<C>> implements Solver
     }
 
     @Override
-    public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
-        Iterator<C> it = input.iterator();
+    public
+        void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+    {
+        final Iterator<C> it = input.iterator();
         while (it.hasNext()) {
-            C a = it.next();
+            final C a = it.next();
 
             if (it.hasNext()) {
-                C b = it.next();
+                final C b = it.next();
 
                 if (random.nextDouble() < probability) {
-                    int place = random.nextInt(a.getCombinationPlaces());
+                    final int place = random.nextInt(a.getCombinationPlaces());
                     int p2 = place;
                     while (place == p2) {
                         p2 = random.nextInt(a.getCombinationPlaces());

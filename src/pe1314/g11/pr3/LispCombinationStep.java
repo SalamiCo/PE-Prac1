@@ -12,7 +12,7 @@ public class LispCombinationStep implements SolverStep<LispList,LispChromosome> 
 
     private final double probability;
 
-    public LispCombinationStep (double probability) {
+    public LispCombinationStep (final double probability) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
@@ -22,19 +22,19 @@ public class LispCombinationStep implements SolverStep<LispList,LispChromosome> 
 
     @Override
     public void apply (
-        Problem<LispList,LispChromosome> problem, List<LispChromosome> input, Random random, int generation,
-        List<LispChromosome> output)
+        final Problem<LispList,LispChromosome> problem, final List<LispChromosome> input, final Random random,
+        final int generation, final List<LispChromosome> output)
     {
-        Iterator<LispChromosome> it = input.iterator();
+        final Iterator<LispChromosome> it = input.iterator();
         while (it.hasNext()) {
-            LispChromosome a = it.next();
+            final LispChromosome a = it.next();
 
             if (it.hasNext()) {
-                LispChromosome b = it.next();
+                final LispChromosome b = it.next();
 
                 if (random.nextDouble() < probability) {
-                    int posA = random.nextInt(a.getLispList().expressions() - 1);
-                    int posB = random.nextInt(b.getLispList().expressions() - 1);
+                    final int posA = random.nextInt(a.getLispList().expressions() - 1);
+                    final int posB = random.nextInt(b.getLispList().expressions() - 1);
 
                     output.add(performCombination(a, b, posA, posB));
                     output.add(performCombination(b, a, posB, posA));
@@ -50,25 +50,27 @@ public class LispCombinationStep implements SolverStep<LispList,LispChromosome> 
         }
     }
 
-    private static LispChromosome performCombination (LispChromosome a, LispChromosome b, int posA, int posB) {
-        LispList listA = a.getLispList();
-        LispList listB = b.getLispList();
+    private static LispChromosome performCombination (
+        final LispChromosome a, final LispChromosome b, final int posA, final int posB)
+    {
+        final LispList listA = a.getLispList();
+        final LispList listB = b.getLispList();
 
-        LispValue subtree = obtainSubtree(listB, posB);
+        final LispValue subtree = obtainSubtree(listB, posB);
         return new LispChromosome(replaceSubtree(listA, posA, subtree));
     }
 
-    private static LispValue obtainSubtree (LispList list, int pos) {
+    private static LispValue obtainSubtree (final LispList list, final int pos) {
         int skipped = 0;
-        
+
         for (int i = 1; i < list.size(); i++) {
-            LispValue lv = list.get(i);
-            
+            final LispValue lv = list.get(i);
+
             if (skipped == pos) {
                 return lv;
             }
-            
-            int toSkip = lv.expressions();
+
+            final int toSkip = lv.expressions();
             if (skipped < pos && pos < skipped + toSkip) {
                 return obtainSubtree((LispList) lv, pos - skipped - 1);
             }
@@ -78,19 +80,19 @@ public class LispCombinationStep implements SolverStep<LispList,LispChromosome> 
         throw new IllegalArgumentException("pos " + pos);
     }
 
-    private static LispList replaceSubtree (LispList list, int pos, LispValue subtree) {
+    private static LispList replaceSubtree (final LispList list, final int pos, final LispValue subtree) {
         int skipped = 0;
-        List<LispValue> values = new ArrayList<>(list.values());
-        
+        final List<LispValue> values = new ArrayList<>(list.values());
+
         for (int i = 1; i < values.size(); i++) {
-            LispValue lv = values.get(i);
-            
+            final LispValue lv = values.get(i);
+
             if (skipped == pos) {
                 values.set(i, subtree);
                 return new LispList(values);
             }
-            
-            int toSkip = lv.expressions();
+
+            final int toSkip = lv.expressions();
             if (skipped < pos && pos < skipped + toSkip) {
                 values.set(i, replaceSubtree((LispList) lv, pos - skipped - 1, subtree));
                 return new LispList(values);

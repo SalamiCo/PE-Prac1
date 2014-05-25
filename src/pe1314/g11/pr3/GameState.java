@@ -24,12 +24,12 @@ public final class GameState {
         public final int x;
         public final int y;
 
-        private Coord (int x, int y) {
+        private Coord (final int x, final int y) {
             this.x = x;
             this.y = y;
         }
 
-        public static Coord of (int x, int y) {
+        public static Coord of (final int x, final int y) {
             if (x < 0 || x >= SIZE) {
                 throw new IndexOutOfBoundsException("x: " + x);
             }
@@ -55,9 +55,9 @@ public final class GameState {
 
     private Coord shot;
 
-    private boolean dirToggle;
+    private final boolean dirToggle;
 
-    public GameState (Coord ship, Coord alien, Coord shot, boolean dirToggle) {
+    public GameState (final Coord ship, final Coord alien, final Coord shot, final boolean dirToggle) {
         Objects.requireNonNull(ship, "ship");
         Objects.requireNonNull(alien, "alien");
 
@@ -71,7 +71,7 @@ public final class GameState {
         this.dirToggle = dirToggle;
     }
 
-    public boolean advance (Move move) {
+    public boolean advance (final Move move) {
         if (shot != null) {
             shot = shot.y == SIZE - 1 ? null : Coord.of(shot.x, shot.y + 1);
         }
@@ -96,12 +96,12 @@ public final class GameState {
         if (move != null) {
             switch (move) {
                 case LEFT:
-                    boolean left = (ship.x == 0);
+                    final boolean left = (ship.x == 0);
                     ship = Coord.of(Math.max(0, ship.x - 1), ship.y);
                     return !left;
 
                 case RIGHT:
-                    boolean right = (ship.x == SIZE - 1);
+                    final boolean right = (ship.x == SIZE - 1);
                     ship = Coord.of(Math.min(SIZE - 1, ship.x + 1), ship.y);
                     return !right;
 
@@ -112,7 +112,7 @@ public final class GameState {
                     }
             }
         }
-        
+
         return false;
     }
 
@@ -129,7 +129,7 @@ public final class GameState {
     }
 
     public int getDistX () {
-        int dist = Math.abs(alien.x - ship.x);
+        final int dist = Math.abs(alien.x - ship.x);
 
         if ((alienLeft() && alien.x > ship.x) || (!alienLeft() && alien.x < ship.x)) {
             return dist;
@@ -163,7 +163,7 @@ public final class GameState {
         return "[ship=" + ship + "; alien=" + alien + "; shot=" + shot + "]";
     }
 
-    public static GameState newRandom (Random random) {
+    public static GameState newRandom (final Random random) {
         return new GameState(Coord.of(random.nextInt(SIZE), 0), Coord.of(
             random.nextInt(SIZE), SIZE - 1 - random.nextInt(6)), null, random.nextBoolean());
     }

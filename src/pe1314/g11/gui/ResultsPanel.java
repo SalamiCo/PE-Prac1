@@ -76,10 +76,11 @@ public final class ResultsPanel extends JSplitPane {
 
         table = new JTable();
         table.addMouseListener(new MouseAdapter() {
-            public void mouseClicked (MouseEvent e) {
+            @Override
+            public void mouseClicked (final MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    JTable target = (JTable) e.getSource();
-                    int row = target.getSelectedRow();
+                    final JTable target = (JTable) e.getSource();
+                    final int row = target.getSelectedRow();
                     doubleClicked(row);
                 }
             }
@@ -90,7 +91,7 @@ public final class ResultsPanel extends JSplitPane {
         slider.setPaintLabels(true);
         slider.addChangeListener(new ChangeListener() {
             @Override
-            public void stateChanged (ChangeEvent evt) {
+            public void stateChanged (final ChangeEvent evt) {
                 sliderChange();
             }
         });
@@ -102,12 +103,12 @@ public final class ResultsPanel extends JSplitPane {
         bestFitness = new JTextField();
         bestFitness.setEditable(false);
 
-        FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow", "pref, 2dlu, pref, 2dlu, pref");
+        final FormLayout layout = new FormLayout("right:pref, 3dlu, pref:grow", "pref, 2dlu, pref, 2dlu, pref");
 
-        PanelBuilder builder = new PanelBuilder(layout);
+        final PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
 
-        CellConstraints cc = new CellConstraints();
+        final CellConstraints cc = new CellConstraints();
 
         builder.addLabel("Mejor Cromosoma:", cc.xy(1, 1));
         builder.add(bestChromo, cc.xy(3, 1));
@@ -136,7 +137,7 @@ public final class ResultsPanel extends JSplitPane {
 
         try {
             slider.setMaximum(1);
-        } catch (NullPointerException exc) {
+        } catch (final NullPointerException exc) {
             // Dunno lol
             System.err.printf("NPE in clearResults%n");
             slider.setMaximum(1);
@@ -172,8 +173,13 @@ public final class ResultsPanel extends JSplitPane {
     @SuppressWarnings("serial")
     private void clearTable () {
         tableModel = new DefaultTableModel(new String[] { "Chromosome", "Value", "Fitness" }, 0) {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5522053746224748015L;
+
             @Override
-            public boolean isCellEditable (int row, int column) {
+            public boolean isCellEditable (final int row, final int column) {
                 return false;
             }
         };
@@ -181,19 +187,19 @@ public final class ResultsPanel extends JSplitPane {
         table.setModel(tableModel);
     }
 
-    private void updateTable (List<String[]> rows) {
+    private void updateTable (final List<String[]> rows) {
         clearTable();
-        for (String[] row : rows) {
+        for (final String[] row : rows) {
             tableModel.addRow(row);
         }
     }
 
-    private void updateSlider (int num) {
+    private void updateSlider (final int num) {
         slider.setMinimum(0);
         slider.setValue(0); // Avoid NPE (range-check)
         try {
             slider.setMaximum(Math.max(1, num));
-        } catch (NullPointerException exc) {
+        } catch (final NullPointerException exc) {
             // Dunno lol
             System.err.printf("NPE in updateSlider (num: %d)%n", Integer.valueOf(num));
             slider.setMaximum(Math.max(1, num));
@@ -212,14 +218,16 @@ public final class ResultsPanel extends JSplitPane {
         }
     }
 
-    public <V, C extends Chromosome<C>> void addGeneration (Problem<V,C> problem, int gen, List<C> population, C best) {
+    public <V, C extends Chromosome<C>> void addGeneration (
+        final Problem<V,C> problem, final int gen, final List<C> population, final C best)
+    {
         final int len = population.size();
-        Comparator<C> fcmp = new FitnessComparator<>(problem);
+        final Comparator<C> fcmp = new FitnessComparator<>(problem);
 
         double sum = 0;
         C lcbest = population.get(0);
 
-        for (C chromo : population) {
+        for (final C chromo : population) {
             if (fcmp.compare(chromo, lcbest) < 0) {
                 lcbest = chromo;
             }
@@ -231,13 +239,13 @@ public final class ResultsPanel extends JSplitPane {
         seriesBestLocal.add(gen, problem.fitness(lcbest));
         seriesBestGlobal.add(gen, problem.fitness(best));
 
-        List<C> sorted = new ArrayList<>(population);
+        final List<C> sorted = new ArrayList<>(population);
         Collections.sort(sorted, fcmp);
-        
-        List<String[]> rows = new ArrayList<>();
-        List<Chromosome<?>> crows = new ArrayList<>();
+
+        final List<String[]> rows = new ArrayList<>();
+        final List<Chromosome<?>> crows = new ArrayList<>();
         clearTable();
-        for (C chromo : sorted) {
+        for (final C chromo : sorted) {
             crows.add(chromo);
             rows.add(new String[] { //
                 chromo.toString(), problem.value(chromo).toString(), String.valueOf(problem.fitness(chromo)) });
@@ -245,7 +253,7 @@ public final class ResultsPanel extends JSplitPane {
 
         tables.add(rows);
         chromosomes.add(crows);
-        
+
         updateTable(rows);
         updateSlider(gen);
 
@@ -254,11 +262,11 @@ public final class ResultsPanel extends JSplitPane {
         bestFitness.setText(String.valueOf(problem.fitness(best)));
     }
 
-    /* package */void doubleClicked (int row) {
-        Chromosome<?> chromo = chromosomes.get(slider.getValue()).get(row);
-        
+    /* package */void doubleClicked (final int row) {
+        final Chromosome<?> chromo = chromosomes.get(slider.getValue()).get(row);
+
         if (chromo instanceof LispChromosome) {
-            JDialog dialog = new RunnerDialog(((LispChromosome)chromo).getLispList());
+            final JDialog dialog = new RunnerDialog(((LispChromosome) chromo).getLispList());
             dialog.setModal(true);
             dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);

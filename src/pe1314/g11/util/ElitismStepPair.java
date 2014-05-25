@@ -17,7 +17,7 @@ public final class ElitismStepPair<V, C extends Chromosome<C>> {
     /** Percent of chromosomes to be saved */
     /* protected */final double percent;
 
-    public ElitismStepPair (double percent) {
+    public ElitismStepPair (final double percent) {
         this.percent = percent;
     }
 
@@ -47,7 +47,10 @@ public final class ElitismStepPair<V, C extends Chromosome<C>> {
         }
 
         @Override
-        public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
+        public void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+        {
             output.addAll(input);
             Collections.sort(output, new FitnessComparator<C>(problem));
 
@@ -67,7 +70,10 @@ public final class ElitismStepPair<V, C extends Chromosome<C>> {
         }
 
         @Override
-        public void apply (Problem<V,C> problem, List<C> input, Random random, int generation, List<C> output) {
+        public void apply (
+            final Problem<V,C> problem, final List<C> input, final Random random, final int generation,
+            final List<C> output)
+        {
             output.addAll(input);
             Collections.sort(output, new FitnessComparator<C>(problem));
 

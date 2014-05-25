@@ -22,6 +22,11 @@ public class LispUtils {
 
     @SuppressWarnings("serial")
     private static final Map<String,Integer> ARITY = new HashMap<String,Integer>() {
+        /**
+         * 
+         */
+        private static final long serialVersionUID = -2789301994644310481L;
+
         {
             put(LispGameRunner.IF, 3);
             put(LispGameRunner.EQ, 2);
@@ -33,10 +38,10 @@ public class LispUtils {
     private LispUtils () {
     }
 
-    public static LispList generateRandom (Random random, int depth) {
-        String function = FUNCTIONS.get(random.nextInt(FUNCTIONS.size()));
-        int arity = ARITY.get(function);
-        List<LispValue> list = new ArrayList<>();
+    public static LispList generateRandom (final Random random, final int depth) {
+        final String function = FUNCTIONS.get(random.nextInt(FUNCTIONS.size()));
+        final int arity = ARITY.get(function);
+        final List<LispValue> list = new ArrayList<>();
         list.add(new LispTerminal(function));
 
         for (int i = 1; i <= arity; i++) {

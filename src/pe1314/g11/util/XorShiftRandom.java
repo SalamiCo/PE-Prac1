@@ -21,12 +21,12 @@ public final class XorShiftRandom extends Random {
         setSeed(System.nanoTime());
     }
 
-    public XorShiftRandom (long seed) {
+    public XorShiftRandom (final long seed) {
         setSeed(seed);
     }
 
     @Override
-    protected int next (int bits) {
+    protected int next (final int bits) {
         state ^= (state << 21);
         state ^= (state >>> 35);
         state ^= (state << 4);
@@ -34,7 +34,7 @@ public final class XorShiftRandom extends Random {
     }
 
     @Override
-    public synchronized void setSeed (long seed) {
+    public synchronized void setSeed (final long seed) {
         if (seed == 0) {
             state = Long.MIN_VALUE;
         } else {

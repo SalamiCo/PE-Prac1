@@ -25,12 +25,12 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
      * @param length Number of bits used in this chromosome
      * @param bits Bits of this chromosome
      */
-    public BinaryChromosome (int length, BitSet bits) {
+    public BinaryChromosome (final int length, final BitSet bits) {
         this.length = length;
         this.bits = (BitSet) bits.clone();
 
         // Mask the bits of this chromosome
-        BitSet mask = new BitSet();
+        final BitSet mask = new BitSet();
         mask.set(0, length, true);
         this.bits.intersects(mask);
     }
@@ -42,8 +42,8 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
      * @param random The RNG to be used
      * @return A new random chromosome
      */
-    public static BinaryChromosome newRandom (int length, Random random) {
-        BitSet bits = new BitSet();
+    public static BinaryChromosome newRandom (final int length, final Random random) {
+        final BitSet bits = new BitSet();
         for (int i = 0; i < length; i++) {
             bits.set(i, random.nextBoolean());
         }
@@ -57,7 +57,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
      * @param length Length of the new chromosome
      * @return A new random chromosome
      */
-    public static BinaryChromosome newRandom (int length) {
+    public static BinaryChromosome newRandom (final int length) {
         return newRandom(length, new XorShiftRandom());
     }
 
@@ -71,12 +71,12 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
     }
 
     @Override
-    public BinaryChromosome getMutated (int type, int place, int len) {
+    public BinaryChromosome getMutated (final int type, final int place, final int len) {
         if (place < 0 || place >= getMutationPlaces()) {
             throw new IllegalArgumentException("invalid mutation place (" + place + ")");
         }
 
-        BitSet newBits = (BitSet) bits.clone();
+        final BitSet newBits = (BitSet) bits.clone();
         newBits.flip(place);
 
         return new BinaryChromosome(length, newBits);
@@ -88,8 +88,8 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
     }
 
     @Override
-    public BinaryChromosome getCombined (BinaryChromosome other, int type, int place, int len) {
-        if (this.length != other.length) {
+    public BinaryChromosome getCombined (final BinaryChromosome other, final int type, final int place, final int len) {
+        if (length != other.length) {
             throw new IllegalArgumentException("unmatching lengths (" + length + " != " + other.length + ")");
         }
 
@@ -97,7 +97,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
             throw new IllegalArgumentException("invalid combination place (" + place + ")");
         }
 
-        BitSet newBits = (BitSet) bits.clone();
+        final BitSet newBits = (BitSet) bits.clone();
         for (int i = 0; i < place; i++) {
             newBits.set(i, other.bits.get(i));
         }
@@ -121,7 +121,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
      * @param num Number of bits to use
      * @return Integer representation of part of this chromosome
      */
-    public BigInteger toPartialBigInteger (int first, int num) {
+    public BigInteger toPartialBigInteger (final int first, final int num) {
         BitSet fbits = bits;
         if (num < length || first != 0) {
             fbits = new BitSet();
@@ -134,13 +134,13 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
             return BigInteger.ZERO;
         }
 
-        byte[] bitsBytes = fbits.toByteArray();
-        byte[] bigintBytes = new byte[bitsBytes.length + 1];
+        final byte[] bitsBytes = fbits.toByteArray();
+        final byte[] bigintBytes = new byte[bitsBytes.length + 1];
         for (int i = 0; i < bitsBytes.length; i++) {
             bigintBytes[bigintBytes.length - 1 - i] = bitsBytes[i];
         }
 
-        BigInteger bi = new BigInteger(bigintBytes);
+        final BigInteger bi = new BigInteger(bigintBytes);
 
         return bi;
     }
@@ -151,7 +151,7 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
     }
 
     @Override
-    public boolean equals (Object obj) {
+    public boolean equals (final Object obj) {
         if (obj == this) {
             return true;
         }
@@ -159,14 +159,14 @@ public final class BinaryChromosome extends Chromosome<BinaryChromosome> {
             return false;
         }
 
-        BinaryChromosome bc = (BinaryChromosome) obj;
+        final BinaryChromosome bc = (BinaryChromosome) obj;
 
         return length == bc.length && bits.equals(bc.bits);
     }
 
     @Override
     public String toString () {
-        StringBuilder sb = new StringBuilder(length + 2).append("(");
+        final StringBuilder sb = new StringBuilder(length + 2).append("(");
         for (int i = length - 1; i >= 0; i--) {
             sb.append(bits.get(i) ? '1' : '0');
         }
