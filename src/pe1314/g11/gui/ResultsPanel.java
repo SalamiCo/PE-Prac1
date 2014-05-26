@@ -144,6 +144,7 @@ public final class ResultsPanel extends JSplitPane {
         }
 
         tables.clear();
+        chromosomes.clear();
 
         bestChromo.setText("");
         bestValue.setText("");
@@ -263,8 +264,11 @@ public final class ResultsPanel extends JSplitPane {
     }
 
     /* package */void doubleClicked (final int row) {
-        final Chromosome<?> chromo = chromosomes.get(slider.getValue()).get(row);
-
+        final int table = slider.getValue();
+        final Chromosome<?> chromo = chromosomes.get(table).get(row);
+        
+        System.out.printf("Double-Clicked (gen %d, row %d) = %s%n", table, row, chromo);
+        
         if (chromo instanceof LispChromosome) {
             final JDialog dialog = new RunnerDialog(((LispChromosome) chromo).getLispList());
             dialog.setModal(true);
