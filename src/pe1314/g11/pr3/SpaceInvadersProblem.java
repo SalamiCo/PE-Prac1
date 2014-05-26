@@ -61,6 +61,9 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
                     }
                 }
                 fitness += min;
+                if (gs.lose()) {
+                    fitness += REPETITIONS;
+                }
             }
         } catch (final Exception exc) {
             System.err.println("Unrunnable chromosome: " + chromosome);

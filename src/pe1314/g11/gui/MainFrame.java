@@ -526,11 +526,15 @@ public final class MainFrame extends JFrame {
                 break;
             case PRB_P1_F5:
                 solveBinaryProblem(new P1F5Problem(precission));
+                break;
 
             case PRB_P3_A:
                 solveSpaceInvadersProblem(0);
+                break;
+                
             case PRB_P3_B:
                 solveSpaceInvadersProblem(1);
+                break;
         }
     }
 
