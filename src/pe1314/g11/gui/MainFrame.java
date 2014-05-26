@@ -319,7 +319,7 @@ public final class MainFrame extends JFrame {
 
         comboSelectionType = new JComboBox<String>();
         comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] {
-            SEL_ROULETTE, SEL_TOURNAMENT, SEL_RANKING }));
+            SEL_TOURNAMENT, SEL_ROULETTE, SEL_RANKING }));
 
         comboCombinationType = new JComboBox<String>();
         comboCombinationType.setModel(new DefaultComboBoxModel<String>(new String[] {
