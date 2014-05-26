@@ -86,7 +86,8 @@ public final class MainFrame extends JFrame {
     private static final String PRB_P1_F4 = "(P1) Funci\u00F3n 4";
     private static final String PRB_P1_F5 = "(P1) Funci\u00F3n 5";
 
-    private static final String PRB_P3 = "(P3) Space Invaders";
+    private static final String PRB_P3_A = "(P3) Space Invaders [Enunc.]";
+    private static final String PRB_P3_B = "(P3) Space Invaders [Propio]";
 
     private static final String SEL_ROULETTE = "Ruleta";
     private static final String SEL_TOURNAMENT = "Torneo";
@@ -294,7 +295,7 @@ public final class MainFrame extends JFrame {
         comboProblem = new JComboBox<String>();
         comboProblem
             .setModel(new DefaultComboBoxModel<String>(new String[] {
-                PRB_P3, PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4,
+                PRB_P3_B, PRB_P3_A, PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4,
                 PRB_P1_F5 }));
         comboProblem.addActionListener(new ActionListener() {
             @Override
@@ -332,7 +333,7 @@ public final class MainFrame extends JFrame {
         spinnerCombineProb.setModel(new SpinnerNumberModel(0.6, 0.0, 1.0, 0.05));
 
         spinnerMutateProb = new JSpinner();
-        spinnerMutateProb.setModel(new SpinnerNumberModel(0.05, 0.0, 1.0, 0.01));
+        spinnerMutateProb.setModel(new SpinnerNumberModel(0.15, 0.0, 1.0, 0.01));
 
         spinnerInversionProb = new JSpinner();
         spinnerInversionProb.setModel(new SpinnerNumberModel(0.1, 0.0, 1.0, 0.05));
@@ -411,7 +412,7 @@ public final class MainFrame extends JFrame {
             return 2;
         }
 
-        if (comboProblem.getSelectedItem().equals(PRB_P3)) {
+        if (Arrays.asList(PRB_P3_A, PRB_P3_B).contains(comboProblem.getSelectedItem())) {
             return 3;
         }
 
@@ -526,8 +527,10 @@ public final class MainFrame extends JFrame {
             case PRB_P1_F5:
                 solveBinaryProblem(new P1F5Problem(precission));
 
-            case PRB_P3:
-                solveSpaceInvadersProblem();
+            case PRB_P3_A:
+                solveSpaceInvadersProblem(0);
+            case PRB_P3_B:
+                solveSpaceInvadersProblem(1);
         }
     }
 
@@ -737,8 +740,8 @@ public final class MainFrame extends JFrame {
         }
     }
 
-    private void solveSpaceInvadersProblem () {
-        final SpaceInvadersProblem problem = new SpaceInvadersProblem();
+    private void solveSpaceInvadersProblem (int f) {
+        final SpaceInvadersProblem problem = new SpaceInvadersProblem(f);
 
         final Random random = obtainRandomGenerator();
 
