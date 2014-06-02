@@ -111,6 +111,11 @@ public final class MainFrame extends JFrame {
     private static final String INIT_GROWING = "Creciente";
     private static final String INIT_COMPLETE = "Completa";
 
+    private static final String BLOAT_NONE = "Ninguno";
+    private static final String BLOAT_PRUNE = "Poda";
+    private static final String BLOAT_DEPTH = "Penaliz. Prof.";
+    private static final String BLOAT_SIZE = "Panaliz. Tam.";
+
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
 
@@ -125,6 +130,7 @@ public final class MainFrame extends JFrame {
     private JSpinner spinnerEliteSize;
     private JComboBox<String> comboSelectionType;
     private JComboBox<String> comboInitType;
+    private JComboBox<String> comboBloatingType;
     private JLabel labelCombinationType;
     private JComboBox<String> comboCombinationType;
     private JLabel labelMutationType;
@@ -249,14 +255,14 @@ public final class MainFrame extends JFrame {
             builder.add(comboSelectionType,        cc.xy (5, 15));
             builder.addLabel("Inicializaci\u00F3n:",    cc.xyw(1, 17, 3));
             builder.add(comboInitType,        cc.xy (5, 17));
+            builder.addLabel("Bloating:",          cc.xyw(1, 19, 3));
+            builder.add(comboBloatingType,         cc.xy (5, 19));
             //labelCombinationType = 
             //    builder.addLabel("Combinaci\u00F3n:",       cc.xyw(1, 17, 3));
             //builder.add(comboCombinationType,      cc.xy (5, 17));
-            builder.addLabel("Prob. Combinaci\u00F3n:", cc.xyw(1, 19, 3));
-            builder.add(spinnerCombineProb,        cc.xy (5, 19));
+            builder.addLabel("Prob. Combinaci\u00F3n:", cc.xyw(1, 21, 3));
+            builder.add(spinnerCombineProb,        cc.xy (5, 21));
             //labelMutationType =
-            //    builder.addLabel("Mutaci\u00F3n:",          cc.xyw(1, 21, 3));
-            //builder.add(comboMutationType,         cc.xy (5, 21));
             builder.addLabel("Prob. Mutaci\u00F3n:",    cc.xyw(1, 23, 3));
             builder.add(spinnerMutateProb,         cc.xy (5, 23));
             //builder.addLabel("Prob. Inversi\u00F3n:",   cc.xyw(1, 25, 3));
@@ -316,7 +322,7 @@ public final class MainFrame extends JFrame {
         });
 
         spinnerExtra1 = new JSpinner();
-        spinnerExtra1.setModel(new SpinnerNumberModel(3, 0, 10, 1));
+        spinnerExtra1.setModel(new SpinnerNumberModel(3, 1, 10, 1));
 
         spinnerPrecission = new JSpinner();
         spinnerPrecission.setModel(new SpinnerNumberModel(0.001, 0.000000001, 1, 0.0001));
@@ -334,6 +340,11 @@ public final class MainFrame extends JFrame {
 
         comboInitType = new JComboBox<String>();
         comboInitType.setModel(new DefaultComboBoxModel<String>(new String[] { INIT_GROWING, INIT_COMPLETE }));
+       
+        
+        comboBloatingType = new JComboBox<String>();
+        comboBloatingType.setModel(new DefaultComboBoxModel<String>(new String[] { BLOAT_NONE, BLOAT_PRUNE, BLOAT_DEPTH, BLOAT_SIZE }));
+        comboBloatingType.setSelectedIndex(1);
 
         comboCombinationType = new JComboBox<String>();
         comboCombinationType.setModel(new DefaultComboBoxModel<String>(new String[] {
@@ -437,6 +448,7 @@ public final class MainFrame extends JFrame {
         if (geneticWorker == null) {
             final boolean p1 = obtainPNum() == 1;
             final boolean p2 = obtainPNum() == 2;
+            final boolean p3 = obtainPNum() == 3;
 
             buttonPlay.setEnabled(true);
             buttonPause.setEnabled(false);
@@ -449,6 +461,8 @@ public final class MainFrame extends JFrame {
             spinnerMinPopSize.setEnabled(true);
             spinnerEliteSize.setEnabled(true);
             comboSelectionType.setEnabled(true);
+            comboInitType.setEnabled(p3);
+            comboBloatingType.setEnabled(p3);
             // comboCombinationType.setEnabled(p2);
             // labelCombinationType.setEnabled(p2);
             // comboMutationType.setEnabled(p2);
@@ -486,6 +500,8 @@ public final class MainFrame extends JFrame {
             spinnerMinPopSize.setEnabled(false);
             spinnerEliteSize.setEnabled(false);
             comboSelectionType.setEnabled(false);
+            comboInitType.setEnabled(false);
+            comboBloatingType.setEnabled(false);
             // comboCombinationType.setEnabled(false);
             // comboMutationType.setEnabled(false);
             spinnerMutateProb.setEnabled(false);
@@ -626,11 +642,15 @@ public final class MainFrame extends JFrame {
     }
 
     private int obtainDepth () {
-        return ((Number) spinnerExtra1.getValue()).intValue();
+        return ((Number) spinnerExtra1.getValue()).intValue() - 1;
     }
 
     private boolean obtainInitComplete () {
         return comboInitType.getSelectedItem().equals(INIT_COMPLETE);
+    }
+    
+    private int obtainBloatingControl () {
+        return comboBloatingType.getSelectedIndex() - 1;
     }
 
     @SuppressWarnings("unchecked")
@@ -748,7 +768,7 @@ public final class MainFrame extends JFrame {
     }
 
     private void solveSpaceInvadersProblem (int f) {
-        final SpaceInvadersProblem problem = new SpaceInvadersProblem(f, obtainInitComplete(), obtainDepth());
+        final SpaceInvadersProblem problem = new SpaceInvadersProblem(f, obtainInitComplete(), obtainDepth(), obtainBloatingControl());
 
         final Random random = obtainRandomGenerator();
 
@@ -769,7 +789,7 @@ public final class MainFrame extends JFrame {
             .step(mutationStep)
             .step(esp.getRestoreStep())
             .step(dedupStep)
-            .step(pruneStep)
+            .step(obtainBloatingControl() == 0 ? pruneStep : null)
             .build();
         /* @formatter:on */
 

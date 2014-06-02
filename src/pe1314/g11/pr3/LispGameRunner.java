@@ -71,7 +71,7 @@ public final class LispGameRunner {
             if (frame != null && frame.position > 0) {
                 frame.returns[frame.position - 1] = oldFrame.returns[0];
             }
-            
+
             /* If no frame (stack is empty), apply a NOP then return */
             if (frame == null) {
                 game.advance(null);
@@ -134,7 +134,7 @@ public final class LispGameRunner {
         if (frame.position > 0) {
             return stepCall(frame);
         } else {
-            frame.returns[0] = (frame.returns[1] == frame.returns[2]) ? 1 : 0;
+            frame.returns[0] = (frame.returns[1] == frame.returns[2] && frame.returns[1] != Integer.MIN_VALUE) ? 1 : 0;
             return false;
         }
     }
@@ -166,19 +166,15 @@ public final class LispGameRunner {
         final String fun = ((LispTerminal) what).toString();
         switch (fun) {
             case LEFT:
-                if (game.advance(Move.LEFT)) {
-                    frame.returns[frame.position] = 1;
-                }
+                frame.returns[frame.position] = game.advance(Move.LEFT) ? 1 : 0;
                 return true;
+
             case RIGHT:
-                if (game.advance(Move.RIGHT)) {
-                    frame.returns[frame.position] = 1;
-                }
+                frame.returns[frame.position] = game.advance(Move.RIGHT) ? 1 : 0;
                 return true;
+
             case SHOOT:
-                if (game.advance(Move.SHOOT)) {
-                    frame.returns[frame.position] = 1;
-                }
+                frame.returns[frame.position] = game.advance(Move.SHOOT) ? 1 : 0;
                 return true;
 
             case DST_X:
@@ -235,6 +231,9 @@ public final class LispGameRunner {
             this.scope = scope;
             this.position = position;
             returns = new int[scope.size()];
+            for (int i = 0; i < scope.size(); i++) {
+                returns[i] = Integer.MIN_VALUE;
+            }
         }
 
         @Override
@@ -243,11 +242,14 @@ public final class LispGameRunner {
         }
     }
 
+    /* ==================== */
+    /* STACK REPRESENTATION */
+
     public String getCurrentStatusAsString () {
         List<StackFrame> frames = new ArrayList<>(stack);
 
         if (frames.isEmpty()) {
-            return reprVal(program, 0);
+            return "@[" + reprVal(program, 0) + "]";
         }
 
         return reprFrame(frames, 0);
@@ -261,6 +263,10 @@ public final class LispGameRunner {
             if (i > 0) {
                 sb.append("\n").append(tabs(t + 1));
             }
+            
+            if (frames.size() - 1 == t && Math.max(0, frame.position) == i) {
+                sb.append("@");
+            }
 
             if (frames.size() - 1 == t && frame.position == i) {
                 sb.append("[");
@@ -270,7 +276,9 @@ public final class LispGameRunner {
                 if (frame.position >= 0) {
                     sb.append(frame.scope.get(0));
                 } else {
-                    sb.append(frame.returns[0]);
+                    sb
+                        .append(reprRet(frame.returns[0])).append(" {").append(reprVal(frame.scope.get(0), t + 1))
+                        .append("}");
                 }
             } else if (frames.size() > t + 1 && frames.get(t + 1).scope == frame.scope.get(i)) {
                 sb.append(reprFrame(frames, t + 1));
@@ -278,7 +286,9 @@ public final class LispGameRunner {
                 if (frame.position <= i && frame.position > 0) {
                     sb.append(reprVal(frame.scope.get(i), t + 1));
                 } else {
-                    sb.append(frame.returns[i]);
+                    sb
+                        .append(reprRet(frame.returns[i])).append(" {").append(reprVal(frame.scope.get(i), t + 1))
+                        .append("}");
                 }
             }
 
@@ -288,6 +298,10 @@ public final class LispGameRunner {
         }
 
         return sb.append("\n").append(tabs(t)).append(")").toString();
+    }
+
+    private String reprRet (int i) {
+        return (i == Integer.MIN_VALUE) ? "~" : String.valueOf(i);
     }
 
     private String reprVal (LispValue lv, int t) {

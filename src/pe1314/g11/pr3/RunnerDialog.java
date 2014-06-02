@@ -11,11 +11,13 @@ import java.util.Random;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
@@ -39,6 +41,7 @@ public final class RunnerDialog extends JDialog implements ActionListener, Windo
     private final GameStateCanvas canvas;
     private final JSlider slider;
     private final JEditorPane area;
+    private final JScrollPane areaScroll;
 
     private final Random random;
 
@@ -72,12 +75,17 @@ public final class RunnerDialog extends JDialog implements ActionListener, Windo
         });
 
         String bodyRule = "body { font-family: monospace; font-size: 8px; }";
+        String italicRule = "i { color: #999999; }";
 
         area = new JEditorPane(new HTMLEditorKit().getContentType(), "");
         ((HTMLDocument) area.getDocument()).getStyleSheet().addRule(bodyRule);
+        ((HTMLDocument) area.getDocument()).getStyleSheet().addRule(italicRule);
         area.setEditable(false);
 
-        JScrollPane areaScroll = new JScrollPane(area);
+        DefaultCaret caret = (DefaultCaret) area.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+
+        areaScroll = new JScrollPane(area);
         areaScroll.getViewport().setPreferredSize(new Dimension(240, canvas.getHeight() + slider.getHeight()));
 
         JPanel container = new JPanel();
@@ -115,10 +123,31 @@ public final class RunnerDialog extends JDialog implements ActionListener, Windo
             runner.step();
         }
 
+        String text = runner.getCurrentStatusAsString();
+        int idx = text.indexOf('@');
+
         area.setContentType("text/html");
-        area.setText(runner
-            .getCurrentStatusAsString().replace("[", "<b>").replace("]", "</b>").replace("\n", "<br/>")
-            .replace(" ", "&nbsp;"));
+        area.setText(text//
+            .replace("@", "")//
+            .replace("[", "<b>").replace("]", "</b>")//
+            .replace("{", "<i>").replace("}", "</i>")//
+            .replace("\n", "<br/>").replace(" ", "&nbsp;"));
+
+        if (idx > 0) {
+            String upToAt = text.substring(0, idx);
+            int lines = text.length() - text.replace("\n", "").length();
+            int lineno = upToAt.length() - upToAt.replace("\n", "").length();
+
+            JScrollBar sbar = areaScroll.getVerticalScrollBar();
+            sbar.setValue(sbar.getMaximum());
+            int sbarmax = sbar.getValue();
+            int sbarmin = sbar.getMinimum();
+            int sbardif = sbarmax - sbarmin;
+
+            int pos = sbarmin + (sbardif * lineno) / lines;
+            sbar.setValue(Math.max(0, pos));
+        }
+
         canvas.repaint();
         pack();
         setLocationRelativeTo(null);

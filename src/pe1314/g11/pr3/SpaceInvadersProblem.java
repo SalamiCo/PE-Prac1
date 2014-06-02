@@ -13,13 +13,15 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
     private static final long SEED = 890643579046317841L;
 
     private final int fitnessType;
+    private final int bloatingPenaltyType;
     private final Map<LispChromosome,Double> cache = new HashMap<>();
 
     private final boolean complete;
     private final int depth;
     
-    public SpaceInvadersProblem (int f, final boolean complete, final int depth) {
+    public SpaceInvadersProblem (int f, final boolean complete, final int depth, int b) {
         fitnessType = f;
+        bloatingPenaltyType = b;
         this.complete = complete;
         this.depth = depth;
     }
@@ -40,11 +42,26 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
             return getFromCache(chromosome);
         }
 
-        double fitness = fitnessType == 0 ? calcFitnessA(chromosome) : calcFitnessB(chromosome);
+        double fitness = bloatingPenalty(chromosome, fitnessType == 0 ? calcFitnessA(chromosome) : calcFitnessB(chromosome));
 
         addToCache(chromosome, fitness);
 
         return fitness;
+    }
+
+    private double bloatingPenalty (LispChromosome chromo, double f) {
+        switch (bloatingPenaltyType) {
+            case 1:
+                // Extra depth penalty
+                double dp1 = 1.1;
+                return f * Math.pow(dp1, Math.max(0, chromo.getLispList().depth() - depth)) * (2.5 / dp1);
+                
+            case 2:
+                // Extra depth + size penalty
+                double dp2 = 1.0 + 0.05 * chromo.getLispList().nodes();
+                return f * Math.pow(dp2, Math.max(1, chromo.getLispList().depth() - depth));
+        }
+        return f;
     }
 
     private static double calcFitnessA (LispChromosome chromosome) {

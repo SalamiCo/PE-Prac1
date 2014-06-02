@@ -151,7 +151,9 @@ public final class Solver<V, C extends Chromosome<C>> {
                 throw new IllegalStateException("already used");
             }
 
-            steps.add(step);
+            if (step != null) {
+                steps.add(step);
+            }
             return this;
         }
 
