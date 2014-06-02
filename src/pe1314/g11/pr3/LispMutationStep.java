@@ -42,7 +42,7 @@ public class LispMutationStep implements SolverStep<LispList,LispChromosome> {
     }
 
     private LispChromosome performMutation (final LispChromosome chromo, final Random random) {
-        return new LispChromosome(mutate(chromo.getLispList(), random, depth, 0.0));
+        return new LispChromosome(mutate(chromo.getLispList(), random, depth, 0.3));
     }
 
     private LispList mutate (final LispValue lv, final Random random, final int depth, final double p) {
@@ -54,7 +54,7 @@ public class LispMutationStep implements SolverStep<LispList,LispChromosome> {
         final int pos = random.nextInt(list.size());
 
         final List<LispValue> values = new ArrayList<>(list.values());
-        values.set(pos, mutate(list.get(pos), random, depth - 1, p + (1.0 - p) * 0.3));
+        values.set(pos, mutate(list.get(pos), random, depth - 1, p + (1.0 - p) * 0.5));
 
         return new LispList(values);
     }

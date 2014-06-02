@@ -14,9 +14,17 @@ import java.util.List;
 public final class LispList implements LispValue {
 
     private final List<LispValue> values;
+    private final int depth;
 
     public LispList (final List<? extends LispValue> values) {
         this.values = Collections.unmodifiableList(new ArrayList<LispValue>(values));
+        
+        // depth
+        int max = 0;
+        for (final LispValue lv : values) {
+            max = Math.max(max, lv.depth());
+        }
+        depth = 1 + max;
     }
 
     public int size () {
@@ -29,11 +37,7 @@ public final class LispList implements LispValue {
 
     @Override
     public int depth () {
-        int max = 0;
-        for (final LispValue lv : values) {
-            max = Math.max(max, lv.depth());
-        }
-        return 1 + max;
+        return depth;
     }
 
     public List<LispValue> values () {

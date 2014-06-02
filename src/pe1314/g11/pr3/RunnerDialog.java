@@ -1,6 +1,7 @@
 package pe1314.g11.pr3;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -8,11 +9,15 @@ import java.awt.event.WindowListener;
 import java.util.Random;
 
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 import pe1314.g11.util.XorShiftRandom;
 
@@ -33,46 +38,60 @@ public final class RunnerDialog extends JDialog implements ActionListener, Windo
 
     private final GameStateCanvas canvas;
     private final JSlider slider;
+    private final JEditorPane area;
 
     private final Random random;
 
     private long won;
     private long total;
-    
-    private int[] speeds = {100, 80, 40, 10, 1};
+
+    private int[] speeds = { 1000, 500, 100, 80, 40, 10, 1 };
 
     public RunnerDialog (final LispList program) {
+        int cspd = 2;
+
         this.program = program;
-        ticker = new Timer(100, this);
+        ticker = new Timer(speeds[cspd], this);
         random = new XorShiftRandom();
 
         total = 0;
         won = 0;
 
         canvas = new GameStateCanvas();
-        
+
         slider = new JSlider();
         slider.setMinimum(0);
         slider.setMaximum(speeds.length - 1);
-        slider.setValue(0);
+        slider.setValue(cspd);
         slider.addChangeListener(new ChangeListener() {
-            
+
             @Override
             public void stateChanged (ChangeEvent arg0) {
                 ticker.setDelay(speeds[slider.getValue()]);
             }
         });
 
+        String bodyRule = "body { font-family: monospace; font-size: 8px; }";
+
+        area = new JEditorPane(new HTMLEditorKit().getContentType(), "");
+        ((HTMLDocument) area.getDocument()).getStyleSheet().addRule(bodyRule);
+        area.setEditable(false);
+
+        JScrollPane areaScroll = new JScrollPane(area);
+        areaScroll.getViewport().setPreferredSize(new Dimension(240, canvas.getHeight() + slider.getHeight()));
+
         JPanel container = new JPanel();
         container.setLayout(new BorderLayout());
         container.add(canvas, BorderLayout.CENTER);
-        container.add(slider, BorderLayout.PAGE_END);
-       
+        container.add(slider, BorderLayout.PAGE_START);
+        container.add(areaScroll, BorderLayout.LINE_END);
+
         setContentPane(container);
         pack();
 
         addWindowListener(this);
 
+        setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         updateTitle();
     }
@@ -93,10 +112,16 @@ public final class RunnerDialog extends JDialog implements ActionListener, Windo
 
             updateTitle();
         } else {
-            runner.runUntilGameAdvances();
+            runner.step();
         }
 
+        area.setContentType("text/html");
+        area.setText(runner
+            .getCurrentStatusAsString().replace("[", "<b>").replace("]", "</b>").replace("\n", "<br/>")
+            .replace(" ", "&nbsp;"));
         canvas.repaint();
+        pack();
+        setLocationRelativeTo(null);
     }
 
     private void updateTitle () {

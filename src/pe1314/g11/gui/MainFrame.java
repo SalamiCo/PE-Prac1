@@ -47,6 +47,7 @@ import pe1314.g11.pr3.LispChromosome;
 import pe1314.g11.pr3.LispCombinationStep;
 import pe1314.g11.pr3.LispList;
 import pe1314.g11.pr3.LispMutationStep;
+import pe1314.g11.pr3.LispPruneStep;
 import pe1314.g11.pr3.SpaceInvadersProblem;
 import pe1314.g11.sga.BinaryChromosome;
 import pe1314.g11.sga.CombinationStep;
@@ -229,13 +230,13 @@ public final class MainFrame extends JFrame {
             builder.addSeparator("Problema", cc.xyw(1, 1, 5));
             builder.addLabel("Problema:",    cc.xyw(1, 3, 3));
             builder.add(comboProblem,        cc.xy (5, 3));
-            labelPrecission =
-                builder.addLabel("Precisi\u00F3n:",   cc.xyw(1, 5, 3));
-            builder.add(spinnerPrecission,   cc.xy (5, 5));
+            //labelPrecission =
+            //    builder.addLabel("Precisi\u00F3n:",   cc.xyw(1, 5, 3));
+            //builder.add(spinnerPrecission,   cc.xy (5, 5));
             
             labelExtra1 =
-                builder.addLabel("Valor de N:", cc.xyw(1, 7, 3));
-            builder.add(spinnerExtra1,          cc.xy (5, 7));
+                builder.addLabel("Profundidad:", cc.xyw(1, 7, 3));
+            builder.add(spinnerExtra1,           cc.xy (5, 7));
 
 
             builder.addSeparator("Algoritmo",      cc.xyw(1,  9, 5));
@@ -245,18 +246,18 @@ public final class MainFrame extends JFrame {
             builder.add(spinnerEliteSize,          cc.xy (5, 13));
             builder.addLabel("Selecci\u00F3n:",         cc.xyw(1, 15, 3));
             builder.add(comboSelectionType,        cc.xy (5, 15));
-            labelCombinationType = 
-                builder.addLabel("Combinaci\u00F3n:",       cc.xyw(1, 17, 3));
-            builder.add(comboCombinationType,      cc.xy (5, 17));
+            //labelCombinationType = 
+            //    builder.addLabel("Combinaci\u00F3n:",       cc.xyw(1, 17, 3));
+            //builder.add(comboCombinationType,      cc.xy (5, 17));
             builder.addLabel("Prob. Combinaci\u00F3n:", cc.xyw(1, 19, 3));
             builder.add(spinnerCombineProb,        cc.xy (5, 19));
-            labelMutationType =
-                builder.addLabel("Mutaci\u00F3n:",          cc.xyw(1, 21, 3));
-            builder.add(comboMutationType,         cc.xy (5, 21));
+            //labelMutationType =
+            //    builder.addLabel("Mutaci\u00F3n:",          cc.xyw(1, 21, 3));
+            //builder.add(comboMutationType,         cc.xy (5, 21));
             builder.addLabel("Prob. Mutaci\u00F3n:",    cc.xyw(1, 23, 3));
             builder.add(spinnerMutateProb,         cc.xy (5, 23));
-            builder.addLabel("Prob. Inversi\u00F3n:",   cc.xyw(1, 25, 3));
-            builder.add(spinnerInversionProb,      cc.xy (5, 25));
+            //builder.addLabel("Prob. Inversi\u00F3n:",   cc.xyw(1, 25, 3));
+            //builder.add(spinnerInversionProb,      cc.xy (5, 25));
 
 
             builder.addSeparator("Parada",          cc.xyw(1, 27, 5));
@@ -298,8 +299,8 @@ public final class MainFrame extends JFrame {
         comboProblem = new JComboBox<String>();
         comboProblem
             .setModel(new DefaultComboBoxModel<String>(new String[] {
-                PRB_P3_B, PRB_P3_A, PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4,
-                PRB_P1_F5 }));
+                PRB_P3_B, PRB_P3_A/*, PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4,
+                PRB_P1_F5 */}));
         comboProblem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (final ActionEvent arg0) {
@@ -308,7 +309,7 @@ public final class MainFrame extends JFrame {
         });
 
         spinnerExtra1 = new JSpinner();
-        spinnerExtra1.setModel(new SpinnerNumberModel(3, 1, 7, 1));
+        spinnerExtra1.setModel(new SpinnerNumberModel(3, 0, 10, 1));
 
         spinnerPrecission = new JSpinner();
         spinnerPrecission.setModel(new SpinnerNumberModel(0.001, 0.000000001, 1, 0.0001));
@@ -432,16 +433,16 @@ public final class MainFrame extends JFrame {
             buttonStop.setEnabled(false);
 
             comboProblem.setEnabled(true);
-            labelPrecission.setEnabled(p1);
-            spinnerPrecission.setEnabled(p1);
+            //labelPrecission.setEnabled(p1);
+            //spinnerPrecission.setEnabled(p1);
 
             spinnerMinPopSize.setEnabled(true);
             spinnerEliteSize.setEnabled(true);
             comboSelectionType.setEnabled(true);
-            comboCombinationType.setEnabled(p2);
-            labelCombinationType.setEnabled(p2);
-            comboMutationType.setEnabled(p2);
-            labelMutationType.setEnabled(p2);
+            //comboCombinationType.setEnabled(p2);
+            //labelCombinationType.setEnabled(p2);
+            //comboMutationType.setEnabled(p2);
+            //labelMutationType.setEnabled(p2);
             spinnerMutateProb.setEnabled(true);
             spinnerCombineProb.setEnabled(true);
             spinnerInversionProb.setEnabled(p2);
@@ -450,9 +451,9 @@ public final class MainFrame extends JFrame {
             checkboxStopStall.setEnabled(true);
             checkboxRandomSeed.setEnabled(true);
 
-            final boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
-            labelExtra1.setEnabled(extra1);
-            spinnerExtra1.setEnabled(extra1);
+            //final boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
+            labelExtra1.setEnabled(true);
+            spinnerExtra1.setEnabled(true);
 
             labelStopGeneration.setEnabled(checkboxStopGeneration.isSelected());
             spinnerStopGenerations.setEnabled(checkboxStopGeneration.isSelected());
@@ -469,14 +470,14 @@ public final class MainFrame extends JFrame {
             buttonStop.setEnabled(true);
 
             comboProblem.setEnabled(false);
-            spinnerPrecission.setEnabled(false);
+            //spinnerPrecission.setEnabled(false);
             spinnerExtra1.setEnabled(false);
 
             spinnerMinPopSize.setEnabled(false);
             spinnerEliteSize.setEnabled(false);
             comboSelectionType.setEnabled(false);
-            comboCombinationType.setEnabled(false);
-            comboMutationType.setEnabled(false);
+            //comboCombinationType.setEnabled(false);
+            //comboMutationType.setEnabled(false);
             spinnerMutateProb.setEnabled(false);
             spinnerCombineProb.setEnabled(false);
             spinnerInversionProb.setEnabled(false);
@@ -501,7 +502,7 @@ public final class MainFrame extends JFrame {
         final String problemName = (String) comboProblem.getSelectedItem();
         final double precission = ((Number) spinnerPrecission.getValue()).doubleValue();
         switch (problemName) {
-            case PRB_P2_A:
+            /*case PRB_P2_A:
                 solveHospitalProblem("ajuste");
                 break;
             case PRB_P2_12:
@@ -529,7 +530,7 @@ public final class MainFrame extends JFrame {
                 break;
             case PRB_P1_F5:
                 solveBinaryProblem(new P1F5Problem(precission));
-                break;
+                break;*/
 
             case PRB_P3_A:
                 solveSpaceInvadersProblem(0);
@@ -631,6 +632,14 @@ public final class MainFrame extends JFrame {
         }
 
         return 0;
+    }
+    
+    private int obtainDepth () {
+        return ((Number)spinnerExtra1.getValue()).intValue();
+    }
+    
+    private boolean obtainInitComplete () {
+        return false;
     }
 
     @SuppressWarnings("unchecked")
@@ -758,6 +767,7 @@ public final class MainFrame extends JFrame {
         final SolverStep<LispList,LispChromosome> combinationStep = obtainCombinationStep();
         final SolverStep<LispList,LispChromosome> mutationStep = obtainMutationStep();
         final SolverStep<LispList,LispChromosome> dedupStep = new DuplicateRemovalStep<>();
+        final SolverStep<LispList,LispChromosome> pruneStep = new LispPruneStep(obtainDepth());
 
         /* @formatter:off */
         final Solver<LispList,LispChromosome> solver = Solver.builder(problem)
@@ -768,6 +778,7 @@ public final class MainFrame extends JFrame {
             .step(mutationStep)
             .step(esp.getRestoreStep())
             .step(dedupStep)
+            .step(pruneStep)
             .build();
         /* @formatter:on */
 

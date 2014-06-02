@@ -1,8 +1,10 @@
 package pe1314.g11.pr3;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 
 import pe1314.g11.pr3.GameState.Move;
 
@@ -50,7 +52,7 @@ public final class LispGameRunner {
     }
 
     /**
-     * Runs a single execution step izquierdas o de derechasof the program.
+     * Runs a single execution step of the program.
      * 
      * @return <tt>true</tt> if the game advanced, <tt>false</tt> otherwise
      */
@@ -58,6 +60,7 @@ public final class LispGameRunner {
         /* If the stack is empty, add an initial frame */
         if (stack.isEmpty()) {
             stack.addLast(new StackFrame(program, 1));
+            return false;
         }
 
         /* Remove frames if they are finished */
@@ -110,6 +113,8 @@ public final class LispGameRunner {
     }
 
     private boolean stepIf (final StackFrame frame) {
+        frame.returns[frame.position] = Integer.MIN_VALUE;
+        
         if (frame.position == 1) {
             return stepCall(frame);
         }
@@ -237,4 +242,74 @@ public final class LispGameRunner {
             return position + " @ " + scope + " = " + Arrays.toString(returns);
         }
     }
+
+    public String getCurrentStatusAsString () {
+        List<StackFrame> frames = new ArrayList<>(stack);
+
+        if (frames.isEmpty()) {
+            return reprVal(program, 0);
+        }
+
+        return reprFrame(frames, 0);
+    }
+
+    private String reprFrame (List<StackFrame> frames, int t) {
+        StackFrame frame = frames.get(t);
+
+        StringBuilder sb = new StringBuilder("(");
+        for (int i = 0; i < frame.scope.size(); i++) {
+            if (i > 0) {
+                sb.append("\n").append(tabs(t + 1));
+            }
+
+            if (frames.size() - 1 == t && frame.position == i) {
+                sb.append("[");
+            }
+
+            if (i == 0) {
+                if (frame.position >= 0) {
+                    sb.append(frame.scope.get(0));
+                } else {
+                    sb.append(frame.returns[0]);
+                }
+            } else if (frames.size() > t + 1 && frames.get(t + 1).scope == frame.scope.get(i)) {
+                sb.append(reprFrame(frames, t + 1));
+            } else {
+                if (frame.position <= i && frame.position > 0) {
+                    sb.append(reprVal(frame.scope.get(i), t + 1));
+                } else {
+                    sb.append(frame.returns[i]);
+                }
+            }
+
+            if (frames.size() - 1 == t && frame.position == i) {
+                sb.append("]");
+            }
+        }
+
+        return sb.append("\n").append(tabs(t)).append(")").toString();
+    }
+
+    private String reprVal (LispValue lv, int t) {
+        if (lv instanceof LispTerminal) {
+            return lv.toString();
+        }
+
+        LispList ll = (LispList) lv;
+
+        StringBuilder sb = new StringBuilder("(").append(ll.get(0));
+        for (int i = 1; i < ll.size(); i++) {
+            sb.append("\n").append(tabs(t + 1)).append(reprVal(ll.get(i), t + 1));
+        }
+        return sb.append("\n").append(tabs(t)).append(")").toString();
+    }
+
+    private static String tabs (int t) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < t; i++) {
+            sb.append("  ");
+        }
+        return sb.toString();
+    }
+
 }
