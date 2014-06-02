@@ -105,6 +105,9 @@ public final class MainFrame extends JFrame {
     private static final String MUT_INSERTION = "Inserci\u00F3n";
     private static final String MUT_HEURISTIC = "Heur\u00EDstica";
     private static final String MUT_ROTATION = "Rotaci\u00F3n";
+    
+    private static final String INIT_GROWING = "Creciente";
+    private static final String INIT_COMPLETE = "Completa";
 
     /** Generated SVUID */
     private static final long serialVersionUID = -8605437477715617439L;
@@ -637,7 +640,7 @@ public final class MainFrame extends JFrame {
             case 2:
                 return new LengthedMutationStep<>(mutateProb, obtainMutationType());
             case 3:
-                return (SolverStep<V,C>) new LispMutationStep(mutateProb);
+                return (SolverStep<V,C>) new LispMutationStep(mutateProb, obtainDepth());
         }
 
         return null;
@@ -738,7 +741,7 @@ public final class MainFrame extends JFrame {
     }
 
     private void solveSpaceInvadersProblem () {
-        final SpaceInvadersProblem problem = new SpaceInvadersProblem();
+        final SpaceInvadersProblem problem = new SpaceInvadersProblem(obtainInitComplete(), obtainDepth());
 
         final Random random = obtainRandomGenerator();
 

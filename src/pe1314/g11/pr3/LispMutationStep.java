@@ -8,13 +8,17 @@ import pe1314.g11.Problem;
 import pe1314.g11.SolverStep;
 
 public class LispMutationStep implements SolverStep<LispList,LispChromosome> {
+    
     private final double probability;
+    
+    private final int depth;
 
-    public LispMutationStep (final double probability) {
+    public LispMutationStep (final double probability, final int depth) {
         if (probability < 0.0 || probability > 1.0 || Double.isInfinite(probability) || Double.isNaN(probability)) {
             throw new IllegalArgumentException("invalid probability: " + probability);
         }
 
+        this.depth = depth;
         this.probability = probability;
     }
 
@@ -38,12 +42,12 @@ public class LispMutationStep implements SolverStep<LispList,LispChromosome> {
     }
 
     private LispChromosome performMutation (final LispChromosome chromo, final Random random) {
-        return new LispChromosome(mutate(chromo.getLispList(), random, 4, 0.0));
+        return new LispChromosome(mutate(chromo.getLispList(), random, depth, 0.0));
     }
 
     private LispList mutate (final LispValue lv, final Random random, final int depth, final double p) {
         if (lv instanceof LispTerminal || random.nextDouble() < p) {
-            return LispUtils.generateRandom(random, depth);
+            return LispUtils.generateRandom(false, random, depth);
         }
 
         final LispList list = (LispList) lv;

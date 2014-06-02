@@ -12,8 +12,8 @@ public class LispChromosome extends Chromosome<LispChromosome> implements Compar
         list = l;
     }
 
-    public static LispChromosome newRandom (final Random random) {
-        return new LispChromosome(LispUtils.generateRandom(random, 4));
+    public static LispChromosome newRandom (final boolean complete, final Random random, final int depth) {
+        return new LispChromosome(LispUtils.generateRandom(complete, random, depth));
     }
 
     public LispList getLispList () {

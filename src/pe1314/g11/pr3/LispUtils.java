@@ -20,11 +20,7 @@ public class LispUtils {
     private static final List<String> TERMINALS = Arrays.asList(
         LispGameRunner.LEFT, LispGameRunner.RIGHT, LispGameRunner.SHOOT, LispGameRunner.DST_X, LispGameRunner.DST_Y);
 
-    @SuppressWarnings("serial")
     private static final Map<String,Integer> ARITY = new HashMap<String,Integer>() {
-        /**
-         * 
-         */
         private static final long serialVersionUID = -2789301994644310481L;
 
         {
@@ -38,15 +34,15 @@ public class LispUtils {
     private LispUtils () {
     }
 
-    public static LispList generateRandom (final Random random, final int depth) {
+    public static LispList generateRandom (final boolean complete, final Random random, final int depth) {
         final String function = FUNCTIONS.get(random.nextInt(FUNCTIONS.size()));
         final int arity = ARITY.get(function);
         final List<LispValue> list = new ArrayList<>();
         list.add(new LispTerminal(function));
 
         for (int i = 1; i <= arity; i++) {
-            if (depth > 0 && random.nextBoolean()) {
-                list.add(generateRandom(random, depth - 1));
+            if (!complete && depth > 0 && random.nextBoolean()) {
+                list.add(generateRandom(complete, random, depth - 1));
             } else {
                 list.add(new LispTerminal(TERMINALS.get(random.nextInt(TERMINALS.size()))));
             }

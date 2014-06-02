@@ -14,9 +14,17 @@ public class SpaceInvadersProblem extends Problem<LispList,LispChromosome> {
 
     private static final Map<LispChromosome,Double> CACHE = new HashMap<>();
 
+    private final boolean complete;
+    private final int depth;
+    
+    public SpaceInvadersProblem (final boolean complete, final int depth) {
+        this.complete = complete;
+        this.depth = depth;
+    }
+
     @Override
     public LispChromosome random (final Random random) {
-        return LispChromosome.newRandom(random);
+        return LispChromosome.newRandom(complete, random, depth);
     }
 
     @Override
