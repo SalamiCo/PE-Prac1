@@ -65,18 +65,20 @@ public final class LispGameRunner {
 
         /* Remove frames if they are finished */
         StackFrame frame = stack.getLast();
-        while (frame != null && frame.position < 0) {
+        if (frame != null && frame.position < 0) {
             final StackFrame oldFrame = stack.removeLast();
             frame = stack.isEmpty() ? null : stack.getLast();
             if (frame != null && frame.position > 0) {
                 frame.returns[frame.position - 1] = oldFrame.returns[0];
             }
-        }
-
-        /* If no frame (stack is empty), apply a NOP then return */
-        if (frame == null) {
-            game.advance(null);
-            return true;
+            
+            /* If no frame (stack is empty), apply a NOP then return */
+            if (frame == null) {
+                game.advance(null);
+                return true;
+            } else {
+                return false;
+            }
         }
 
         /* At this point, frame contains the next instruction to run, so do it */
@@ -113,8 +115,6 @@ public final class LispGameRunner {
     }
 
     private boolean stepIf (final StackFrame frame) {
-        frame.returns[frame.position] = Integer.MIN_VALUE;
-        
         if (frame.position == 1) {
             return stepCall(frame);
         }
