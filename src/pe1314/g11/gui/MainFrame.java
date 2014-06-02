@@ -107,7 +107,7 @@ public final class MainFrame extends JFrame {
     private static final String MUT_INSERTION = "Inserci\u00F3n";
     private static final String MUT_HEURISTIC = "Heur\u00EDstica";
     private static final String MUT_ROTATION = "Rotaci\u00F3n";
-    
+
     private static final String INIT_GROWING = "Creciente";
     private static final String INIT_COMPLETE = "Completa";
 
@@ -124,6 +124,7 @@ public final class MainFrame extends JFrame {
     private JSpinner spinnerMinPopSize;
     private JSpinner spinnerEliteSize;
     private JComboBox<String> comboSelectionType;
+    private JComboBox<String> comboInitType;
     private JLabel labelCombinationType;
     private JComboBox<String> comboCombinationType;
     private JLabel labelMutationType;
@@ -246,6 +247,8 @@ public final class MainFrame extends JFrame {
             builder.add(spinnerEliteSize,          cc.xy (5, 13));
             builder.addLabel("Selecci\u00F3n:",         cc.xyw(1, 15, 3));
             builder.add(comboSelectionType,        cc.xy (5, 15));
+            builder.addLabel("Inicializaci\u00F3n:",    cc.xyw(1, 17, 3));
+            builder.add(comboInitType,        cc.xy (5, 17));
             //labelCombinationType = 
             //    builder.addLabel("Combinaci\u00F3n:",       cc.xyw(1, 17, 3));
             //builder.add(comboCombinationType,      cc.xy (5, 17));
@@ -297,10 +300,14 @@ public final class MainFrame extends JFrame {
 
     private void createLeftFormElements () {
         comboProblem = new JComboBox<String>();
-        comboProblem
-            .setModel(new DefaultComboBoxModel<String>(new String[] {
-                PRB_P3_B, PRB_P3_A/*, PRB_P2_A, PRB_P2_12, PRB_P2_15, PRB_P2_30, PRB_P1_F1, PRB_P1_F2, PRB_P1_F3, PRB_P1_F4,
-                PRB_P1_F5 */}));
+        comboProblem.setModel(new DefaultComboBoxModel<String>(new String[] { PRB_P3_B, PRB_P3_A // , PRB_P2_A,
+                                                                                                 // PRB_P2_12,PRB_P2_15,
+                                                                                                 // PRB_P2_30,
+                                                                                                 // PRB_P1_F1,
+                                                                                                 // PRB_P1_F2,
+                                                                                                 // PRB_P1_F3,
+                                                                                                 // PRB_P1_F4, PRB_P1_F5
+            }));
         comboProblem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (final ActionEvent arg0) {
@@ -324,6 +331,9 @@ public final class MainFrame extends JFrame {
         comboSelectionType = new JComboBox<String>();
         comboSelectionType.setModel(new DefaultComboBoxModel<String>(new String[] {
             SEL_TOURNAMENT, SEL_ROULETTE, SEL_RANKING }));
+
+        comboInitType = new JComboBox<String>();
+        comboInitType.setModel(new DefaultComboBoxModel<String>(new String[] { INIT_GROWING, INIT_COMPLETE }));
 
         comboCombinationType = new JComboBox<String>();
         comboCombinationType.setModel(new DefaultComboBoxModel<String>(new String[] {
@@ -433,16 +443,16 @@ public final class MainFrame extends JFrame {
             buttonStop.setEnabled(false);
 
             comboProblem.setEnabled(true);
-            //labelPrecission.setEnabled(p1);
-            //spinnerPrecission.setEnabled(p1);
+            // labelPrecission.setEnabled(p1);
+            // spinnerPrecission.setEnabled(p1);
 
             spinnerMinPopSize.setEnabled(true);
             spinnerEliteSize.setEnabled(true);
             comboSelectionType.setEnabled(true);
-            //comboCombinationType.setEnabled(p2);
-            //labelCombinationType.setEnabled(p2);
-            //comboMutationType.setEnabled(p2);
-            //labelMutationType.setEnabled(p2);
+            // comboCombinationType.setEnabled(p2);
+            // labelCombinationType.setEnabled(p2);
+            // comboMutationType.setEnabled(p2);
+            // labelMutationType.setEnabled(p2);
             spinnerMutateProb.setEnabled(true);
             spinnerCombineProb.setEnabled(true);
             spinnerInversionProb.setEnabled(p2);
@@ -451,7 +461,7 @@ public final class MainFrame extends JFrame {
             checkboxStopStall.setEnabled(true);
             checkboxRandomSeed.setEnabled(true);
 
-            //final boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
+            // final boolean extra1 = comboProblem.getSelectedItem().equals(PRB_P1_F4);
             labelExtra1.setEnabled(true);
             spinnerExtra1.setEnabled(true);
 
@@ -470,14 +480,14 @@ public final class MainFrame extends JFrame {
             buttonStop.setEnabled(true);
 
             comboProblem.setEnabled(false);
-            //spinnerPrecission.setEnabled(false);
+            // spinnerPrecission.setEnabled(false);
             spinnerExtra1.setEnabled(false);
 
             spinnerMinPopSize.setEnabled(false);
             spinnerEliteSize.setEnabled(false);
             comboSelectionType.setEnabled(false);
-            //comboCombinationType.setEnabled(false);
-            //comboMutationType.setEnabled(false);
+            // comboCombinationType.setEnabled(false);
+            // comboMutationType.setEnabled(false);
             spinnerMutateProb.setEnabled(false);
             spinnerCombineProb.setEnabled(false);
             spinnerInversionProb.setEnabled(false);
@@ -502,40 +512,21 @@ public final class MainFrame extends JFrame {
         final String problemName = (String) comboProblem.getSelectedItem();
         final double precission = ((Number) spinnerPrecission.getValue()).doubleValue();
         switch (problemName) {
-            /*case PRB_P2_A:
-                solveHospitalProblem("ajuste");
-                break;
-            case PRB_P2_12:
-                solveHospitalProblem("tai12");
-                break;
-            case PRB_P2_15:
-                solveHospitalProblem("tai15");
-                break;
-            case PRB_P2_30:
-                solveHospitalProblem("tai30");
-                break;
-
-            case PRB_P1_F1:
-                solveBinaryProblem(new P1F1Problem(precission));
-                break;
-            case PRB_P1_F2:
-                solveBinaryProblem(new P1F2Problem(precission));
-                break;
-            case PRB_P1_F3:
-                solveBinaryProblem(new P1F3Problem(precission));
-                break;
-            case PRB_P1_F4:
-                final int n = ((Number) spinnerExtra1.getValue()).intValue();
-                solveBinaryProblem(new P1F4Problem(precission, n));
-                break;
-            case PRB_P1_F5:
-                solveBinaryProblem(new P1F5Problem(precission));
-                break;*/
+        /*
+         * case PRB_P2_A: solveHospitalProblem("ajuste"); break; case PRB_P2_12: solveHospitalProblem("tai12"); break;
+         * case PRB_P2_15: solveHospitalProblem("tai15"); break; case PRB_P2_30: solveHospitalProblem("tai30"); break;
+         * 
+         * case PRB_P1_F1: solveBinaryProblem(new P1F1Problem(precission)); break; case PRB_P1_F2:
+         * solveBinaryProblem(new P1F2Problem(precission)); break; case PRB_P1_F3: solveBinaryProblem(new
+         * P1F3Problem(precission)); break; case PRB_P1_F4: final int n = ((Number)
+         * spinnerExtra1.getValue()).intValue(); solveBinaryProblem(new P1F4Problem(precission, n)); break; case
+         * PRB_P1_F5: solveBinaryProblem(new P1F5Problem(precission)); break;
+         */
 
             case PRB_P3_A:
                 solveSpaceInvadersProblem(0);
                 break;
-                
+
             case PRB_P3_B:
                 solveSpaceInvadersProblem(1);
                 break;
@@ -633,13 +624,13 @@ public final class MainFrame extends JFrame {
 
         return 0;
     }
-    
+
     private int obtainDepth () {
-        return ((Number)spinnerExtra1.getValue()).intValue();
+        return ((Number) spinnerExtra1.getValue()).intValue();
     }
-    
+
     private boolean obtainInitComplete () {
-        return false;
+        return comboInitType.getSelectedItem().equals(INIT_COMPLETE);
     }
 
     @SuppressWarnings("unchecked")

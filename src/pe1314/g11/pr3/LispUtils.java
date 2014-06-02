@@ -41,7 +41,7 @@ public class LispUtils {
         list.add(new LispTerminal(function));
 
         for (int i = 1; i <= arity; i++) {
-            if (!complete && depth > 0 && random.nextBoolean()) {
+            if (depth > 0 && (complete || random.nextBoolean())) {
                 list.add(generateRandom(complete, random, depth - 1));
             } else {
                 list.add(new LispTerminal(TERMINALS.get(random.nextInt(TERMINALS.size()))));
